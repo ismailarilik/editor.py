@@ -13,7 +13,7 @@ class App(object):
         self.main_frame = MainFrame(self.window)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
         # Add main menu
-        self.main_menu = MainMenu(self.window)
+        self.main_menu = MainMenu(self.window, self.main_frame)
         self.window.config(menu=self.main_menu)
 
     def start(self):
