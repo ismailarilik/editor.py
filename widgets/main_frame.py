@@ -1,5 +1,5 @@
 import tkinter as tk
-from .editor_frame import EditorFrame
+from .editor.editor_frame import EditorFrame
 
 class MainFrame(tk.Frame):
     def __init__(self, master=None):
