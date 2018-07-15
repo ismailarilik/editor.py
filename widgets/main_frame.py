@@ -2,7 +2,7 @@ import tkinter as tk
 from .editor.editor_frame import EditorFrame
 
 class MainFrame(tk.Frame):
-    def __init__(self, master=None):
+    def __init__(self, master):
         super().__init__(master)
         # Add editor frame
         self.editor_frame = EditorFrame(self)
