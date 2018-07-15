@@ -14,5 +14,6 @@ class App(object):
     def start(self):
         self.window.mainloop()
 
-app = App()
-app.start()
+if __name__ == '__main__':
+    app = App()
+    app.start()
