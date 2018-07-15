@@ -8,5 +8,8 @@ class EditorFrame(tk.Frame):
         self.text_widget = TextWidget(self)
         self.text_widget.pack(fill=tk.BOTH, expand=True)
 
+    def get_text(self):
+        return self.text_widget.get_wo_eol()
+
     def set_text(self, text):
         self.text_widget.set_text(text)
