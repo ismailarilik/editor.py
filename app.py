@@ -10,6 +10,7 @@ class App(object):
         self.window.iconbitmap('icon.ico')
         # Add main frame
         self.main_frame = MainFrame(self.window)
+        self.main_frame.pack(fill=tk.BOTH, expand=True)
 
     def start(self):
         self.window.mainloop()
