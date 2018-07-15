@@ -1,5 +1,6 @@
 import tkinter as tk
 from widgets.main_frame import MainFrame
+from menus.main_menu import MainMenu
 
 class App(object):
     def __init__(self):
@@ -11,6 +12,9 @@ class App(object):
         # Add main frame
         self.main_frame = MainFrame(self.window)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
+        # Add main menu
+        self.main_menu = MainMenu(self.window)
+        self.window.config(menu=self.main_menu)
 
     def start(self):
         self.window.mainloop()
