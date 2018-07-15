@@ -1,5 +1,5 @@
 import tkinter as tk
-from main_frame import MainFrame
+from widgets.main_frame import MainFrame
 
 class App(object):
     def __init__(self):
