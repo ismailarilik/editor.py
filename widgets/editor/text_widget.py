@@ -2,7 +2,7 @@ import tkinter as tk
 
 class TextWidget(tk.Text):
     def __init__(self, master):
-        super().__init__(master)
+        super().__init__(master, wrap=tk.NONE)
 
     def get_wo_eol(self):
         '''
