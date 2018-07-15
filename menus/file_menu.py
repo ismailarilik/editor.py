@@ -27,6 +27,5 @@ class FileMenu(tk.Menu):
                 filetypes=[('Python Files', '.py')]
             )
         if self.opened_file_path:
-            # TODO UTF-8
             with open(self.opened_file_path, 'w', encoding='UTF-8') as file:
                 file.write(self.main_frame.editor_frame.get_text())
