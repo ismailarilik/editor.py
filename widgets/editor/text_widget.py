@@ -1,8 +1,10 @@
 import tkinter as tk
+from .listens_modified_event_mixin import ListensModifiedEventMixin
 
-class TextWidget(tk.Text):
+class TextWidget(tk.Text, ListensModifiedEventMixin):
     def __init__(self, master):
         super().__init__(master, undo=True, wrap=tk.NONE)
+        ListensModifiedEventMixin.__init__(self)
         # Set vertical and horizontal scrollbars
         vertical_scrollbar = tk.Scrollbar(self.master)
         vertical_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -18,6 +20,13 @@ class TextWidget(tk.Text):
         '''
         return self.get(1.0, tk.END)[:-1]
 
+    @ListensModifiedEventMixin.modifies_programmatically
     def set_text(self, text):
         self.delete(1.0, tk.END)
         self.insert(tk.END, text)
+    def set_text(self, text):
+        self.delete(1.0, tk.END)
+        self.insert(tk.END, text)
+
+    def modified(self, event, programmatically):
+        pass
