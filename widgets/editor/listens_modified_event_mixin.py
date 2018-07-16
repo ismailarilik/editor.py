@@ -1,6 +1,11 @@
 import abc
 
 class ListensModifiedEventMixin(abc.ABC):
+    '''
+    Listens modified event for Tkinter Text widget and call modified method when it occurred.
+    This mixin can distinguish manual and programmatic modifications.
+    But modifies_programmatically decorator should be used for methods which make programmatic modifications.
+    '''
     def __init__(self):
         # Listen modified event occurrence
         self.bind('<<Modified>>', self.modified_event_occurred)
