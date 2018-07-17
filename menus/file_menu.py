@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.filedialog as tk_filedialog
+import tokenize
 import os
 
 class FileMenu(tk.Menu):
@@ -17,7 +18,7 @@ class FileMenu(tk.Menu):
         self.opened_file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
         if self.opened_file_path:
             # Set editor text with file content
-            with open(self.opened_file_path, encoding='UTF-8') as file:
+            with tokenize.open(self.opened_file_path) as file:
                 self.main_frame.editor_frame.set_text(file.read())
             # Prefix window title with opened file name
             self.prefix_window_title(os.path.basename(self.opened_file_path))
