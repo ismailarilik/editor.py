@@ -20,8 +20,8 @@ class App(tk.Tk):
     def start(self):
         self.mainloop()
 
-    def prefix_app_title(self, prefix):
-        self.title(f'{prefix} - {self.app_title}')
+    def prefix_app_title(self, prefix, separator=' - '):
+        self.title(f'{prefix}{separator}{self.app_title}')
 
 if __name__ == '__main__':
     app = App()
