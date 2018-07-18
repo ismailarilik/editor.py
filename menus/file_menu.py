@@ -4,10 +4,10 @@ import tokenize
 import os
 
 class FileMenu(tk.Menu):
-    def __init__(self, master, main_frame, prefix_window_title):
+    def __init__(self, master, main_frame, prefix_app_title):
         super().__init__(master)
         self.main_frame = main_frame
-        self.prefix_window_title = prefix_window_title
+        self.prefix_app_title = prefix_app_title
         self.opened_file_path = None
         # Add open file command
         self.add_command(label='Open File', command=self.open_file)
@@ -21,7 +21,7 @@ class FileMenu(tk.Menu):
             with tokenize.open(self.opened_file_path) as file:
                 self.main_frame.editor_frame.set_text(file.read())
             # Prefix window title with opened file name
-            self.prefix_window_title(os.path.basename(self.opened_file_path))
+            self.prefix_app_title(os.path.basename(self.opened_file_path))
 
     def save_file(self):
         # If a file is not opened before, open save as dialog
@@ -35,4 +35,4 @@ class FileMenu(tk.Menu):
             with open(self.opened_file_path, 'w', encoding='UTF-8') as file:
                 file.write(self.main_frame.editor_frame.get_text())
             # Prefix window title with opened file name
-            self.prefix_window_title(os.path.basename(self.opened_file_path))
+            self.prefix_app_title(os.path.basename(self.opened_file_path))

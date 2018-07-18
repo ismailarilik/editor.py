@@ -14,13 +14,13 @@ class App(tk.Tk):
         self.main_frame = MainFrame(self)
         self.main_frame.pack(fill=tk.BOTH, expand=True)
         # Add main menu
-        self.main_menu = MainMenu(self, self.main_frame, prefix_window_title=self.prefix_window_title)
+        self.main_menu = MainMenu(self, self.main_frame, prefix_app_title=self.prefix_app_title)
         self.config(menu=self.main_menu)
 
     def start(self):
         self.mainloop()
 
-    def prefix_window_title(self, prefix):
+    def prefix_app_title(self, prefix):
         self.title(f'{prefix} - {self.app_title}')
 
 if __name__ == '__main__':
