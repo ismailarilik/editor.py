@@ -26,6 +26,7 @@ class App(tk.Tk):
 
     def on_quit(self):
         # If there are unsaved changes, warn user about that
+        # Otherwise, destroy the app as usual
         if self.title().startswith('*'):
             reply = tk_messagebox.askyesnocancel(
                 'Unsaved Changes',
@@ -42,3 +43,5 @@ class App(tk.Tk):
                 self.destroy()
             else:
                 pass
+        else:
+            self.destroy()
