@@ -3,10 +3,11 @@ from .listens_modified_event_mixin import ListensModifiedEventMixin
 from .colorizable_mixin import ColorizableMixin
 
 class TextWidget(tk.Text, ListensModifiedEventMixin, ColorizableMixin):
-    def __init__(self, master):
+    def __init__(self, master, modified_callback):
         super().__init__(master, undo=True, wrap=tk.NONE)
         ListensModifiedEventMixin.__init__(self)
         ColorizableMixin.__init__(self)
+        self.modified_callback = modified_callback
         # Set vertical and horizontal scrollbars
         vertical_scrollbar = tk.Scrollbar(self.master)
         vertical_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -29,3 +30,4 @@ class TextWidget(tk.Text, ListensModifiedEventMixin, ColorizableMixin):
 
     def modified(self, event, programmatically):
         self.colorize()
+        self.modified_callback(event, programmatically)
