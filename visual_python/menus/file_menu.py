@@ -14,7 +14,7 @@ class FileMenu(tk.Menu):
         self.add_command(label='Save File', command=self.save_file)
 
     def open_file(self):
-        self.opened_file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
+        self.opened_file_path = tk_filedialog.askopenfilename(parent=self.app, filetypes=[('Python Files', '.py')])
         if self.opened_file_path:
             # Set editor text with file content
             with tokenize.open(self.opened_file_path) as file:
@@ -28,6 +28,7 @@ class FileMenu(tk.Menu):
         # Else, save editor text to it
         if not self.opened_file_path:
             self.opened_file_path = tk_filedialog.asksaveasfilename(
+                parent=self.app,
                 defaultextension='.py',
                 filetypes=[('Python Files', '.py')]
             )
