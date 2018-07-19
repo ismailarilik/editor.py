@@ -3,11 +3,11 @@ from .listens_modified_event_mixin import ListensModifiedEventMixin
 from .colorizable_mixin import ColorizableMixin
 
 class TextWidget(tk.Text, ListensModifiedEventMixin, ColorizableMixin):
-    def __init__(self, master, modified_callback):
+    def __init__(self, master, app):
         super().__init__(master, undo=True, wrap=tk.NONE)
         ListensModifiedEventMixin.__init__(self)
         ColorizableMixin.__init__(self)
-        self.modified_callback = modified_callback
+        self.app = app
         # Set vertical and horizontal scrollbars
         vertical_scrollbar = tk.Scrollbar(self.master)
         vertical_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -23,11 +23,13 @@ class TextWidget(tk.Text, ListensModifiedEventMixin, ColorizableMixin):
         '''
         return self.get(1.0, tk.END)[:-1]
 
-    @ListensModifiedEventMixin.modifies_programmatically
     def set_text(self, text):
         self.delete(1.0, tk.END)
         self.insert(tk.END, text)
 
-    def modified(self, event, programmatically):
+    def modified(self, event):
         self.colorize()
-        self.modified_callback(event, programmatically)
+        # Prefix current title with asterisk if it is not exist
+        title = self.app.title()
+        title = title if title.startswith('*') else f'*{title}'
+        self.app.title(title)

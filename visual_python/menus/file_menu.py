@@ -4,10 +4,9 @@ import tokenize
 import os
 
 class FileMenu(tk.Menu):
-    def __init__(self, master, main_frame, prefix_app_title):
+    def __init__(self, master, app):
         super().__init__(master)
-        self.main_frame = main_frame
-        self.prefix_app_title = prefix_app_title
+        self.app = app
         self.opened_file_path = None
         # Add open file command
         self.add_command(label='Open File', command=self.open_file)
@@ -19,9 +18,10 @@ class FileMenu(tk.Menu):
         if self.opened_file_path:
             # Set editor text with file content
             with tokenize.open(self.opened_file_path) as file:
-                self.main_frame.editor_frame.set_text(file.read())
+                self.app.main_frame.editor_frame.text_widget.set_text(file.read())
             # Prefix window title with opened file name
-            self.prefix_app_title(os.path.basename(self.opened_file_path))
+            opened_file_name = os.path.basename(self.opened_file_path)
+            self.app.title(f'{opened_file_name} - {self.app.app_title}')
 
     def save_file(self):
         # If a file is not opened before, open save as dialog
@@ -33,6 +33,7 @@ class FileMenu(tk.Menu):
             )
         if self.opened_file_path:
             with open(self.opened_file_path, 'w', encoding='UTF-8') as file:
-                file.write(self.main_frame.editor_frame.get_text())
+                file.write(self.app.main_frame.editor_frame.text_widget.get_wo_eol())
             # Prefix window title with opened file name
-            self.prefix_app_title(os.path.basename(self.opened_file_path))
+            opened_file_name = os.path.basename(self.opened_file_path)
+            self.app.title(f'{opened_file_name} - {self.app.app_title}')
