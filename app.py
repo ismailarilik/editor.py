@@ -8,6 +8,8 @@ class App(tk.Tk):
         # Set app title
         self.app_title = 'Visual Python'
         self.title(self.app_title)
+        # Prefix app title with unsaved file specifier
+        self.prefix_app_title('(Unsaved File)')
         # Set app icon
         self.iconbitmap('icon.ico')
         # Add main frame
