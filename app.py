@@ -42,7 +42,3 @@ class App(tk.Tk):
         '''
         title = self.title().replace(prefix, '', 1)
         self.title(title)
-
-if __name__ == '__main__':
-    app = App()
-    app.start()
