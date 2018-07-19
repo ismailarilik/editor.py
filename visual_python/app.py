@@ -1,6 +1,6 @@
 import tkinter as tk
-from widgets.main_frame import MainFrame
-from menus.main_menu import MainMenu
+from .widgets.main_frame import MainFrame
+from .menus.main_menu import MainMenu
 
 class App(tk.Tk):
     def __init__(self):
