@@ -8,6 +8,9 @@ class TextWidget(tk.Text, ListensModifiedEventMixin, ColorizableMixin):
         ListensModifiedEventMixin.__init__(self)
         ColorizableMixin.__init__(self)
         self.app = app
+        # Handle open file event here, too for this widget and prevent propagation of event
+        # Because default behavior of this widget is not wanted here
+        self.bind('<Control-KeyPress-o>', self._handle_open_file_event_and_prevent_propagation)
         # Set vertical and horizontal scrollbars
         vertical_scrollbar = tk.Scrollbar(self.master)
         vertical_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -16,6 +19,10 @@ class TextWidget(tk.Text, ListensModifiedEventMixin, ColorizableMixin):
         horizontal_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
         horizontal_scrollbar.config(command=self.xview)
         self.config(yscrollcommand=vertical_scrollbar.set, xscrollcommand=horizontal_scrollbar.set)
+
+    def _handle_open_file_event_and_prevent_propagation(self, event):
+        self.app.handle_open_file_event(event)
+        return 'break'
 
     def get_wo_eol(self):
         '''

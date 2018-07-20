@@ -9,11 +9,11 @@ class FileMenu(tk.Menu):
         self.app = app
         self.opened_file_path = None
         # Add open file command
-        self.add_command(label='Open File', command=self.open_file)
+        self.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file)
         # Add save file command
-        self.add_command(label='Save File', command=self.save_file)
+        self.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file)
         # Add save file as command
-        self.add_command(label='Save File as...', command=self.save_file_as)
+        self.add_command(label='Save File as...', accelerator='Ctrl+Shift+S', command=self.save_file_as)
 
     def open_file(self):
         self.opened_file_path = tk_filedialog.askopenfilename(parent=self.app, filetypes=[('Python Files', '.py')])

@@ -20,8 +20,33 @@ class App(tk.Tk):
         # Add main menu
         self.main_menu = MainMenu(self, self)
         self.config(menu=self.main_menu)
+        # Bind events
+        self.bind_events()
         # Set size and center window
         self.set_window_size_and_center_window()
+
+    def handle_open_file_event(self, event):
+        self.main_menu.file_menu.open_file()
+
+    def handle_save_file_event(self, event):
+        self.main_menu.file_menu.save_file()
+
+    def handle_save_file_as_event(self, event):
+        self.main_menu.file_menu.save_file_as()
+
+    def bind_events(self):
+        '''
+        Bind events to their handlers
+        '''
+        # Bind Ctrl-O key press to open file handler
+        self.bind('<Control-KeyPress-o>', self.handle_open_file_event)
+        self.bind('<Control-KeyPress-O>', self.handle_open_file_event)
+        # Bind Ctrl-S key press to save file handler
+        self.bind('<Control-KeyPress-s>', self.handle_save_file_event)
+        self.bind('<Control-KeyPress-S>', self.handle_save_file_event)
+        # Bind Ctrl-Shift-S key press to save file as handler
+        self.bind('<Control-Shift-KeyPress-s>', self.handle_save_file_as_event)
+        self.bind('<Control-Shift-KeyPress-S>', self.handle_save_file_as_event)
 
     def set_window_size_and_center_window(self):
         '''
