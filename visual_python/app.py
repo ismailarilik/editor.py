@@ -20,6 +20,21 @@ class App(tk.Tk):
         # Add main menu
         self.main_menu = MainMenu(self, self)
         self.config(menu=self.main_menu)
+        # Set size and center window
+        self.set_window_size_and_center_window()
+
+    def set_window_size_and_center_window(self):
+        '''
+        Set window size as half of screen size
+        Also center window
+        '''
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+        window_width = screen_width // 2
+        window_height = screen_height // 2
+        window_x = (screen_width // 2) - (window_width // 2)
+        window_y = (screen_height // 2) - (window_height // 2)
+        self.geometry(f'{window_width}x{window_height}+{window_x}+{window_y}')
 
     def start(self):
         self.mainloop()
