@@ -22,28 +22,22 @@ $ python3 -m unittest
 $ python3 -m unittest
 ```
 
-## Running
+## Running app
 
 ### On Windows
 
 ```shell
-> py -3 -m __init__
-# or
-> py -3 __init__.py
+> py -3 -m visual_python
 ```
 
 ### On GNU/Linux
 
 ```shell
-$ python3 -m __init__
-# or
-$ python3 __init__.py
+$ python3 -m visual_python
 ```
 
 ### On Mac OS X
 
 ```shell
-$ python3 -m __init__
-# or
-$ python3 __init__.py
+$ python3 -m visual_python
 ```
