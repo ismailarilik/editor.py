@@ -1,12 +1,14 @@
 import tkinter as tk
 from .listens_modified_event_mixin import ListensModifiedEventMixin
 from .colorizable_mixin import ColorizableMixin
+from .configures_tab_character_mixin import ConfiguresTabCharacterMixin
 
-class TextWidget(tk.Text, ListensModifiedEventMixin, ColorizableMixin):
+class TextWidget(tk.Text, ListensModifiedEventMixin, ColorizableMixin, ConfiguresTabCharacterMixin):
     def __init__(self, master, app):
         super().__init__(master, undo=True, wrap=tk.NONE)
         ListensModifiedEventMixin.__init__(self)
         ColorizableMixin.__init__(self)
+        ConfiguresTabCharacterMixin.__init__(self)
         self.app = app
         # Handle open file event here, too for this widget and prevent propagation of event
         # Because default behavior of this widget is not wanted here
@@ -19,6 +21,9 @@ class TextWidget(tk.Text, ListensModifiedEventMixin, ColorizableMixin):
         horizontal_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
         horizontal_scrollbar.config(command=self.xview)
         self.config(yscrollcommand=vertical_scrollbar.set, xscrollcommand=horizontal_scrollbar.set)
+        # Configure tab character
+        self.tab_type = self.TabType.SPACE
+        self.tab_size = 4
 
     def _handle_open_file_event_and_prevent_propagation(self, event):
         self.app.handle_open_file_event(event)
