@@ -286,7 +286,7 @@ class Window(tk.Tk):
         # Bind keyboard shortcuts
         # For open file
         self.bind('<Control-KeyPress-o>', self.handle_open_file_event)
-        self.bind('<Control-KeyPress-o>', self.handle_open_file_event)
+        self.bind('<Control-KeyPress-O>', self.handle_open_file_event)
         # For save file
         self.bind('<Control-KeyPress-s>', self.handle_save_file_event)
         self.bind('<Control-KeyPress-S>', self.handle_save_file_event)
