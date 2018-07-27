@@ -119,6 +119,8 @@ class Editor(tk.Text):
         self.config(yscrollcommand=vertical_scrollbar.set, xscrollcommand=horizontal_scrollbar.set)
         # Listen for Tab key press
         self.bind('<Tab>', self.on_press_tab)
+        # Listen for Return key press
+        self.bind('<Return>', self.on_press_return)
         # Set a flag to ensure modified callback being called only by a change
         self.modified_event_occurred_by_change = True
         # Listen for modified event
@@ -160,6 +162,30 @@ class Editor(tk.Text):
             tab = ' ' * self.tab_size
         self.insert(tk.INSERT, tab)
         # Prevent additional tab character insertion by default handler
+        return 'break'
+    def on_press_return(self, event):
+        '''
+        First, insert an end-of-line character
+        Then set indentation according to indentation of previous line
+        If a `:` character exists at the end of previous line, it means this line is the first line of a block
+        In this case, add one additional indentation
+        Finally, prevent additional end-of-line character insertion by default handler
+        '''
+        self.insert(tk.INSERT, '\n')
+        # Get previous line text
+        row, col = self.index(tk.INSERT).split('.')
+        previous_line_text = self.get(f'{int(row) - 1}.0', f'{row}.0')
+        # Get indentation of previous line and insert it exactly to this line
+        end_of_line_count = len(previous_line_text) - len(previous_line_text.lstrip(' \t'))
+        previous_line_indentation_chars = previous_line_text[:end_of_line_count]
+        self.insert(tk.INSERT, previous_line_indentation_chars)
+        # If previous line ends with block starting `:` character, add one additional indentation
+        try:
+            if previous_line_text.rstrip()[-1] == ':':
+                self.insert(tk.INSERT, '\t' if self.tab_type == self.TabType.TAB else ' ' * self.tab_size)
+        except IndexError:
+            pass
+        # Prevent additional end-of-line character insertion by default handler
         return 'break'
 
     def modified(self, event):
