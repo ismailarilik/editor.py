@@ -173,23 +173,19 @@ class Editor(tk.Text):
         row, col = self.index(tk.INSERT).split('.')
         left_text = self.get(f'{row}.0', tk.INSERT)
         # Check if left_text contains only space or tab characters
-        # If this is not the case, delete just one character as usual
+        # If this is not the case, allow default behavior
         left_text_space_and_tab_count = len(left_text) - len(left_text.strip(' \t'))
         if len(left_text) == left_text_space_and_tab_count:
             # Get left_text spaces on the right 
             right_space_count = len(left_text) - len(left_text.rstrip(' '))
-            # If the right space count is zero, delete one character as usual
-            # Otherwise, delete rightmost spaces to the indentation stop
-            if right_space_count == 0:
-                self.delete(f'{tk.INSERT}-1c', tk.INSERT)
-            else:
+            # If the right space count is not zero, delete rightmost spaces to the indentation stop
+            # Otherwise, allow default behavior
+            if right_space_count != 0:
                 excess_spaces = right_space_count % self.tab_size
                 space_count_to_delete = self.tab_size if excess_spaces == 0 else excess_spaces
                 self.delete(f'{tk.INSERT}-{space_count_to_delete}c', tk.INSERT)
-        else:
-            self.delete(f'{tk.INSERT}-1c', tk.INSERT)
-        # Prevent additional character removal by default handler
-        return 'break'
+                # Prevent additional character removal by default handler
+                return 'break'
 
     def on_press_return(self, event):
         '''
