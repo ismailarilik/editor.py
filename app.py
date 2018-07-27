@@ -155,16 +155,14 @@ class Editor(tk.Text):
 
     def on_press_tab(self, event):
         '''
-        Insert tab or space with respect to `tab_type`
-        Tab stops and spaces which will be added, are determined by `tab_size`
+        Insert spaces if `tab_type` equals to `TabType.SPACE`
+        Allow default behavior which is inserting a tab character, otherwise
+        The count of spaces which will be added, are determined by `tab_size`
         '''
-        if self.tab_type is self.TabType.TAB:
-            tab = '\t'
-        else:
-            tab = ' ' * self.tab_size
-        self.insert(tk.INSERT, tab)
-        # Prevent additional tab character insertion by default handler
-        return 'break'
+        if self.tab_type is self.TabType.SPACE:
+            self.insert(tk.INSERT, ' ' * self.tab_size)
+            # Prevent additional tab character insertion by default handler
+            return 'break'
     
     def on_press_backspace(self, event):
         '''
