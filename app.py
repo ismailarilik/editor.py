@@ -179,7 +179,7 @@ class Editor(tk.Text):
         # If this is not the case, allow default behavior
         left_text_space_and_tab_count = len(left_text) - len(left_text.strip(' \t'))
         if len(left_text) == left_text_space_and_tab_count:
-            # Get left_text spaces on the right 
+            # Get left_text spaces on the right
             right_space_count = len(left_text) - len(left_text.rstrip(' '))
             # If the right space count is not zero, delete rightmost spaces to the indentation stop
             # Otherwise, allow default behavior
