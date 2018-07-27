@@ -159,6 +159,9 @@ class Editor(tk.Text):
         Allow default behavior which is inserting a tab character, otherwise
         The count of spaces which will be added, are determined by `tab_size`
         '''
+        return self._insert_indentation()
+    
+    def _insert_indentation(self):
         if self.tab_type is self.TabType.SPACE:
             self.insert(tk.INSERT, ' ' * self.tab_size)
             # Prevent additional tab character insertion by default handler
@@ -206,7 +209,7 @@ class Editor(tk.Text):
         # If previous line ends with block starting `:` character, add one additional indentation
         try:
             if previous_line_text.rstrip()[-1] == ':':
-                self.insert(tk.INSERT, '\t' if self.tab_type == self.TabType.TAB else ' ' * self.tab_size)
+                self._insert_indentation()
         except IndexError:
             pass
         # Prevent additional end-of-line character insertion by default handler
