@@ -170,7 +170,7 @@ class Editor(tk.Text):
     def on_press_backspace(self, event):
         '''
         If previous character is an indentation, delete it
-        Otherwise, delete just one character as usual
+        Otherwise, allow default behavior
         '''
         # Get text on the left
         row, col = self.index(tk.INSERT).split('.')
