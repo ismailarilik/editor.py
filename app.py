@@ -308,8 +308,9 @@ class Window(tk.Tk):
         self.save_file_as()
 
     def open_file(self):
-        self.opened_file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
-        if self.opened_file_path:
+        opened_file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
+        if opened_file_path:
+            self.opened_file_path = opened_file_path
             # Set editor text with file content
             with tokenize.open(self.opened_file_path) as file:
                 self.editor.set(file.read())
@@ -330,8 +331,9 @@ class Window(tk.Tk):
             self.title(f'{opened_file_name} - Visual Python')
 
     def save_file_as(self):
-        self.opened_file_path = tk_filedialog.asksaveasfilename(defaultextension='.py', filetypes=[('Python Files', '.py')])
-        if self.opened_file_path:
+        opened_file_path = tk_filedialog.asksaveasfilename(defaultextension='.py', filetypes=[('Python Files', '.py')])
+        if opened_file_path:
+            self.opened_file_path = opened_file_path
             with open(self.opened_file_path, 'w', encoding='UTF-8') as file:
                 file.write(self.editor.get_wo_eol())
             # Prefix window title with opened file name
