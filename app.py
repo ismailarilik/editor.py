@@ -193,7 +193,7 @@ class Editor(tk.Text):
         The count of spaces which will be added, are determined by `tab_size`
         '''
         return self._insert_indentation()
-    
+
     def on_press_backspace(self, event):
         '''
         If previous character is an indentation, delete it
