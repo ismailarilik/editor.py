@@ -173,8 +173,16 @@ class Editor(tk.Text):
         return f'{row}.{next_tab_stop_col}'
 
     def _insert_indentation(self):
+        '''
+        Insert spaces up to next tab stop for the case of which tab_type is SPACE
+        '''
         if self.tab_type is self.TabType.SPACE:
-            self.insert(tk.INSERT, ' ' * self.tab_size)
+            index = self.index(tk.INSERT)
+            row, col = index.split('.')
+            next_tab_stop = self._get_next_tab_stop(self.index(tk.INSERT))
+            next_tab_stop_row, next_tab_stop_col = next_tab_stop.split('.')
+            space_count_to_insert = int(next_tab_stop_col) - int(col)
+            self.insert(tk.INSERT, ' ' * space_count_to_insert)
             # Prevent additional tab character insertion by default handler
             return 'break'
 
