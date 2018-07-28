@@ -153,6 +153,17 @@ class Editor(tk.Text):
         self.delete('1.0', tk.END)
         self.insert(tk.END, text)
 
+    def _get_previous_tab_stop(self, index):
+        '''
+        Get previous tab stop for the case of which tab_type is SPACE
+        '''
+        row, col = index.split('.')
+        if col == '0':
+            return index
+        excess_spaces = int(col) % self.tab_size
+        previous_tab_stop_col = int(col) - (excess_spaces if excess_spaces != 0 else self.tab_size)
+        return f'{row}.{previous_tab_stop_col}'
+
     def _insert_indentation(self):
         if self.tab_type is self.TabType.SPACE:
             self.insert(tk.INSERT, ' ' * self.tab_size)
