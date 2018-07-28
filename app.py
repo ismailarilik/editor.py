@@ -211,9 +211,8 @@ class Editor(tk.Text):
             # If the right space count is not zero, delete rightmost spaces to the indentation stop
             # Otherwise, allow default behavior
             if right_space_count != 0:
-                excess_spaces = right_space_count % self.tab_size
-                space_count_to_delete = self.tab_size if excess_spaces == 0 else excess_spaces
-                self.delete(f'{tk.INSERT}-{space_count_to_delete}c', tk.INSERT)
+                previous_tab_stop = self._get_previous_tab_stop(self.index(tk.INSERT))
+                self.delete(previous_tab_stop, tk.INSERT)
                 # Prevent additional character removal by default handler
                 return 'break'
 
