@@ -153,6 +153,12 @@ class Editor(tk.Text):
         self.delete('1.0', tk.END)
         self.insert(tk.END, text)
 
+    def _insert_indentation(self):
+        if self.tab_type is self.TabType.SPACE:
+            self.insert(tk.INSERT, ' ' * self.tab_size)
+            # Prevent additional tab character insertion by default handler
+            return 'break'
+
     def on_press_tab(self, event):
         '''
         Insert spaces if `tab_type` equals to `TabType.SPACE`
@@ -160,12 +166,6 @@ class Editor(tk.Text):
         The count of spaces which will be added, are determined by `tab_size`
         '''
         return self._insert_indentation()
-    
-    def _insert_indentation(self):
-        if self.tab_type is self.TabType.SPACE:
-            self.insert(tk.INSERT, ' ' * self.tab_size)
-            # Prevent additional tab character insertion by default handler
-            return 'break'
     
     def on_press_backspace(self, event):
         '''
