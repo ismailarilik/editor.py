@@ -45,16 +45,10 @@ class Tokenizer(object):
             yield token
 
 class Editor(tk.Text):
-    # Initialize constants
-    class TabType(enum.Enum):
-        TAB = enum.auto()
-        SPACE = enum.auto()
-
     def __init__(self, window):
         super().__init__(undo=True, wrap=tk.NONE)
         self.window = window
-        # Initialize tab type and tab size properties
-        self.tab_type = self.TabType.SPACE
+        # Initialize tab size property
         self.tab_size = 4
         self.tokenizer = Tokenizer()
         self.token_type_color_map = {
@@ -117,12 +111,6 @@ class Editor(tk.Text):
         horizontal_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
         horizontal_scrollbar.config(command=self.xview)
         self.config(yscrollcommand=vertical_scrollbar.set, xscrollcommand=horizontal_scrollbar.set)
-        # Listen for Tab key press
-        self.bind('<Tab>', self.on_press_tab)
-        # Listen for Backspace key press
-        self.bind('<BackSpace>', self.on_press_backspace)
-        # Listen for Return key press
-        self.bind('<Return>', self.on_press_return)
         # Set a flag to ensure modified callback being called only by a change
         self.modified_event_occurred_by_change = True
         # Listen for modified event
@@ -152,94 +140,6 @@ class Editor(tk.Text):
     def set(self, text):
         self.delete('1.0', tk.END)
         self.insert(tk.END, text)
-
-    def _get_previous_tab_stop(self, index):
-        '''
-        Get previous tab stop for the case of which tab_type is SPACE
-        '''
-        row, col = index.split('.')
-        if col == '0':
-            return index
-        excess_spaces = int(col) % self.tab_size
-        previous_tab_stop_col = int(col) - (excess_spaces if excess_spaces != 0 else self.tab_size)
-        return f'{row}.{previous_tab_stop_col}'
-
-    def _get_next_tab_stop(self, index):
-        '''
-        Get next tab stop for the case of which tab_type is SPACE
-        '''
-        row, col = index.split('.')
-        next_tab_stop_col = int(col) + (self.tab_size - int(col) % self.tab_size)
-        return f'{row}.{next_tab_stop_col}'
-
-    def _insert_indentation(self):
-        '''
-        Insert spaces up to next tab stop for the case of which tab_type is SPACE
-        '''
-        if self.tab_type is self.TabType.SPACE:
-            index = self.index(tk.INSERT)
-            row, col = index.split('.')
-            next_tab_stop = self._get_next_tab_stop(self.index(tk.INSERT))
-            next_tab_stop_row, next_tab_stop_col = next_tab_stop.split('.')
-            space_count_to_insert = int(next_tab_stop_col) - int(col)
-            self.insert(tk.INSERT, ' ' * space_count_to_insert)
-            # Prevent additional tab character insertion by default handler
-            return 'break'
-
-    def on_press_tab(self, event):
-        '''
-        Insert spaces if `tab_type` equals to `TabType.SPACE`
-        Allow default behavior which is inserting a tab character, otherwise
-        The count of spaces which will be added, are determined by `tab_size`
-        '''
-        return self._insert_indentation()
-
-    def on_press_backspace(self, event):
-        '''
-        If previous character is an indentation, delete it
-        Otherwise, allow default behavior
-        '''
-        # Get text on the left
-        row, col = self.index(tk.INSERT).split('.')
-        left_text = self.get(f'{row}.0', tk.INSERT)
-        # Check if left_text contains only space or tab characters
-        # If this is not the case, allow default behavior
-        left_text_space_and_tab_count = len(left_text) - len(left_text.strip(' \t'))
-        if len(left_text) == left_text_space_and_tab_count:
-            # Get left_text spaces on the right
-            right_space_count = len(left_text) - len(left_text.rstrip(' '))
-            # If the right space count is not zero, delete rightmost spaces to the indentation stop
-            # Otherwise, allow default behavior
-            if right_space_count != 0:
-                previous_tab_stop = self._get_previous_tab_stop(self.index(tk.INSERT))
-                self.delete(previous_tab_stop, tk.INSERT)
-                # Prevent additional character removal by default handler
-                return 'break'
-
-    def on_press_return(self, event):
-        '''
-        First, insert an end-of-line character
-        Then set indentation according to indentation of previous line
-        If a `:` character exists at the end of previous line, it means this line is the first line of a block
-        In this case, add one additional indentation
-        Finally, prevent additional end-of-line character insertion by default handler
-        '''
-        self.insert(tk.INSERT, '\n')
-        # Get previous line text
-        row, col = self.index(tk.INSERT).split('.')
-        previous_line_text = self.get(f'{int(row) - 1}.0', f'{row}.0')
-        # Get indentation of previous line and insert it exactly to this line
-        end_of_line_count = len(previous_line_text) - len(previous_line_text.lstrip(' \t'))
-        previous_line_indentation_chars = previous_line_text[:end_of_line_count]
-        self.insert(tk.INSERT, previous_line_indentation_chars)
-        # If previous line ends with block starting `:` character, add one additional indentation
-        try:
-            if previous_line_text.rstrip()[-1] == ':':
-                self._insert_indentation()
-        except IndexError:
-            pass
-        # Prevent additional end-of-line character insertion by default handler
-        return 'break'
 
     def modified(self, event):
         if self.modified_event_occurred_by_change:
