@@ -194,10 +194,16 @@ class Window(tk.Tk):
 		self.file_menu.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file)
 		self.file_menu.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file)
 		self.file_menu.add_command(label='Save File as...', accelerator='Ctrl+Shift+S', command=self.save_file_as)
-		# Create editor
+        # Create edit menu
+        self.edit_menu = tk.Menu(self.menu)
+        self.menu.add_cascade(label="Edit",menu=self.edit_menu)
+        self.edit_menu.add_command(label="Find",command=self.find_gui)
+        # Create editor
 		self.editor = Editor(self)
 		self.editor.pack(fill=tk.BOTH, expand=True)
-		# Set window size as half of screen size
+        # Create a frame for find and replace
+        self.find_frame=tk.Frame(self)
+        # Set window size as half of screen size
 		# Also center window
 		screen_width = self.winfo_screenwidth()
 		screen_height = self.winfo_screenheight()
@@ -216,7 +222,11 @@ class Window(tk.Tk):
 		# For save file as
 		self.bind('<Control-Shift-KeyPress-s>', self.handle_save_file_as_event)
 		self.bind('<Control-Shift-KeyPress-S>', self.handle_save_file_as_event)
-		# Register delete window protocol to handle things properly on quit
+        # For find
+        self.bind('<Control-KeyPress-f>',self.handle_find_event)
+        self.bind('<Control-KeyPress-F>',self.handle_find_event)
+        self.bind('<F3>',self.handle_find_event)
+        # Register delete window protocol to handle things properly on quit
 		self.protocol('WM_DELETE_WINDOW', self.on_quit)
 		# Start window
 		self.mainloop()
@@ -229,6 +239,9 @@ class Window(tk.Tk):
 
 	def handle_save_file_as_event(self, event):
 		self.save_file_as()
+
+    def handle_find_event(self,event):
+        self.find_gui()
 
 	def open_file(self):
 		opened_file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
@@ -262,6 +275,37 @@ class Window(tk.Tk):
 			# Prefix window title with opened file name
 			opened_file_name = os.path.basename(self.opened_file_path)
 			self.title(f'{opened_file_name} - Visual Python')
+    def find_gui(self):
+        self.find_frame.place(x=0,y=0)#(self.editor.winfo_width()-150)
+        entry=tk.Entry(self.find_frame)
+        buton=tk.Button(self.find_frame,text="Find")
+        quit_find_frame=tk.Button(self.find_frame,text="X")
+        first="1.0"
+        def buton_command():
+            nonlocal first
+            first=self.editor.index(self.find(entry.get(),first))
+        def quit_find_frame_command():
+            self.find_frame.place_forget()
+            self.editor.tag_delete("selected")
+        buton.config(command=buton_command)
+        quit_find_frame.config(command=quit_find_frame_command)
+        entry.grid(row=0,column=1)
+        buton.grid(row=0,column=2)
+        quit_find_frame.grid(row=0,column=3)
+        # self.find_frame.mainloop()
+
+    def find(self,expression,first):
+        countVar=tk.StringVar()
+        pos=self.editor.search(expression,first,stopindex=tk.END,count=countVar)
+        if(pos):
+            countVar.get()
+            self.editor.tag_delete("selected")
+            self.editor.tag_add("selected",pos,f"{pos}+{countVar.get()}c")
+            self.editor.tag_configure("selected",background="black",foreground="white")
+            # self.editor.tag_config(tk.SEL,background="black",foreground="white")
+            return f"{pos}+{countVar.get()}c"
+        else:
+            return "1.0"
 
 	def on_quit(self):
 		# If there are unsaved changes, warn user about that
