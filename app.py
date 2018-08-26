@@ -48,6 +48,7 @@ class Editor(tk.Text):
 	def __init__(self, window):
 		super().__init__(undo=True, wrap=tk.NONE)
 		self.window = window
+		self.is_modified = False
 		# Initialize tab size property
 		self.tab_size = 4
 		self.tokenizer = Tokenizer()
@@ -143,6 +144,7 @@ class Editor(tk.Text):
 
 	def modified(self, event):
 		if self.modified_event_occurred_by_change:
+			self.is_modified = True
 			self.colorize()
 			# Prefix current title with asterisk if it is not exist
 			title = self.window.title()
@@ -269,7 +271,7 @@ class Window(tk.Tk):
 		return False
 
 	def on_close_file(self):
-		if self.title().startswith('*'):
+		if self.editor.is_modified:
 			reply = tk_messagebox.askyesnocancel('Unsaved Changes', 'There are unsaved changes, would you like to save them?')
 			if reply:
 				return True if self.save_file() else False
