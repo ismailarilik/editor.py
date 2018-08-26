@@ -274,7 +274,7 @@ class Window(tk.Tk):
 		if self.editor.is_modified:
 			reply = tk_messagebox.askyesnocancel('Unsaved Changes', 'There are unsaved changes, would you like to save them?')
 			if reply:
-				return True if self.save_file() else False
+				return self.save_file()
 			elif reply == False:
 				return True
 			return False
