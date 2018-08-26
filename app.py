@@ -270,7 +270,7 @@ class Window(tk.Tk):
 
 	def on_close_file(self):
 		if self.title().startswith('*'):
-			reply= tk_messagebox.askyesnocancel('Unsaved Changes', 'There are unsaved changes, would you like to save them?')
+			reply = tk_messagebox.askyesnocancel('Unsaved Changes', 'There are unsaved changes, would you like to save them?')
 			if reply:
 				return True if self.save_file() else False
 			elif reply == False:
