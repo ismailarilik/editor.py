@@ -276,15 +276,21 @@ class Window(tk.Tk):
 			opened_file_name = os.path.basename(self.opened_file_path)
 			self.title(f'{opened_file_name} - Visual Python')
     def find_gui(self):
-        self.find_frame.place(x=0,y=0)#(self.editor.winfo_width()-150)
         entry=tk.Entry(self.find_frame)
         buton=tk.Button(self.find_frame,text="Find")
         quit_find_frame=tk.Button(self.find_frame,text="X")
         first="1.0"
+        def configure(event):
+            self.update_idletasks()
+            self.find_frame.place_forget()
+            self.find_frame.place(x=(self.editor.winfo_width()-self.find_frame.winfo_width()),y=0)
+        def nothing(event):
+            pass
         def buton_command():
             nonlocal first
             first=self.editor.index(self.find(entry.get(),first))
         def quit_find_frame_command():
+            self.bind("<Configure>",nothing)
             self.find_frame.place_forget()
             self.editor.tag_delete("selected")
         buton.config(command=buton_command)
@@ -292,7 +298,12 @@ class Window(tk.Tk):
         entry.grid(row=0,column=1)
         buton.grid(row=0,column=2)
         quit_find_frame.grid(row=0,column=3)
-        # self.find_frame.mainloop()
+        self.update()
+        self.find_frame.place(x=(self.editor.winfo_width()-self.find_frame.winfo_width()),y=0)
+        self.update_idletasks()
+        quit_find_frame_command()
+        self.find_frame.place(x=(self.editor.winfo_width()-self.find_frame.winfo_width()),y=0)
+        self.bind("<Configure>",configure)
 
     def find(self,expression,first):
         countVar=tk.StringVar()
@@ -302,7 +313,7 @@ class Window(tk.Tk):
             self.editor.tag_delete("selected")
             self.editor.tag_add("selected",pos,f"{pos}+{countVar.get()}c")
             self.editor.tag_configure("selected",background="black",foreground="white")
-            # self.editor.tag_config(tk.SEL,background="black",foreground="white")
+            self.editor.see(pos)
             return f"{pos}+{countVar.get()}c"
         else:
             return "1.0"
