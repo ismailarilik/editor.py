@@ -1,6 +1,6 @@
 # visual-python
 
-> An editor for Python development, which is used to develop itself!
+> An editor for Python development.
 It is being written with Python and Tkinter.
 
 ## Running app
