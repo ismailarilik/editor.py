@@ -48,6 +48,7 @@ class Editor(tk.Text):
 	def __init__(self, window):
 		super().__init__(undo=True, wrap=tk.NONE)
 		self.window = window
+		self.is_modified = False
 		# Initialize tab size property
 		self.tab_size = 4
 		self.tokenizer = Tokenizer()
@@ -143,6 +144,7 @@ class Editor(tk.Text):
 
 	def modified(self, event):
 		if self.modified_event_occurred_by_change:
+			self.is_modified = True
 			self.colorize()
 			# Prefix current title with asterisk if it is not exist
 			title = self.window.title()
@@ -244,27 +246,30 @@ class Window(tk.Tk):
         self.find_gui()
 
 	def open_file(self):
-		opened_file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
-		if opened_file_path:
-			self.opened_file_path = opened_file_path
-			# Set editor text with file content
-			with tokenize.open(self.opened_file_path) as file:
-				self.editor.set(file.read())
-			# Prefix window title with opened file name
-			opened_file_name = os.path.basename(self.opened_file_path)
-			self.title(f'{opened_file_name} - Visual Python')
+		if self.on_close_file():
+			opened_file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
+			if opened_file_path:
+				self.opened_file_path = opened_file_path
+				# Set editor text with file content
+				with tokenize.open(self.opened_file_path) as file:
+					self.editor.set(file.read())
+				# Prefix window title with opened file name
+				opened_file_name = os.path.basename(self.opened_file_path)
+				self.title(f'{opened_file_name} - Visual Python')
+				return True
+		return False
 
 	def save_file(self):
 		# If a file was not opened before, call save_file_as method
 		# Else, write editor text to the file
 		if not self.opened_file_path:
-			self.save_file_as()
-		else:
-			with open(self.opened_file_path, 'w', encoding='UTF-8') as file:
-				file.write(self.editor.get_wo_eol())
-			# Prefix window title with opened file name
-			opened_file_name = os.path.basename(self.opened_file_path)
-			self.title(f'{opened_file_name} - Visual Python')
+			return self.save_file_as()
+		with open(self.opened_file_path, 'w', encoding='UTF-8') as file:
+			file.write(self.editor.get_wo_eol())
+		# Prefix window title with opened file name
+		opened_file_name = os.path.basename(self.opened_file_path)
+		self.title(f'{opened_file_name} - Visual Python')
+		return True
 
 	def save_file_as(self):
 		opened_file_path = tk_filedialog.asksaveasfilename(defaultextension='.py', filetypes=[('Python Files', '.py')])
@@ -275,7 +280,10 @@ class Window(tk.Tk):
 			# Prefix window title with opened file name
 			opened_file_name = os.path.basename(self.opened_file_path)
 			self.title(f'{opened_file_name} - Visual Python')
-    def find_gui(self):
+			return True
+		return False
+
+  def find_gui(self):
         entry=tk.Entry(self.find_frame)
         buton=tk.Button(self.find_frame,text="Find")
         quit_find_frame=tk.Button(self.find_frame,text="X")
@@ -318,22 +326,18 @@ class Window(tk.Tk):
         else:
             return "1.0"
 
-	def on_quit(self):
-		# If there are unsaved changes, warn user about that
-		# Otherwise, destroy the app as usual
-		if self.title().startswith('*'):
-			reply= tk_messagebox.askyesnocancel('Unsaved Changes', 'There are unsaved changes, would you like to save them?')
-			# If user choose to save, save the file and destroy the app
-			# If user choose not to save, just destroy the app
-			# If user cancel quitting, do nothing
+	def on_close_file(self):
+		if self.editor.is_modified:
+			reply = tk_messagebox.askyesnocancel('Unsaved Changes', 'There are unsaved changes, would you like to save them?')
 			if reply:
-				self.save_file()
-				self.destroy()
+				return self.save_file()
 			elif reply == False:
-				self.destroy()
-			else:
-				pass
-		else:
+				return True
+			return False
+		return True
+
+	def on_quit(self):
+		if self.on_close_file():
 			self.destroy()
 
 if __name__ == '__main__':
