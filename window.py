@@ -38,10 +38,30 @@ class File(object):
 	def name(self):
 		return os.path.basename(self.path)
 
+class Title(object):
+	def __init__(self, unsaved_changes_specifier, file_name, app_name, is_there_unsaved_change):
+		self.unsaved_changes_specifier = unsaved_changes_specifier
+		self.file_name = file_name
+		self.app_name = app_name
+		self.is_there_unsaved_change = is_there_unsaved_change
+
+	def __str__(self):
+		title_string = ''
+		if self.is_there_unsaved_change:
+			title_string += f'{self.unsaved_changes_specifier}'
+		title_string += f'{self.file_name} - {self.app_name}'
+		return title_string
+
 class Window(tk.Tk):
 	def __init__(self):
 		super().__init__()
 		self.file = None
+		# Set title
+		unsaved_changes_specifier = '*'
+		unsaved_file_name = '<unsaved_file>'
+		app_name = 'Visual Python'
+		title = Title(unsaved_changes_specifier, unsaved_file_name, app_name, False)
+		self.set_title(title)
 		# Create editor
 		self.editor = Editor(self)
 		self.editor.pack()
@@ -56,6 +76,13 @@ class Window(tk.Tk):
 		self.bind('<Control-Shift-KeyPress-S>', self.save_file_as)
 		# Start window
 		self.mainloop()
+
+	def get_title(self):
+		return self._title
+
+	def set_title(self, new_title):
+		self._title = new_title
+		self.title(self._title)
 
 	def open_file(self, event=None):
 		file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
