@@ -20,6 +20,12 @@ class Editor(tk.Text):
 		tab_width = font.measure(' ' * self._tab_size)
 		self.config(tabs=(tab_width,))
 
+	def get_wo_eol(self):
+		'''
+		Get without (automatically added) final end-of-line character
+		'''
+		return self.get('1.0', tk.END)[:-1]
+
 	def set(self, text):
 		self.delete('1.0', tk.END)
 		self.insert(tk.END, text)
@@ -58,6 +64,6 @@ class Window(tk.Tk):
 
 	def save_file(self, event=None):
 		with open('C:\\Users\\ismail.arilik\\Development\\visual-python\\window.py', 'w', encoding='UTF-8') as file:
-			file.write(self.editor.get('1.0', tk.END))
+			file.write(self.editor.get_wo_eol())
 
 Window()
