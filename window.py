@@ -53,20 +53,65 @@ class Title(object):
 		return title_string
 
 class FileMenu(tk.Menu):
-	def __init__(self, master):
+	def __init__(self, master, window):
 		super().__init__(master)
+		self.window = window
+		self.file = None
+		self.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file)
+		self.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file)
+		self.add_command(label='Save File as...', accelerator='Ctrl+Shift+S', command=self.save_file_as)
+
+	def open_file(self, event=None):
+		file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
+		if file_path:
+			self.file = File(file_path)
+			# Set editor text with file text
+			with tokenize.open(self.file.path) as file:
+				self.window.editor.set(file.read())
+			# Reset title because file name has been changed
+			# Also unsaved changes status has been changed to False
+			title = self.window.get_title()
+			title.file_name = self.file.name
+			title.is_there_unsaved_change = False
+			self.window.set_title(title)
+
+	def save_file(self, event=None):
+		# If there is no an opened file, call save_file_as method
+		# Else, write editor text to the file
+		if not self.file:
+			self.save_file_as()
+		else:
+			with open(self.file.path, 'w', encoding='UTF-8') as file:
+				file.write(self.window.editor.get_wo_eol())
+			# Reset title because unsaved changes status has been changed to False
+			title = self.window.get_title()
+			title.is_there_unsaved_change = False
+			self.window.set_title(title)
+
+	def save_file_as(self, event=None):
+		file_path = tk_filedialog.asksaveasfilename(defaultextension='.py', filetypes=[('Python Files', '.py')])
+		if file_path:
+			self.file = File(file_path)
+			with open(self.file.path, 'w', encoding='UTF-8') as file:
+				file.write(self.window.editor.get_wo_eol())
+			# Reset title because file name has been changed
+			# Also unsaved changes status has been changed to False
+			title = self.window.get_title()
+			title.file_name = self.file.name
+			title.is_there_unsaved_change = False
+			self.window.set_title(title)
 
 class Menu(tk.Menu):
-	def __init__(self, master):
+	def __init__(self, master, window):
 		super().__init__(master)
+		self.window = window
 		# Add file menu
-		self.file_menu = FileMenu(self)
+		self.file_menu = FileMenu(self, self.window)
 		self.add_cascade(label='File', menu=self.file_menu)
 
 class Window(tk.Tk):
 	def __init__(self):
 		super().__init__()
-		self.file = None
 		# Set title
 		unsaved_changes_specifier = '*'
 		unsaved_file_name = '<unsaved_file>'
@@ -75,23 +120,23 @@ class Window(tk.Tk):
 		self.set_title(title)
 		# Set icon
 		self.iconbitmap('icon.ico')
-		# Add menu
-		self.menu = Menu(self)
-		self.config(menu=self.menu)
 		# Create editor
 		self.editor = Editor(self)
 		self.editor.pack(fill=tk.BOTH, expand=True)
+		# Add menu
+		self.menu = Menu(self, self)
+		self.config(menu=self.menu)
 		# Resize and center the window
 		self.resize_and_center()
 		# Add keyboard bindings for opening file
-		self.bind('<Control-KeyPress-o>', self.open_file)
-		self.bind('<Control-KeyPress-O>', self.open_file)
+		self.bind('<Control-KeyPress-o>', self.menu.file_menu.open_file)
+		self.bind('<Control-KeyPress-O>', self.menu.file_menu.open_file)
 		# Add keyboard bindings for saving file
-		self.bind('<Control-KeyPress-s>', self.save_file)
-		self.bind('<Control-KeyPress-S>', self.save_file)
+		self.bind('<Control-KeyPress-s>', self.menu.file_menu.save_file)
+		self.bind('<Control-KeyPress-S>', self.menu.file_menu.save_file)
 		# Add keyboard bindings for saving file as...
-		self.bind('<Control-Shift-KeyPress-s>', self.save_file_as)
-		self.bind('<Control-Shift-KeyPress-S>', self.save_file_as)
+		self.bind('<Control-Shift-KeyPress-s>', self.menu.file_menu.save_file_as)
+		self.bind('<Control-Shift-KeyPress-S>', self.menu.file_menu.save_file_as)
 		# Start window
 		self.mainloop()
 
@@ -114,45 +159,5 @@ class Window(tk.Tk):
 		window_x = (screen_width // 2) - (window_width // 2)
 		window_y = (screen_height // 2) - (window_height // 2)
 		self.geometry(f'{window_width}x{window_height}+{window_x}+{window_y}')
-
-	def open_file(self, event=None):
-		file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
-		if file_path:
-			self.file = File(file_path)
-			# Set editor text with file text
-			with tokenize.open(self.file.path) as file:
-				self.editor.set(file.read())
-			# Reset title because file name has been changed
-			# Also unsaved changes status has been changed to False
-			title = self.get_title()
-			title.file_name = self.file.name
-			title.is_there_unsaved_change = False
-			self.set_title(title)
-
-	def save_file(self, event=None):
-		# If there is no an opened file, call save_file_as method
-		# Else, write editor text to the file
-		if not self.file:
-			self.save_file_as()
-		else:
-			with open(self.file.path, 'w', encoding='UTF-8') as file:
-				file.write(self.editor.get_wo_eol())
-			# Reset title because unsaved changes status has been changed to False
-			title = self.get_title()
-			title.is_there_unsaved_change = False
-			self.set_title(title)
-
-	def save_file_as(self, event=None):
-		file_path = tk_filedialog.asksaveasfilename(defaultextension='.py', filetypes=[('Python Files', '.py')])
-		if file_path:
-			self.file = File(file_path)
-			with open(self.file.path, 'w', encoding='UTF-8') as file:
-				file.write(self.editor.get_wo_eol())
-			# Reset title because file name has been changed
-			# Also unsaved changes status has been changed to False
-			title = self.get_title()
-			title.file_name = self.file.name
-			title.is_there_unsaved_change = False
-			self.set_title(title)
 
 Window()
