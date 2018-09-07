@@ -89,6 +89,10 @@ class Window(tk.Tk):
 		self.title(self._title)
 
 	def resize_and_center(self):
+		'''
+		Set window size as half of screen size
+		Also center window
+		'''
 		screen_width = self.winfo_screenwidth()
 		screen_height = self.winfo_screenheight()
 		window_width = screen_width // 2
