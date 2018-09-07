@@ -52,6 +52,10 @@ class Title(object):
 		title_string += f'{self.file_name} - {self.app_name}'
 		return title_string
 
+class Menu(tk.Menu):
+	def __init__(self, master):
+		super().__init__(master)
+
 class Window(tk.Tk):
 	def __init__(self):
 		super().__init__()
@@ -64,6 +68,9 @@ class Window(tk.Tk):
 		self.set_title(title)
 		# Set icon
 		self.iconbitmap('icon.ico')
+		# Add menu
+		self.menu = Menu(self)
+		self.config(menu=self.menu)
 		# Create editor
 		self.editor = Editor(self)
 		self.editor.pack(fill=tk.BOTH, expand=True)
