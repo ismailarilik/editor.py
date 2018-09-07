@@ -66,7 +66,10 @@ class Window(tk.Tk):
 		self.iconbitmap('icon.ico')
 		# Create editor
 		self.editor = Editor(self)
-		self.editor.pack()
+		self.editor.pack(fill=tk.BOTH, expand=True)
+		# Set window size as half of screen size
+		# Also center window
+		self.resize_and_center()
 		# Add keyboard bindings for opening file
 		self.bind('<Control-KeyPress-o>', self.open_file)
 		self.bind('<Control-KeyPress-O>', self.open_file)
@@ -85,6 +88,15 @@ class Window(tk.Tk):
 	def set_title(self, new_title):
 		self._title = new_title
 		self.title(self._title)
+
+	def resize_and_center(self):
+		screen_width = self.winfo_screenwidth()
+		screen_height = self.winfo_screenheight()
+		window_width = screen_width // 2
+		window_height = screen_height // 2
+		window_x = (screen_width // 2) - (window_width // 2)
+		window_y = (screen_height // 2) - (window_height // 2)
+		self.geometry(f'{window_width}x{window_height}+{window_x}+{window_y}')
 
 	def open_file(self, event=None):
 		file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
