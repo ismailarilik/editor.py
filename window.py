@@ -67,8 +67,7 @@ class Window(tk.Tk):
 		# Create editor
 		self.editor = Editor(self)
 		self.editor.pack(fill=tk.BOTH, expand=True)
-		# Set window size as half of screen size
-		# Also center window
+		# Resize and center the window
 		self.resize_and_center()
 		# Add keyboard bindings for opening file
 		self.bind('<Control-KeyPress-o>', self.open_file)
