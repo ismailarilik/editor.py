@@ -108,6 +108,12 @@ class Window(tk.Tk):
 			# Set editor text with file text
 			with tokenize.open(self.file.path) as file:
 				self.editor.set(file.read())
+			# Reset title because file name has been changed
+			# Also unsaved changes status has been changed to False
+			title = self.get_title()
+			title.file_name = self.file.name
+			title.is_there_unsaved_change = False
+			self.set_title(title)
 
 	def save_file(self, event=None):
 		# If there is no an opened file, call save_file_as method
@@ -117,6 +123,10 @@ class Window(tk.Tk):
 		else:
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
 				file.write(self.editor.get_wo_eol())
+			# Reset title because unsaved changes status has been changed to False
+			title = self.get_title()
+			title.is_there_unsaved_change = False
+			self.set_title(title)
 
 	def save_file_as(self, event=None):
 		file_path = tk_filedialog.asksaveasfilename(defaultextension='.py', filetypes=[('Python Files', '.py')])
@@ -124,5 +134,11 @@ class Window(tk.Tk):
 			self.file = File(file_path)
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
 				file.write(self.editor.get_wo_eol())
+			# Reset title because file name has been changed
+			# Also unsaved changes status has been changed to False
+			title = self.get_title()
+			title.file_name = self.file.name
+			title.is_there_unsaved_change = False
+			self.set_title(title)
 
 Window()
