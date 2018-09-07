@@ -62,6 +62,8 @@ class Window(tk.Tk):
 		app_name = 'Visual Python'
 		title = Title(unsaved_changes_specifier, unsaved_file_name, app_name, False)
 		self.set_title(title)
+		# Set icon
+		self.iconbitmap('icon.ico')
 		# Create editor
 		self.editor = Editor(self)
 		self.editor.pack()
