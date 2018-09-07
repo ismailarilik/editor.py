@@ -51,6 +51,9 @@ class Window(tk.Tk):
 		# Add keyboard bindings for saving file
 		self.bind('<Control-KeyPress-s>', self.save_file)
 		self.bind('<Control-KeyPress-S>', self.save_file)
+		# Add keyboard bindings for saving file as...
+		self.bind('<Control-Shift-KeyPress-s>', self.save_file_as)
+		self.bind('<Control-Shift-KeyPress-S>', self.save_file_as)
 		# Start window
 		self.mainloop()
 
@@ -63,7 +66,19 @@ class Window(tk.Tk):
 				self.editor.set(file.read())
 
 	def save_file(self, event=None):
-		with open('C:\\Users\\ismail.arilik\\Development\\visual-python\\window.py', 'w', encoding='UTF-8') as file:
-			file.write(self.editor.get_wo_eol())
+		# If there is no an opened file, call save_file_as method
+		# Else, write editor text to the file
+		if not self.file:
+			self.save_file_as()
+		else:
+			with open('C:\\Users\\ismail.arilik\\Development\\visual-python\\window.py', 'w', encoding='UTF-8') as file:
+				file.write(self.editor.get_wo_eol())
+
+	def save_file_as(self, event=None):
+		file_path = tk_filedialog.asksaveasfilename(defaultextension='.py', filetypes=[('Python Files', '.py')])
+		if file_path:
+			self.file = File(file_path)
+			with open(self.file.path, 'w', encoding='UTF-8') as file:
+				file.write(self.editor.get_wo_eol())
 
 Window()
