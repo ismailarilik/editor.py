@@ -52,9 +52,16 @@ class Title(object):
 		title_string += f'{self.file_name} - {self.app_name}'
 		return title_string
 
+class FileMenu(tk.Menu):
+	def __init__(self, master):
+		super().__init__(master)
+
 class Menu(tk.Menu):
 	def __init__(self, master):
 		super().__init__(master)
+		# Add file menu
+		self.file_menu = FileMenu(self)
+		self.add_cascade(label='File', menu=self.file_menu)
 
 class Window(tk.Tk):
 	def __init__(self):
