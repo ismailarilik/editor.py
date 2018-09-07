@@ -71,7 +71,7 @@ class Window(tk.Tk):
 		if not self.file:
 			self.save_file_as()
 		else:
-			with open('C:\\Users\\ismail.arilik\\Development\\visual-python\\window.py', 'w', encoding='UTF-8') as file:
+			with open(self.file.path, 'w', encoding='UTF-8') as file:
 				file.write(self.editor.get_wo_eol())
 
 	def save_file_as(self, event=None):
