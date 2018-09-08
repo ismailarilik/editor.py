@@ -10,6 +10,9 @@ class Editor(tk.Text):
 		super().__init__(master, undo=True, wrap=tk.NONE)
 		self.tab_size = 4
 		self.add_scrollbars()
+		# Handle open file event here, too, for this widget and prevent propagation of event
+		# Because default behavior of this widget is not wanted here
+		self.bind('<Control-KeyPress-o>', self.handle_open_file_event_and_prevent_propagation)
 
 	@property
 	def tab_size(self):
@@ -44,6 +47,10 @@ class Editor(tk.Text):
 		horizontal_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
 		horizontal_scrollbar.config(command=self.xview)
 		self.config(yscrollcommand=vertical_scrollbar.set, xscrollcommand=horizontal_scrollbar.set)
+
+	def handle_open_file_event_and_prevent_propagation(self, event=None):
+		self.window.menu.file_menu.open_file(event)
+		return 'break'
 
 class File(object):
 	def __init__(self, path, is_modified=False):
