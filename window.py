@@ -301,6 +301,10 @@ class FileMenu(tk.Menu):
 		else:
 			return True
 
+class EditMenu(tk.Menu):
+	def __init__(self, master):
+		super().__init__(master)
+
 class Menu(tk.Menu):
 	def __init__(self, master, window):
 		super().__init__(master)
@@ -308,6 +312,9 @@ class Menu(tk.Menu):
 		# Add file menu
 		self.file_menu = FileMenu(self, self.window)
 		self.add_cascade(label='File', menu=self.file_menu)
+		# Add edit menu
+		self.edit_menu = EditMenu(self)
+		self.add_cascade(label='Edit', menu=self.edit_menu)
 
 class Window(tk.Tk):
 	def __init__(self):
