@@ -60,6 +60,8 @@ class FileMenu(tk.Menu):
 		self.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file)
 		self.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file)
 		self.add_command(label='Save File as...', accelerator='Ctrl+Shift+S', command=self.save_file_as)
+		self.add_separator()
+		self.add_command(label='Quit', accelerator='Ctrl+Q', command=self.window.quit)
 
 	def open_file(self, event=None):
 		file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
@@ -128,15 +130,10 @@ class Window(tk.Tk):
 		self.config(menu=self.menu)
 		# Resize and center the window
 		self.resize_and_center()
-		# Add keyboard bindings for opening file
-		self.bind('<Control-KeyPress-o>', self.menu.file_menu.open_file)
-		self.bind('<Control-KeyPress-O>', self.menu.file_menu.open_file)
-		# Add keyboard bindings for saving file
-		self.bind('<Control-KeyPress-s>', self.menu.file_menu.save_file)
-		self.bind('<Control-KeyPress-S>', self.menu.file_menu.save_file)
-		# Add keyboard bindings for saving file as...
-		self.bind('<Control-Shift-KeyPress-s>', self.menu.file_menu.save_file_as)
-		self.bind('<Control-Shift-KeyPress-S>', self.menu.file_menu.save_file_as)
+		# Add keyboard bindings
+		self.add_keyboard_bindings()
+		# Register delete window protocol to save unsaved changes and handle other things properly on quit
+		self.protocol('WM_DELETE_WINDOW', self.quit)
 		# Start window
 		self.mainloop()
 
@@ -159,5 +156,22 @@ class Window(tk.Tk):
 		window_x = (screen_width // 2) - (window_width // 2)
 		window_y = (screen_height // 2) - (window_height // 2)
 		self.geometry(f'{window_width}x{window_height}+{window_x}+{window_y}')
+
+	def add_keyboard_bindings(self):
+		# Add keyboard bindings for opening file
+		self.bind('<Control-KeyPress-o>', self.menu.file_menu.open_file)
+		self.bind('<Control-KeyPress-O>', self.menu.file_menu.open_file)
+		# Add keyboard bindings for saving file
+		self.bind('<Control-KeyPress-s>', self.menu.file_menu.save_file)
+		self.bind('<Control-KeyPress-S>', self.menu.file_menu.save_file)
+		# Add keyboard bindings for saving file as...
+		self.bind('<Control-Shift-KeyPress-s>', self.menu.file_menu.save_file_as)
+		self.bind('<Control-Shift-KeyPress-S>', self.menu.file_menu.save_file_as)
+		# Add keyboard bindings for quitting
+		self.bind('<Control-KeyPress-q>', self.quit)
+		self.bind('<Control-KeyPress-Q>', self.quit)
+
+	def quit(self, event=None):
+		self.destroy()
 
 Window()
