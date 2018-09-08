@@ -146,12 +146,15 @@ class Editor(tk.Text):
 	def modified(self, event):
 		if self.modified_event_occurred_by_change:
 			self.highlight()
-			# File is modified now
-			self.window.menu.file_menu.file.is_modified = True
-			# Reset title because unsaved changes status has been changed to True
-			title = self.window.get_title()
-			title.is_there_unsaved_change = self.window.menu.file_menu.file.is_modified
-			self.window.set_title(title)
+			# File is modified now, so set related flag
+			# Also reset title because unsaved changes status has been changed to True
+			# Do they only if they were not set before, for a better performance
+			file = self.window.menu.file_menu.file
+			if not file.is_modified:
+				file.is_modified = True
+				title = self.window.get_title()
+				title.is_there_unsaved_change = file.is_modified
+				self.window.set_title(title)
 			# Call this method to set modified flag to False so following modification may cause modified event occurred
 			self.edit_modified(False)
 		# Switch this flag which is for to ensure modified callback being called only by a change
