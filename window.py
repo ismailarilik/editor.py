@@ -17,6 +17,7 @@ class Editor(tk.Text):
 	@tab_size.setter
 	def tab_size(self, new_tab_size):
 		self._tab_size = new_tab_size
+		# Also configure editor tab stops with specified tab size
 		font = tk_font.Font(font=self['font'])
 		tab_width = font.measure(' ' * self._tab_size)
 		self.config(tabs=(tab_width,))
