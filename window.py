@@ -1,6 +1,7 @@
 import tkinter as tk
-import tkinter.font as tk_font
 import tkinter.filedialog as tk_filedialog
+import tkinter.font as tk_font
+import tkinter.messagebox as tk_messagebox
 import os
 import tokenize
 
@@ -31,8 +32,9 @@ class Editor(tk.Text):
 		self.insert(tk.END, text)
 
 class File(object):
-	def __init__(self, path):
+	def __init__(self, path, is_modified=False):
 		self.path = path
+		self.is_modified = is_modified
 
 	@property
 	def name(self):
@@ -56,7 +58,7 @@ class FileMenu(tk.Menu):
 	def __init__(self, master, window):
 		super().__init__(master)
 		self.window = window
-		self.file = None
+		self.file = File(None)
 		self.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file)
 		self.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file)
 		self.add_command(label='Save File as...', accelerator='Ctrl+Shift+S', command=self.save_file_as)
@@ -64,33 +66,56 @@ class FileMenu(tk.Menu):
 		self.add_command(label='Quit', accelerator='Ctrl+Q', command=self.window.quit)
 
 	def open_file(self, event=None):
-		file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
-		if file_path:
-			self.file = File(file_path)
-			# Set editor text with file text
-			with tokenize.open(self.file.path) as file:
-				self.window.editor.set(file.read())
-			# Reset title because file name has been changed
-			# Also unsaved changes status has been changed to False
-			title = self.window.get_title()
-			title.file_name = self.file.name
-			title.is_there_unsaved_change = False
-			self.window.set_title(title)
+		'''
+		Return True if a file was opened
+		Return False otherwise
+		'''
+		if self.save_unsaved_changes():
+			file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
+			if file_path:
+				self.file = File(file_path)
+				# Set editor text with file text
+				with tokenize.open(self.file.path) as file:
+					self.window.editor.set(file.read())
+				# Reset title because file name has been changed
+				# Also unsaved changes status has been changed to False
+				title = self.window.get_title()
+				title.file_name = self.file.name
+				title.is_there_unsaved_change = self.file.is_modified
+				self.window.set_title(title)
+				# Return that a file was opened
+				return True
+			else:
+				return False
+		else:
+			return False
 
 	def save_file(self, event=None):
-		# If there is no an opened file, call save_file_as method
+		'''
+		Return True if the file was saved
+		Return False otherwise
+		'''
+		# If there is not any opened file, call save_file_as method
 		# Else, write editor text to the file
-		if not self.file:
-			self.save_file_as()
+		if not self.file.path:
+			return self.save_file_as()
 		else:
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
 				file.write(self.window.editor.get_wo_eol())
+			# File is not modified now
+			self.file.is_modified = False
 			# Reset title because unsaved changes status has been changed to False
 			title = self.window.get_title()
-			title.is_there_unsaved_change = False
+			title.is_there_unsaved_change = self.file.is_modified
 			self.window.set_title(title)
+			# Return that the file was saved
+			return True
 
 	def save_file_as(self, event=None):
+		'''
+		Return True if the specified file was saved
+		Return False otherwise
+		'''
 		file_path = tk_filedialog.asksaveasfilename(defaultextension='.py', filetypes=[('Python Files', '.py')])
 		if file_path:
 			self.file = File(file_path)
@@ -100,8 +125,28 @@ class FileMenu(tk.Menu):
 			# Also unsaved changes status has been changed to False
 			title = self.window.get_title()
 			title.file_name = self.file.name
-			title.is_there_unsaved_change = False
+			title.is_there_unsaved_change = self.file.is_modified
 			self.window.set_title(title)
+			# Return that the specified file was saved
+			return True
+		else:
+			return False
+
+	def save_unsaved_changes(self):
+		'''
+		Return True if unsaved changes were saved
+		Return False otherwise
+		'''
+		if self.file.is_modified:
+			reply = tk_messagebox.askyesnocancel('Unsaved Changes', 'There are unsaved changes, would you like to save them?')
+			if reply:
+				return self.save_file()
+			elif reply == False:
+				return True
+			else:
+				return False
+		else:
+			return True
 
 class Menu(tk.Menu):
 	def __init__(self, master, window):
@@ -169,6 +214,7 @@ class Window(tk.Tk):
 		self.bind('<Control-KeyPress-Q>', self.quit)
 
 	def quit(self, event=None):
-		self.destroy()
+		if self.menu.file_menu.save_unsaved_changes():
+			self.destroy()
 
 Window()
