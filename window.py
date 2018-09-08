@@ -184,6 +184,14 @@ class Editor(tk.Text):
 		self.window.menu.file_menu.open_file(event)
 		return 'break'
 
+class MainFrame(tk.Frame):
+	def __init__(self, master, window):
+		super().__init__(master)
+		self.window = window
+		# Create editor
+		self.editor = Editor(self, self.window)
+		self.editor.pack(fill=tk.BOTH, expand=True)
+
 class File(object):
 	def __init__(self, path, is_modified=False):
 		self.path = path
@@ -211,6 +219,7 @@ class FileMenu(tk.Menu):
 	def __init__(self, master, window):
 		super().__init__(master)
 		self.window = window
+		self.editor = self.window.main_frame.editor
 		self.file = File(None)
 		self.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file)
 		self.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file)
@@ -229,7 +238,7 @@ class FileMenu(tk.Menu):
 				self.file = File(file_path)
 				# Set editor text with file text
 				with tokenize.open(self.file.path) as file:
-					self.window.editor.set(file.read())
+					self.editor.set(file.read())
 				# Reset title because file name has been changed
 				# Also unsaved changes status has been changed to False
 				title = self.window.get_title()
@@ -254,7 +263,7 @@ class FileMenu(tk.Menu):
 			return self.save_file_as()
 		else:
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
-				file.write(self.window.editor.get_wo_eol())
+				file.write(self.editor.get_wo_eol())
 			# File is unmodified now
 			self.file.is_modified = False
 			# Reset title because unsaved changes status has been changed to False
@@ -273,7 +282,7 @@ class FileMenu(tk.Menu):
 		if file_path:
 			self.file = File(file_path)
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
-				file.write(self.window.editor.get_wo_eol())
+				file.write(self.editor.get_wo_eol())
 			# Reset title because file name has been changed
 			# Also unsaved changes status has been changed to False
 			title = self.window.get_title()
@@ -328,9 +337,9 @@ class Window(tk.Tk):
 		self.set_title(title)
 		# Set icon
 		self.iconbitmap('icon.ico')
-		# Create editor
-		self.editor = Editor(self, self)
-		self.editor.pack(fill=tk.BOTH, expand=True)
+		# Create main frame
+		self.main_frame = MainFrame(self, self)
+		self.main_frame.pack(fill=tk.BOTH, expand=True)
 		# Add menu
 		self.menu = Menu(self, self)
 		self.config(menu=self.menu)
