@@ -123,7 +123,7 @@ class FileMenu(tk.Menu):
 		else:
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
 				file.write(self.window.editor.get_wo_eol())
-			# File is not modified now
+			# File is unmodified now
 			self.file.is_modified = False
 			# Reset title because unsaved changes status has been changed to False
 			title = self.window.get_title()
