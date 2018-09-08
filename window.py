@@ -162,14 +162,21 @@ class Editor(tk.Text):
 		self.modified_event_occurred_by_change = not self.modified_event_occurred_by_change
 
 	def highlight(self):
-		# Remove previous tags, otherwise they will conflict with new ones
-		self.tag_delete(*self.tag_names())
-		# Configure tag colors
-		for token_type, token_color in self.token_type_color_map.items():
-			self.tag_config(self.tokenizer.get_token_name(token_type), foreground=token_color)
+		tokens = []
 		text = self.get('1.0', tk.END)
+		tokens2 = self.tokenizer.tokenize(io.BytesIO(text.encode('UTF-8')).readline)
 		try:
-			tokens = self.tokenizer.tokenize(io.BytesIO(text.encode('UTF-8')).readline)
+			for token in tokens2:
+				tokens.append(token)
+		except Exception as exception:
+			print('An error occurred while tokenizing code for highlighting:')
+			print(exception)
+		else:
+			# Remove previous tags, otherwise they will conflict with new ones
+			self.tag_delete(*self.tag_names())
+			# Configure tag colors
+			for token_type, token_color in self.token_type_color_map.items():
+				self.tag_config(self.tokenizer.get_token_name(token_type), foreground=token_color)
 			for token in tokens:
 				# If there is a configured tag for this token, add it to the token's indices in the editor
 				color = self.token_type_color_map.get(token.exact_type)
@@ -177,8 +184,6 @@ class Editor(tk.Text):
 					start_index = f'{token.start_row}.{token.start_column}'
 					end_index = f'{token.end_row}.{token.end_column}'
 					self.tag_add(token.name, start_index, end_index)
-		except:
-			pass
 
 	def handle_open_file_event_and_prevent_propagation(self, event=None):
 		self.window.menu.file_menu.open_file(event)
