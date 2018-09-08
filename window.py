@@ -304,6 +304,10 @@ class FileMenu(tk.Menu):
 class EditMenu(tk.Menu):
 	def __init__(self, master):
 		super().__init__(master)
+		self.add_command(label='Find', accelerator='Ctrl+F', command=self.find)
+
+	def find(self, event=None):
+		pass
 
 class Menu(tk.Menu):
 	def __init__(self, master, window):
@@ -369,6 +373,9 @@ class Window(tk.Tk):
 		# Add keyboard bindings for saving file as...
 		self.bind('<Control-Shift-KeyPress-s>', self.menu.file_menu.save_file_as)
 		self.bind('<Control-Shift-KeyPress-S>', self.menu.file_menu.save_file_as)
+		# Add keyboard bindings for finding
+		self.bind('<Control-KeyPress-f>', self.menu.edit_menu.find)
+		self.bind('<Control-KeyPress-F>', self.menu.edit_menu.find)
 		# Add keyboard bindings for quitting
 		self.bind('<Control-KeyPress-q>', self.quit)
 		self.bind('<Control-KeyPress-Q>', self.quit)
