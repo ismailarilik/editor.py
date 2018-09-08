@@ -7,7 +7,7 @@ import tokenize
 
 class Editor(tk.Text):
 	def __init__(self, master):
-		super().__init__(master)
+		super().__init__(master, undo=True)
 		self.tab_size = 4
 
 	@property
