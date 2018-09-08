@@ -39,7 +39,7 @@ class File(object):
 		return os.path.basename(self.path)
 
 class Title(object):
-	def __init__(self, unsaved_changes_specifier, file_name, app_name, is_there_unsaved_change):
+	def __init__(self, unsaved_changes_specifier='*', file_name='<unsaved_file>', app_name='Visual Python', is_there_unsaved_change=False):
 		self.unsaved_changes_specifier = unsaved_changes_specifier
 		self.file_name = file_name
 		self.app_name = app_name
@@ -115,10 +115,7 @@ class Window(tk.Tk):
 	def __init__(self):
 		super().__init__()
 		# Set title
-		unsaved_changes_specifier = '*'
-		unsaved_file_name = '<unsaved_file>'
-		app_name = 'Visual Python'
-		title = Title(unsaved_changes_specifier, unsaved_file_name, app_name, False)
+		title = Title()
 		self.set_title(title)
 		# Set icon
 		self.iconbitmap('icon.ico')
