@@ -351,6 +351,9 @@ class FindFrame(tk.Frame):
 		self.close_button = tk.Button(self, text='X', command=self.close)
 		self.close_button.pack(side=tk.LEFT)
 
+	def close(self):
+		self.place_forget()
+
 class EditMenu(tk.Menu):
 	def __init__(self, master, window):
 		super().__init__(master)
