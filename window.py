@@ -105,6 +105,8 @@ class Editor(tk.Text):
 		self.modified_event_occurred_by_change = True
 		# Listen for modified event
 		self.bind('<<Modified>>', self.modified)
+		# Pack this widget
+		self.pack(fill=tk.BOTH, expand=True)
 
 	def post_init(self):
 		self.file = self.window.menu.file_menu.file
@@ -200,10 +202,9 @@ class Editor(tk.Text):
 class MainFrame(tk.Frame):
 	def __init__(self, master, window):
 		super().__init__(master)
+		self.pack(fill=tk.BOTH, expand=True)
 		self.window = window
-		# Create editor
 		self.editor = Editor(self, self.window)
-		self.editor.pack(fill=tk.BOTH, expand=True)
 
 class File(object):
 	def __init__(self, path, is_modified=False):
@@ -357,7 +358,6 @@ class Window(tk.Tk):
 		self.config(menu=self.menu)
 		# Create main frame
 		self.main_frame = MainFrame(self, self)
-		self.main_frame.pack(fill=tk.BOTH, expand=True)
 		# Post initialization
 		self._post_init()
 		# Resize and center the window
