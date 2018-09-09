@@ -191,9 +191,15 @@ class Editor(tk.Text):
 		# Add keyboard bindings for finding
 		self.bind('<Control-KeyPress-f>', self.window.menu.edit_menu.find)
 		self.bind('<Control-KeyPress-F>', self.window.menu.edit_menu.find)
+		# Add Escape keyboard binding for escaping from things in editor
+		self.bind('<Escape>', self.escape)
 		# Handle open file event here, too, for this widget and prevent propagation of event
 		# Because default behavior of this widget is not wanted here
 		self.bind('<Control-KeyPress-o>', self.handle_open_file_event_and_prevent_propagation)
+
+	def escape(self, event=None):
+		# Close find frame
+		self.window.main_frame.find_frame.close(event)
 
 	def handle_open_file_event_and_prevent_propagation(self, event=None):
 		self.window.menu.file_menu.open_file(event)
