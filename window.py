@@ -326,13 +326,44 @@ class FileMenu(tk.Menu):
 		else:
 			return True
 
-class EditMenu(tk.Menu):
+class FindFrame(tk.Frame):
 	def __init__(self, master):
 		super().__init__(master)
+		# Create find entry
+		self.find_entry = tk.Entry(self)
+		self.find_entry.pack(side=tk.LEFT)
+		# Create current match label
+		self.current_match_label = tk.Label(self, text='0')
+		self.current_match_label.pack(side=tk.LEFT)
+		# Create separator label
+		self.separator_label = tk.Label(self, text='/')
+		self.separator_label.pack(side=tk.LEFT)
+		# Create total match label
+		self.total_match_label = tk.Label(self, text='0')
+		self.total_match_label.pack(side=tk.LEFT)
+		# Create previous match button
+		self.previous_match_button = tk.Button(self, text='<')
+		self.previous_match_button.pack(side=tk.LEFT)
+		# Create next match button
+		self.next_match_button = tk.Button(self, text='>')
+		self.next_match_button.pack(side=tk.LEFT)
+		# Create close button
+		self.close_button = tk.Button(self, text='X', command=self.close)
+		self.close_button.pack(side=tk.LEFT)
+
+class EditMenu(tk.Menu):
+	def __init__(self, master, window):
+		super().__init__(master)
+		self.window = window
+		# Add find command
 		self.add_command(label='Find', accelerator='Ctrl+F', command=self.find)
 
+	def post_init(self):
+		# Create find frame
+		self.find_frame = FindFrame(self.window.main_frame)
+
 	def find(self, event=None):
-		pass
+		self.find_frame.place(relx=1.0, anchor=tk.NE)
 
 class Menu(tk.Menu):
 	def __init__(self, master, window):
@@ -342,7 +373,7 @@ class Menu(tk.Menu):
 		self.file_menu = FileMenu(self, self.window)
 		self.add_cascade(label='File', menu=self.file_menu)
 		# Add edit menu
-		self.edit_menu = EditMenu(self)
+		self.edit_menu = EditMenu(self, self.window)
 		self.add_cascade(label='Edit', menu=self.edit_menu)
 
 class Window(tk.Tk):
