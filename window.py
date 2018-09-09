@@ -105,12 +105,10 @@ class Editor(tk.Text):
 		self.modified_event_occurred_by_change = True
 		# Listen for modified event
 		self.bind('<<Modified>>', self.modified)
-		# Handle open file event here, too, for this widget and prevent propagation of event
-		# Because default behavior of this widget is not wanted here
-		self.bind('<Control-KeyPress-o>', self.handle_open_file_event_and_prevent_propagation)
 
 	def post_init(self):
 		self.file = self.window.menu.file_menu.file
+		self.add_keyboard_bindings()
 
 	@property
 	def tab_size(self):
@@ -186,6 +184,14 @@ class Editor(tk.Text):
 					start_index = f'{token.start_row}.{token.start_column}'
 					end_index = f'{token.end_row}.{token.end_column}'
 					self.tag_add(token.name, start_index, end_index)
+
+	def add_keyboard_bindings(self):
+		# Add keyboard bindings for finding
+		self.bind('<Control-KeyPress-f>', self.window.menu.edit_menu.find)
+		self.bind('<Control-KeyPress-F>', self.window.menu.edit_menu.find)
+		# Handle open file event here, too, for this widget and prevent propagation of event
+		# Because default behavior of this widget is not wanted here
+		self.bind('<Control-KeyPress-o>', self.handle_open_file_event_and_prevent_propagation)
 
 	def handle_open_file_event_and_prevent_propagation(self, event=None):
 		self.window.menu.file_menu.open_file(event)
@@ -398,9 +404,6 @@ class Window(tk.Tk):
 		# Add keyboard bindings for saving file as...
 		self.bind('<Control-Shift-KeyPress-s>', self.menu.file_menu.save_file_as)
 		self.bind('<Control-Shift-KeyPress-S>', self.menu.file_menu.save_file_as)
-		# Add keyboard bindings for finding
-		self.bind('<Control-KeyPress-f>', self.menu.edit_menu.find)
-		self.bind('<Control-KeyPress-F>', self.menu.edit_menu.find)
 		# Add keyboard bindings for quitting
 		self.bind('<Control-KeyPress-q>', self.quit)
 		self.bind('<Control-KeyPress-Q>', self.quit)
