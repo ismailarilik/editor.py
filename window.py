@@ -355,9 +355,9 @@ class Window(tk.Tk):
 		# Post initialization
 		self._post_init()
 		# Resize and center the window
-		self.resize_and_center()
+		self._resize_and_center()
 		# Add keyboard bindings
-		self.add_keyboard_bindings()
+		self._add_keyboard_bindings()
 		# Register delete window protocol to save unsaved changes and handle other things properly on quit
 		self.protocol('WM_DELETE_WINDOW', self.quit)
 		# Start window
@@ -375,7 +375,7 @@ class Window(tk.Tk):
 		self._title = new_title
 		self.title(self._title)
 
-	def resize_and_center(self):
+	def _resize_and_center(self):
 		'''
 		Set window size as half of screen size
 		Also center window
@@ -388,7 +388,7 @@ class Window(tk.Tk):
 		window_y = (screen_height // 2) - (window_height // 2)
 		self.geometry(f'{window_width}x{window_height}+{window_x}+{window_y}')
 
-	def add_keyboard_bindings(self):
+	def _add_keyboard_bindings(self):
 		# Add keyboard bindings for opening file
 		self.bind('<Control-KeyPress-o>', self.menu.file_menu.open_file)
 		self.bind('<Control-KeyPress-O>', self.menu.file_menu.open_file)
