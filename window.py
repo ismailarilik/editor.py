@@ -109,6 +109,9 @@ class Editor(tk.Text):
 		# Because default behavior of this widget is not wanted here
 		self.bind('<Control-KeyPress-o>', self.handle_open_file_event_and_prevent_propagation)
 
+	def post_init(self):
+		self.file = self.window.menu.file_menu.file
+
 	@property
 	def tab_size(self):
 		return self._tab_size
@@ -149,11 +152,10 @@ class Editor(tk.Text):
 			# File is modified now, so set related flag
 			# Also reset title because unsaved changes status has been changed to True
 			# Do they only if they were not set before, for a better performance
-			file = self.window.menu.file_menu.file
-			if not file.is_modified:
-				file.is_modified = True
+			if not self.file.is_modified:
+				self.file.is_modified = True
 				title = self.window.get_title()
-				title.is_there_unsaved_change = file.is_modified
+				title.is_there_unsaved_change = self.file.is_modified
 				self.window.set_title(title)
 			# Call this method to set modified flag to False so following modification may cause modified event occurred
 			self.edit_modified(False)
@@ -224,13 +226,15 @@ class FileMenu(tk.Menu):
 	def __init__(self, master, window):
 		super().__init__(master)
 		self.window = window
-		self.editor = self.window.main_frame.editor
 		self.file = File(None)
 		self.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file)
 		self.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file)
 		self.add_command(label='Save File as...', accelerator='Ctrl+Shift+S', command=self.save_file_as)
 		self.add_separator()
 		self.add_command(label='Quit', accelerator='Ctrl+Q', command=self.window.quit)
+
+	def post_init(self):
+		self.editor = self.window.main_frame.editor
 
 	def open_file(self, event=None):
 		'''
@@ -342,12 +346,14 @@ class Window(tk.Tk):
 		self.set_title(title)
 		# Set icon
 		self.iconbitmap('icon.ico')
-		# Create main frame
-		self.main_frame = MainFrame(self, self)
-		self.main_frame.pack(fill=tk.BOTH, expand=True)
 		# Add menu
 		self.menu = Menu(self, self)
 		self.config(menu=self.menu)
+		# Create main frame
+		self.main_frame = MainFrame(self, self)
+		self.main_frame.pack(fill=tk.BOTH, expand=True)
+		# Post initialization
+		self._post_init()
 		# Resize and center the window
 		self.resize_and_center()
 		# Add keyboard bindings
@@ -356,6 +362,11 @@ class Window(tk.Tk):
 		self.protocol('WM_DELETE_WINDOW', self.quit)
 		# Start window
 		self.mainloop()
+
+	def _post_init(self):
+		self.menu.file_menu.post_init()
+		self.menu.edit_menu.post_init()
+		self.main_frame.editor.post_init()
 
 	def get_title(self):
 		return self._title
