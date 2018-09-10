@@ -205,15 +205,27 @@ class Editor(tk.Text):
 		self.window.menu.file_menu.open_file(event)
 		return 'break'
 
-class FindFrame(tk.Frame):
-	def __init__(self, master):
+class FindEntry(tk.Entry):
+	def __init__(self, master, window):
 		super().__init__(master)
+		self.pack(side=tk.LEFT)
+		self.window = window
+	
+	def post_init(self):
+		self.add_keyboard_bindings()
+
+	def add_keyboard_bindings(self):
+		# Add Escape keyboard binding for closing find frame
+		self.bind('<Escape>', self.window.main_frame.find_frame.close)
+
+class FindFrame(tk.Frame):
+	def __init__(self, master, window):
+		super().__init__(master)
+		self.window = window
 		self.create_widgets()
 
 	def create_widgets(self):
-		# Create find entry
-		self.find_entry = tk.Entry(self)
-		self.find_entry.pack(side=tk.LEFT)
+		self.find_entry = FindEntry(self, self.window)
 		# Create current match label
 		self.current_match_label = tk.Label(self, text='0')
 		self.current_match_label.pack(side=tk.LEFT)
@@ -242,7 +254,7 @@ class MainFrame(tk.Frame):
 		self.pack(fill=tk.BOTH, expand=True)
 		self.window = window
 		self.editor = Editor(self, self.window)
-		self.find_frame = FindFrame(self)
+		self.find_frame = FindFrame(self, self.window)
 
 class File(object):
 	def __init__(self, path, is_modified=False):
@@ -412,6 +424,7 @@ class Window(tk.Tk):
 	def _post_init(self):
 		self.menu.file_menu.post_init()
 		self.main_frame.editor.post_init()
+		self.main_frame.find_frame.find_entry.post_init()
 
 	def get_title(self):
 		return self._title
