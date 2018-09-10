@@ -388,7 +388,7 @@ class EditMenu(tk.Menu):
 		self.add_command(label='Find', accelerator='Ctrl+F', command=self.find)
 
 	def find(self, event=None):
-		self.window.main_frame.find_frame.place(relx=1.0, anchor=tk.NE)
+		self.window.main_frame.find_frame.place(relx=1, anchor=tk.NE)
 		self.window.main_frame.find_frame.find_entry.focus_set()
 
 class Menu(tk.Menu):
