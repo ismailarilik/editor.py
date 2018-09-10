@@ -109,7 +109,6 @@ class Editor(tk.Text):
 		self.pack(fill=tk.BOTH, expand=True)
 
 	def post_init(self):
-		self.file = self.window.menu.file_menu.file
 		self.add_keyboard_bindings()
 
 	@property
@@ -152,10 +151,11 @@ class Editor(tk.Text):
 			# File is modified now, so set related flag
 			# Also reset title because unsaved changes status has been changed to True
 			# Do they only if they were not set before, for a better performance
-			if not self.file.is_modified:
-				self.file.is_modified = True
+			file = self.window.menu.file_menu.file
+			if not file.is_modified:
+				file.is_modified = True
 				title = self.window.get_title()
-				title.is_there_unsaved_change = self.file.is_modified
+				title.is_there_unsaved_change = file.is_modified
 				self.window.set_title(title)
 			# Call this method to set modified flag to False so following modification may cause modified event occurred
 			self.edit_modified(False)
@@ -294,9 +294,6 @@ class FileMenu(tk.Menu):
 		self.add_separator()
 		self.add_command(label='Quit', accelerator='Ctrl+Q', command=self.window.quit)
 
-	def post_init(self):
-		self.editor = self.window.main_frame.editor
-
 	def open_file(self, event=None):
 		'''
 		Return True if a file was opened
@@ -308,7 +305,7 @@ class FileMenu(tk.Menu):
 				self.file = File(file_path)
 				# Set editor text with file text
 				with tokenize.open(self.file.path) as file:
-					self.editor.set(file.read())
+					self.window.main_frame.editor.set(file.read())
 				# Reset title because file name has been changed
 				# Also unsaved changes status has been changed to False
 				title = self.window.get_title()
@@ -333,7 +330,7 @@ class FileMenu(tk.Menu):
 			return self.save_file_as()
 		else:
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
-				file.write(self.editor.get_wo_eol())
+				file.write(self.window.main_frame.editor.get_wo_eol())
 			# File is unmodified now
 			self.file.is_modified = False
 			# Reset title because unsaved changes status has been changed to False
@@ -352,7 +349,7 @@ class FileMenu(tk.Menu):
 		if file_path:
 			self.file = File(file_path)
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
-				file.write(self.editor.get_wo_eol())
+				file.write(self.window.main_frame.editor.get_wo_eol())
 			# Reset title because file name has been changed
 			# Also unsaved changes status has been changed to False
 			title = self.window.get_title()
@@ -427,7 +424,6 @@ class Window(tk.Tk):
 		self.mainloop()
 
 	def _post_init(self):
-		self.menu.file_menu.post_init()
 		self.main_frame.editor.post_init()
 		self.main_frame.find_frame.find_entry.post_init()
 
