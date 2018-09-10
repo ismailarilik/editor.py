@@ -247,6 +247,7 @@ class FindFrame(tk.Frame):
 
 	def close(self, event=None):
 		self.place_forget()
+		self.window.main_frame.editor.focus_set()
 
 class MainFrame(tk.Frame):
 	def __init__(self, master, window):
