@@ -210,7 +210,7 @@ class FindEntry(tk.Entry):
 		super().__init__(master)
 		self.pack(side=tk.LEFT)
 		self.window = window
-	
+
 	def post_init(self):
 		self.add_keyboard_bindings()
 
