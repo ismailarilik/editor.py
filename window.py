@@ -306,6 +306,8 @@ class FileMenu(tk.Menu):
 				# Set editor text with file text
 				with tokenize.open(self.file.path) as file:
 					self.window.main_frame.editor.set(file.read())
+				# Focus editor in
+				self.window.main_frame.editor.focus_set()
 				# Reset title because file name has been changed
 				# Also unsaved changes status has been changed to False
 				title = self.window.get_title()
@@ -331,6 +333,8 @@ class FileMenu(tk.Menu):
 		else:
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
 				file.write(self.window.main_frame.editor.get_wo_eol())
+			# Focus editor in
+			self.window.main_frame.editor.focus_set()
 			# File is unmodified now
 			self.file.is_modified = False
 			# Reset title because unsaved changes status has been changed to False
@@ -350,6 +354,8 @@ class FileMenu(tk.Menu):
 			self.file.path = file_path
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
 				file.write(self.window.main_frame.editor.get_wo_eol())
+			# Focus editor in
+			self.window.main_frame.editor.focus_set()
 			# Reset title because file name has been changed
 			# Also unsaved changes status has been changed to False
 			title = self.window.get_title()
