@@ -208,6 +208,9 @@ class Editor(tk.Text):
 class FindFrame(tk.Frame):
 	def __init__(self, master):
 		super().__init__(master)
+		self.create_widgets()
+
+	def create_widgets(self):
 		# Create find entry
 		self.find_entry = tk.Entry(self)
 		self.find_entry.pack(side=tk.LEFT)
