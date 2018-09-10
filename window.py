@@ -211,9 +211,6 @@ class FindFrame(tk.Frame):
 		# Create find entry
 		self.find_entry = tk.Entry(self)
 		self.find_entry.pack(side=tk.LEFT)
-		# Create find button
-		self.find_button = tk.Button(self, text='Find')
-		self.find_button.pack(side=tk.LEFT)
 		# Create current match label
 		self.current_match_label = tk.Label(self, text='0')
 		self.current_match_label.pack(side=tk.LEFT)
