@@ -302,7 +302,7 @@ class FileMenu(tk.Menu):
 		if self.save_unsaved_changes():
 			file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
 			if file_path:
-				self.file = File(file_path)
+				self.file.path = file_path
 				# Set editor text with file text
 				with tokenize.open(self.file.path) as file:
 					self.window.main_frame.editor.set(file.read())
@@ -347,7 +347,7 @@ class FileMenu(tk.Menu):
 		'''
 		file_path = tk_filedialog.asksaveasfilename(defaultextension='.py', filetypes=[('Python Files', '.py')])
 		if file_path:
-			self.file = File(file_path)
+			self.file.path = file_path
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
 				file.write(self.window.main_frame.editor.get_wo_eol())
 			# Reset title because file name has been changed
