@@ -226,6 +226,9 @@ class FindFrame(tk.Frame):
 
 	def create_widgets(self):
 		self.find_entry = FindEntry(self, self.window)
+		# Create find button
+		self.find_button = tk.Button(self, text='Find')
+		self.find_button.pack(side=tk.LEFT)
 		# Create current match label
 		self.current_match_label = tk.Label(self, text='0')
 		self.current_match_label.pack(side=tk.LEFT)
