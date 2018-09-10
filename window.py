@@ -267,11 +267,11 @@ class File(object):
 		return os.path.basename(self.path)
 
 class Title(object):
-	def __init__(self, unsaved_changes_specifier='*', file_name='<unsaved_file>', app_name='Visual Python', is_there_unsaved_change=False):
-		self.unsaved_changes_specifier = unsaved_changes_specifier
-		self.file_name = file_name
-		self.app_name = app_name
-		self.is_there_unsaved_change = is_there_unsaved_change
+	def __init__(self):
+		self.unsaved_changes_specifier = '*'
+		self.file_name = '<unsaved_file>'
+		self.app_name = 'Visual Python'
+		self.is_there_unsaved_change = False
 
 	def __str__(self):
 		title_string = ''
