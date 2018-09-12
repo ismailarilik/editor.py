@@ -399,7 +399,7 @@ class FileMenu(tk.Menu):
 		# If there is not any opened file, call save_file_as method
 		# Else, write editor text to the file
 		if not self.file.path:
-			return self.save_file_as()
+			return self.save_file_as(event)
 		else:
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
 				file.write(self.window.main_frame.editor.get_wo_eol())
