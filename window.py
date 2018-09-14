@@ -337,7 +337,8 @@ class File(object):
 
 	@property
 	def name(self):
-		return os.path.basename(self.path)
+		if self.path:
+			return os.path.basename(self.path)
 
 class Title(object):
 	def __init__(self):
