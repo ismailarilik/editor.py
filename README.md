@@ -8,17 +8,17 @@ It is being written with Python and Tkinter.
 ### On Windows
 
 ```shell
-py -3 app.py
+py -3 window.py
 ```
 
 ### On GNU/Linux
 
 ```shell
-python3 app.py
+python3 window.py
 ```
 
 ### On Mac OS X
 
 ```shell
-python3 app.py
+python3 window.py
 ```
