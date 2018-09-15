@@ -359,6 +359,10 @@ class MainFrame(tk.Frame):
 		self.explorer.bind('<Double-Button-1>', self.open_file_from_explorer)
 		self.explorer.bind('<Return>', self.open_file_from_explorer)
 		self.explorer.bind('<Button-3>', self.open_context_menu)
+		# Create icons of explorer items
+		self.explorer_file_image = tk.PhotoImage(file='file.png')
+		self.explorer_python_file_image = tk.PhotoImage(file='python_file.gif')
+		self.explorer_folder_image = tk.PhotoImage(file='folder.gif')
 		# Create context menu for explorer
 		def refresh_explorer():
 			self.explorer.delete(*self.explorer.get_children())
@@ -367,8 +371,12 @@ class MainFrame(tk.Frame):
 			folder = self.window.menu.file_menu.folder
 			for path, folders, files in os.walk(folder, onerror=on_error):
 				parent = '' if path == folder else path
-				for file in folders + files:
-					self.explorer.insert(parent, tk.END, os.path.join(path, file), text=file)
+				for folder in folders:
+					self.explorer.insert(parent, tk.END, os.path.join(path, folder), text=folder, image=self.explorer_folder_image)
+				for file in files:
+					extension = os.path.splitext(file)[1]
+					image = self.explorer_python_file_image if extension == '.py' or extension == '.pyw' else self.explorer_file_image
+					self.explorer.insert(parent, tk.END, os.path.join(path, file), text=file, image=image)
 		def create_file_or_directory(is_file, is_root, event=None):
 			if is_root:
 				parent = ''
@@ -613,8 +621,12 @@ class FileMenu(tk.Menu):
 				raise error
 			for path, folders, files in os.walk(self.folder, onerror=on_error):
 				parent = '' if path == self.folder else path
-				for file in folders + files:
-					self.window.main_frame.explorer.insert(parent, tk.END, os.path.join(path, file), text=file)
+				for folder in folders:
+					self.window.main_frame.explorer.insert(parent, tk.END, os.path.join(path, folder), text=folder, image=self.window.main_frame.explorer_folder_image)
+				for file in files:
+					extension = os.path.splitext(file)[1]
+					image = self.window.main_frame.explorer_python_file_image if extension == '.py' or extension == '.pyw' else self.window.main_frame.explorer_file_image
+					self.window.main_frame.explorer.insert(parent, tk.END, os.path.join(path, file), text=file, image=image)
 
 	def save_file(self, event=None):
 		'''
