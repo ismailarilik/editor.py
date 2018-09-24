@@ -17,7 +17,7 @@ py -3 app.py
 python3 app.py
 ```
 
-### On Mac OS X
+### On Mac OS
 
 ```shell
 python3 app.py
