@@ -72,5 +72,4 @@ class App(tk.Tk):
 		if self.menu.file_menu.save_unsaved_changes():
 			self.destroy()
 
-if __name__ == '__main__':
-	App()
+App()
