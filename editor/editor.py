@@ -108,6 +108,37 @@ class Editor(tk.Text):
 		horizontal_scrollbar.config(command=self.xview)
 		self.config(yscrollcommand=vertical_scrollbar.set, xscrollcommand=horizontal_scrollbar.set)
 
+	def open_file_in_editor(self, file_path):
+		self.window.menu.file_menu.file.path = file_path
+		self.window.menu.file_menu.file.is_modified = False
+		# Set editor text with file text
+		with tokenize.open(self.window.menu.file_menu.file.path) as file:
+			self.set(file.read())
+		# Focus editor in
+		self.focus_set()
+		# Reset title because file name has been changed
+		# Also unsaved changes status has been changed to False
+		title = self.window.get_title()
+		title.file_name = self.window.menu.file_menu.file.name
+		title.is_there_unsaved_change = self.window.menu.file_menu.file.is_modified
+		self.window.set_title(title)
+		# Return that a file was opened successfully
+		return True
+
+	def close_file_in_editor(self):
+		self.window.menu.file_menu.file.path = None
+		self.window.menu.file_menu.file.is_modified = False
+		# Clear editor text
+		self.clear()
+		# Reset title because file has been closed
+		# Also there is no unsaved change now
+		title = self.window.get_title()
+		title.file_name = title.unsaved_file_name
+		title.is_there_unsaved_change = self.window.menu.file_menu.file.is_modified
+		self.window.set_title(title)
+		# Return that a file was closed successfully
+		return True
+
 	def modified(self, event):
 		if self.modified_event_occurred_by_change:
 			self.highlight()

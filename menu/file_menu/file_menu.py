@@ -26,7 +26,7 @@ class FileMenu(tk.Menu):
 		if self.save_unsaved_changes():
 			file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
 			if file_path:
-				return self.window.main_frame.open_file_in_editor(file_path)
+				return self.window.main_frame.editor.open_file_in_editor(file_path)
 			else:
 				return False
 		else:
@@ -47,10 +47,10 @@ class FileMenu(tk.Menu):
 			for path, folders, files in os.walk(self.folder, onerror=on_error):
 				parent = '' if path == self.folder else path
 				for folder in folders:
-					self.window.main_frame.explorer.insert(parent, tk.END, os.path.join(path, folder), text=folder, image=self.window.main_frame.explorer_folder_image)
+					self.window.main_frame.explorer.insert(parent, tk.END, os.path.join(path, folder), text=folder, image=self.window.main_frame.explorer.explorer_folder_image)
 				for file in files:
 					extension = os.path.splitext(file)[1]
-					image = self.window.main_frame.explorer_python_file_image if extension == '.py' or extension == '.pyw' else self.window.main_frame.explorer_file_image
+					image = self.window.main_frame.explorer.explorer_python_file_image if extension == '.py' or extension == '.pyw' else self.window.main_frame.explorer.explorer_file_image
 					self.window.main_frame.explorer.insert(parent, tk.END, os.path.join(path, file), text=file, image=image)
 
 	def save_file(self, event=None):
