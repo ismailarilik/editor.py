@@ -5,9 +5,8 @@ import tokenize
 from editor.tokenizer import Tokenizer
 
 class Editor(tk.Text):
-	def __init__(self, master, window):
+	def __init__(self, master):
 		super().__init__(master, undo=True, wrap=tk.NONE)
-		self.window = window
 		self.tab_size = 4
 		self.tokenizer = Tokenizer()
 		self.token_type_color_map = {
@@ -68,7 +67,12 @@ class Editor(tk.Text):
 		# Listen for modified event
 		self.bind('<<Modified>>', self.modified)
 
-	def post_init(self):
+	def post_init(self, file_component, edit_component, get_title, set_title, close_find_frame):
+		self.file_component = file_component
+		self.edit_component = edit_component
+		self.get_title = get_title
+		self.set_title = set_title
+		self.close_find_frame = close_find_frame
 		self.add_keyboard_bindings()
 
 	@property
@@ -109,33 +113,33 @@ class Editor(tk.Text):
 		self.config(yscrollcommand=vertical_scrollbar.set, xscrollcommand=horizontal_scrollbar.set)
 
 	def open_file_in_editor(self, file_path):
-		self.window.menu.file_menu.file.path = file_path
-		self.window.menu.file_menu.file.is_modified = False
+		self.file_component.file.path = file_path
+		self.file_component.file.is_modified = False
 		# Set editor text with file text
-		with tokenize.open(self.window.menu.file_menu.file.path) as file:
+		with tokenize.open(self.file_component.file.path) as file:
 			self.set(file.read())
 		# Focus editor in
 		self.focus_set()
 		# Reset title because file name has been changed
 		# Also unsaved changes status has been changed to False
-		title = self.window.get_title()
-		title.file_name = self.window.menu.file_menu.file.name
-		title.is_there_unsaved_change = self.window.menu.file_menu.file.is_modified
-		self.window.set_title(title)
+		title = self.get_title()
+		title.file_name = self.file_component.file.name
+		title.is_there_unsaved_change = self.file_component.file.is_modified
+		self.set_title(title)
 		# Return that a file was opened successfully
 		return True
 
 	def close_file_in_editor(self):
-		self.window.menu.file_menu.file.path = None
-		self.window.menu.file_menu.file.is_modified = False
+		self.file_component.file.path = None
+		self.file_component.file.is_modified = False
 		# Clear editor text
 		self.clear()
 		# Reset title because file has been closed
 		# Also there is no unsaved change now
-		title = self.window.get_title()
+		title = self.get_title()
 		title.file_name = title.unsaved_file_name
-		title.is_there_unsaved_change = self.window.menu.file_menu.file.is_modified
-		self.window.set_title(title)
+		title.is_there_unsaved_change = self.file_component.file.is_modified
+		self.set_title(title)
 		# Return that a file was closed successfully
 		return True
 
@@ -145,12 +149,12 @@ class Editor(tk.Text):
 			# File is modified now, so set related flag
 			# Also reset title because unsaved changes status has been changed to True
 			# Do they only if they were not set before, for a better performance
-			file = self.window.menu.file_menu.file
+			file = self.file_component.file
 			if not file.is_modified:
 				file.is_modified = True
-				title = self.window.get_title()
+				title = self.get_title()
 				title.is_there_unsaved_change = file.is_modified
-				self.window.set_title(title)
+				self.set_title(title)
 			# Call this method to set modified flag to False so following modification may cause modified event occurred
 			self.edit_modified(False)
 		# Switch this flag which is for to ensure modified callback being called only by a change
@@ -183,8 +187,8 @@ class Editor(tk.Text):
 
 	def add_keyboard_bindings(self):
 		# Add keyboard bindings for finding
-		self.bind('<Control-KeyPress-f>', self.window.menu.edit_menu.find)
-		self.bind('<Control-KeyPress-F>', self.window.menu.edit_menu.find)
+		self.bind('<Control-KeyPress-f>', self.edit_component.find)
+		self.bind('<Control-KeyPress-F>', self.edit_component.find)
 		# Add Escape keyboard binding for escaping from things in editor
 		self.bind('<Escape>', self.escape)
 		# Handle open file event here, too, for this widget and prevent propagation of event
@@ -196,12 +200,12 @@ class Editor(tk.Text):
 
 	def escape(self, event=None):
 		# Close find frame
-		self.window.main_frame.find_frame.close(event)
+		self.close_find_frame(event)
 
 	def handle_open_file_event_and_prevent_propagation(self, event=None):
-		self.window.menu.file_menu.open_file(event)
+		self.file_component.open_file(event)
 		return 'break'
 
 	def handle_open_folder_event_and_prevent_propagation(self, event=None):
-		self.window.menu.file_menu.open_folder(event)
+		self.file_component.open_folder(event)
 		return 'break'

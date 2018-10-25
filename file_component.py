@@ -2,21 +2,27 @@ import tkinter as tk
 import tkinter.filedialog as tk_filedialog
 import tkinter.messagebox as tk_messagebox
 import os
-from menu.file_menu.file import File
 
-class FileMenu(tk.Menu):
-	def __init__(self, master, window):
-		super().__init__(master)
-		self.window = window
+class File(object):
+	def __init__(self, path):
+		self.path = path
+		self.is_modified = False
+
+	@property
+	def name(self):
+		if self.path:
+			return os.path.basename(self.path)
+
+class FileComponent(object):
+	def __init__(self):
 		self.file = File(None)
 		self.folder = None
-		self.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file)
-		self.add_command(label='Open Folder', accelerator='Ctrl+D', command=self.open_folder)
-		self.add_separator()
-		self.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file)
-		self.add_command(label='Save File as...', accelerator='Ctrl+Shift+S', command=self.save_file_as)
-		self.add_separator()
-		self.add_command(label='Quit', accelerator='Ctrl+Q', command=self.window.quit)
+
+	def post_init(self, explorer, editor, get_title, set_title):
+		self.explorer = explorer
+		self.editor = editor
+		self.get_title = get_title
+		self.set_title = set_title
 
 	def open_file(self, event=None):
 		'''
@@ -26,7 +32,7 @@ class FileMenu(tk.Menu):
 		if self.save_unsaved_changes():
 			file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
 			if file_path:
-				return self.window.main_frame.editor.open_file_in_editor(file_path)
+				return self.editor.open_file_in_editor(file_path)
 			else:
 				return False
 		else:
@@ -35,7 +41,7 @@ class FileMenu(tk.Menu):
 	def open_folder(self, event=None):
 		self.folder = tk_filedialog.askdirectory()
 		if self.folder:
-			self.window.main_frame.explorer.delete(*self.window.main_frame.explorer.get_children())
+			self.explorer.delete(*self.explorer.get_children())
 			# Create folder
 			try:
 				os.mkdir(self.folder)
@@ -47,11 +53,11 @@ class FileMenu(tk.Menu):
 			for path, folders, files in os.walk(self.folder, onerror=on_error):
 				parent = '' if path == self.folder else path
 				for folder in folders:
-					self.window.main_frame.explorer.insert(parent, tk.END, os.path.join(path, folder), text=folder, image=self.window.main_frame.explorer.explorer_folder_image)
+					self.explorer.insert(parent, tk.END, os.path.join(path, folder), text=folder, image=self.explorer.explorer_folder_image)
 				for file in files:
 					extension = os.path.splitext(file)[1]
-					image = self.window.main_frame.explorer.explorer_python_file_image if extension == '.py' or extension == '.pyw' else self.window.main_frame.explorer.explorer_file_image
-					self.window.main_frame.explorer.insert(parent, tk.END, os.path.join(path, file), text=file, image=image)
+					image = self.explorer.explorer_python_file_image if extension == '.py' or extension == '.pyw' else self.explorer.explorer_file_image
+					self.explorer.insert(parent, tk.END, os.path.join(path, file), text=file, image=image)
 
 	def save_file(self, event=None):
 		'''
@@ -64,15 +70,15 @@ class FileMenu(tk.Menu):
 			return self.save_file_as(event)
 		else:
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
-				file.write(self.window.main_frame.editor.get_wo_eol())
+				file.write(self.editor.get_wo_eol())
 			# Focus editor in
-			self.window.main_frame.editor.focus_set()
+			self.editor.focus_set()
 			# File is unmodified now
 			self.file.is_modified = False
 			# Reset title because unsaved changes status has been changed to False
-			title = self.window.get_title()
+			title = self.get_title()
 			title.is_there_unsaved_change = self.file.is_modified
-			self.window.set_title(title)
+			self.set_title(title)
 			# Return that the file was saved
 			return True
 
@@ -86,15 +92,15 @@ class FileMenu(tk.Menu):
 			self.file.path = file_path
 			self.file.is_modified = False
 			with open(self.file.path, 'w', encoding='UTF-8') as file:
-				file.write(self.window.main_frame.editor.get_wo_eol())
+				file.write(self.editor.get_wo_eol())
 			# Focus editor in
-			self.window.main_frame.editor.focus_set()
+			self.editor.focus_set()
 			# Reset title because file name has been changed
 			# Also unsaved changes status has been changed to False
-			title = self.window.get_title()
+			title = self.get_title()
 			title.file_name = self.file.name
 			title.is_there_unsaved_change = self.file.is_modified
-			self.window.set_title(title)
+			self.set_title(title)
 			# Return that the specified file was saved
 			return True
 		else:

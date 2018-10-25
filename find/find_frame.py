@@ -2,13 +2,17 @@ import tkinter as tk
 from find.find_entry import FindEntry
 
 class FindFrame(tk.Frame):
-	def __init__(self, master, window):
+	def __init__(self, master):
 		super().__init__(master)
-		self.window = window
 		self.create_widgets()
 
+	def post_init(self, editor):
+		self.editor = editor
+		self.find_entry.post_init(self.total_match_variable, self.find, self.see_previous_match, self.see_next_match, self.close)
+
 	def create_widgets(self):
-		self.find_entry = FindEntry(self, self.window)
+		self.find_entry = FindEntry(self)
+		self.find_entry.pack(side=tk.LEFT)
 		# Create find button
 		self.find_button = tk.Button(self, text='Find', command=self.find)
 		self.find_button.pack(side=tk.LEFT)
@@ -36,35 +40,34 @@ class FindFrame(tk.Frame):
 		self.close_button.pack(side=tk.LEFT)
 
 	def clear_tags(self):
-		self.window.main_frame.editor.tag_delete('selected')
-		self.window.main_frame.editor.tag_delete('current_match')
+		self.editor.tag_delete('selected')
+		self.editor.tag_delete('current_match')
 
 	def see_match(self, index, length, order):
-		self.window.main_frame.editor.tag_delete('current_match')
-		self.window.main_frame.editor.tag_configure('current_match', background='gray', foreground='white')
-		self.window.main_frame.editor.tag_add('current_match', index, f'{index}+{length}c')
-		self.window.main_frame.editor.see(index)
+		self.editor.tag_delete('current_match')
+		self.editor.tag_configure('current_match', background='gray', foreground='white')
+		self.editor.tag_add('current_match', index, f'{index}+{length}c')
+		self.editor.see(index)
 		self.current_match_variable.set(order)
 
 	def find(self, event=None):
 		entry_text = self.find_entry.get()
 		if entry_text:
 			self.clear_tags()
-			self.window.main_frame.editor.tag_configure('selected', background='black', foreground='white')
+			self.editor.tag_configure('selected', background='black', foreground='white')
 			index = '1.0'
 			self.count_var = tk.IntVar(self)
 			self.total_match_variable.set(0)
 			self.indices = []
 			while index:
-				index = self.window.main_frame.editor.search(entry_text, index, count=self.count_var, nocase=True, stopindex=tk.END)
+				index = self.editor.search(entry_text, index, count=self.count_var, nocase=True, stopindex=tk.END)
 				if index:
 					self.total_match_variable.set(self.total_match_variable.get() + 1)
 					self.indices.append(index)
 					index = f'{index}+{self.count_var.get()}c'
-					#index = f'{index.split(".")[0]}.{int(index.split(".")[1]) + 1}'
 			if self.indices:
 				for index in self.indices:
-					self.window.main_frame.editor.tag_add('selected', index, f'{index}+{self.count_var.get()}c')
+					self.editor.tag_add('selected', index, f'{index}+{self.count_var.get()}c')
 				# See the first match
 				self.see_match(self.indices[0], self.count_var.get(), 1)
 
@@ -91,4 +94,4 @@ class FindFrame(tk.Frame):
 		self.total_match_variable.set(0)
 		self.place_forget()
 		self.clear_tags()
-		self.window.main_frame.editor.focus_set()
+		self.editor.focus_set()

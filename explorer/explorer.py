@@ -37,13 +37,18 @@ class Explorer(ttk.Treeview):
 		self.explorer_menu.add_command(label='New File', command=self.new_root_file)
 		self.explorer_menu.add_command(label='New Folder', command=self.new_root_folder)
 
+	def post_init(self, file_component, open_file_in_editor, close_file_in_editor):
+		self.file_component = file_component
+		self.open_file_in_editor = open_file_in_editor
+		self.close_file_in_editor = close_file_in_editor
+
 	def open_file_from_explorer(self, event=None):
 		selections = self.selection()
 		if len(selections) == 1:
 			selection = selections[0]
 			if os.path.isfile(selection):
-				if self.window.menu.file_menu.save_unsaved_changes():
-					self.window.main_frame.editor.open_file_in_editor(selection)
+				if self.file_component.save_unsaved_changes():
+					self.open_file_in_editor(selection)
 
 	def open_context_menu(self, event=None):
 		self.menu_target = self.identify_row(event.y)
@@ -55,14 +60,14 @@ class Explorer(ttk.Treeview):
 			else:
 				self.folder_menu.tk_popup(event.x_root, event.y_root)
 		else:
-			if self.window.menu.file_menu.folder:
+			if self.file_component.folder:
 				self.explorer_menu.tk_popup(event.x_root, event.y_root)
 
 	def refresh_explorer(self):
 		self.delete(*self.get_children())
 		def on_error(error):
 			raise error
-		folder = self.window.menu.file_menu.folder
+		folder = self.file_component.folder
 		for path, folders, files in os.walk(folder, onerror=on_error):
 			parent = '' if path == folder else path
 			for folder in folders:
@@ -89,7 +94,7 @@ class Explorer(ttk.Treeview):
 			file_name = entry.get()
 			if file_name:
 				if is_root:
-					root_path = self.window.menu.file_menu.folder
+					root_path = self.file_component.folder
 				else:
 					root_path = self.menu_target
 				file_path = os.path.join(root_path, file_name)
@@ -138,12 +143,12 @@ class Explorer(ttk.Treeview):
 			file_name = entry.get()
 			if file_name:
 				file_path = os.path.join(os.path.dirname(self.menu_target), file_name)
-				is_file_open = self.window.menu.file_menu.file.name == old_file_name
+				is_file_open = self.file_component.file.name == old_file_name
 				is_cancelled = False
 				if is_file and is_file_open:
-					is_cancelled = not self.window.menu.file_menu.save_unsaved_changes()
+					is_cancelled = not self.file_component.save_unsaved_changes()
 					if not is_cancelled:
-						self.window.main_frame.editor.close_file_in_editor()
+						self.close_file_in_editor()
 				if not is_cancelled:
 					os.replace(self.menu_target, file_path)
 					selection = file_path
@@ -169,9 +174,9 @@ class Explorer(ttk.Treeview):
 			file_path = self.menu_target
 			file_name = os.path.basename(file_path)
 			os.remove(file_path)
-			is_file_open = self.window.menu.file_menu.file.name == file_name
+			is_file_open = self.file_component.file.name == file_name
 			if is_file_open:
-				self.window.main_frame.editor.close_file_in_editor()
+				self.close_file_in_editor()
 		else:
 			shutil.rmtree(self.menu_target)
 		selection = self.parent(self.menu_target)
