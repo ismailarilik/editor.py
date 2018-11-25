@@ -13,10 +13,14 @@ class File(object):
 		if self.path:
 			return os.path.basename(self.path)
 
+class Folder(object):
+	def __init__(self, path):
+		self.path = path
+
 class FileComponent(object):
 	def __init__(self):
 		self.file = File(None)
-		self.folder = None
+		self.folder = Folder(None)
 
 	def post_init(self, explorer, editor, get_title, set_title):
 		self.explorer = explorer
@@ -39,19 +43,19 @@ class FileComponent(object):
 			return False
 
 	def open_folder(self, event=None):
-		self.folder = tk_filedialog.askdirectory()
-		if self.folder:
+		self.folder.path = tk_filedialog.askdirectory()
+		if self.folder.path:
 			self.explorer.delete(*self.explorer.get_children())
 			# Create folder
 			try:
-				os.mkdir(self.folder)
+				os.mkdir(self.folder.path)
 			except FileExistsError as error:
 				print('An error occurred while opening a folder:')
 				print(error)
 			def on_error(error):
 				raise error
-			for path, folders, files in os.walk(self.folder, onerror=on_error):
-				parent = '' if path == self.folder else path
+			for path, folders, files in os.walk(self.folder.path, onerror=on_error):
+				parent = '' if path == self.folder.path else path
 				for folder in folders:
 					self.explorer.insert(parent, tk.END, os.path.join(path, folder), text=folder, image=self.explorer.explorer_folder_image)
 				for file in files:

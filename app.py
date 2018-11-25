@@ -1,9 +1,12 @@
 import tkinter as tk
+import tkinter.ttk as ttk
 from explorer.explorer import Explorer
+from search.search_frame import SearchFrame
 from editor.editor import Editor
 from find.find_frame import FindFrame
 from file_component import FileComponent
 from edit_component import EditComponent
+from settings_component import SettingsComponent
 
 class Title(object):
 	def __init__(self, is_there_unsaved_change, file_name, app_name):
@@ -29,6 +32,10 @@ class App(tk.Tk):
 		self.set_title(title)
 		# Set icon
 		self.iconbitmap('icon.ico')
+
+		# Create settings component
+		self.settings_component = SettingsComponent()
+
 		# Add menu
 		self.menu = tk.Menu(self)
 		self.config(menu=self.menu)
@@ -51,21 +58,32 @@ class App(tk.Tk):
 		# Create main frame
 		main_frame = tk.Frame(self)
 		main_frame.pack(fill=tk.BOTH, expand=True)
+
 		# Create paned window
 		paned_window = tk.PanedWindow(main_frame)
 		paned_window.pack(fill=tk.BOTH, expand=True)
-		# Create explorer frame and add it to paned window
-		explorer_frame = tk.Frame(paned_window)
-		paned_window.add(explorer_frame)
+
+		# Create explorer notebook and add it to paned window
+		self.explorer_notebook = ttk.Notebook(paned_window)
+		paned_window.add(self.explorer_notebook)
+		# Create explorer frame and add it to explorer notebook
+		explorer_frame = tk.Frame(self.explorer_notebook)
+		self.explorer_notebook.add(explorer_frame, text='Files')
 		# Create explorer inside explorer frame
 		self.explorer = Explorer(explorer_frame, self)
 		self.explorer.pack(fill=tk.BOTH, expand=True)
+		# Create search frame and add it to explorer notebook
+		search_settings = self.settings_component.settings['search']
+		self.search_frame = SearchFrame(self.explorer_notebook, search_settings, self.file_component.folder)
+		self.explorer_notebook.add(self.search_frame, text='Search')
+
 		# Create editor frame and add it to paned window
 		editor_frame = tk.Frame(paned_window)
 		paned_window.add(editor_frame)
 		# Create editor inside editor frame
 		self.editor = Editor(editor_frame)
 		self.editor.pack(fill=tk.BOTH, expand=True)
+
 		# Create find frame inside this frame
 		self.find_frame = FindFrame(self)
 		# Post initialization

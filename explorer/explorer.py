@@ -60,16 +60,16 @@ class Explorer(ttk.Treeview):
 			else:
 				self.folder_menu.tk_popup(event.x_root, event.y_root)
 		else:
-			if self.file_component.folder:
+			if self.file_component.folder.path:
 				self.explorer_menu.tk_popup(event.x_root, event.y_root)
 
 	def refresh_explorer(self):
 		self.delete(*self.get_children())
 		def on_error(error):
 			raise error
-		folder = self.file_component.folder
-		for path, folders, files in os.walk(folder, onerror=on_error):
-			parent = '' if path == folder else path
+		folder_path = self.file_component.folder.path
+		for path, folders, files in os.walk(folder_path, onerror=on_error):
+			parent = '' if path == folder_path else path
 			for folder in folders:
 				self.insert(parent, tk.END, os.path.join(path, folder), text=folder, image=self.explorer_folder_image)
 			for file in files:
@@ -94,7 +94,7 @@ class Explorer(ttk.Treeview):
 			file_name = entry.get()
 			if file_name:
 				if is_root:
-					root_path = self.file_component.folder
+					root_path = self.file_component.folder.path
 				else:
 					root_path = self.menu_target
 				file_path = os.path.join(root_path, file_name)
