@@ -32,7 +32,7 @@ class App(tk.Tk):
 		self.set_title(title)
 		# Set icon
 		icon_img = tk.PhotoImage(file='python.png')
-		self.iconphoto(icon_img)
+		self.tk.call('wm', 'iconphoto',self._w, icon_img)
 
 		# Create settings component
 		self.settings_component = SettingsComponent()
