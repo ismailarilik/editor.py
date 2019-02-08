@@ -1,5 +1,5 @@
 import tkinter as tk
-from find.find_entry import FindEntry
+from .find_entry import FindEntry
 
 class FindFrame(tk.Frame):
 	def __init__(self, master):

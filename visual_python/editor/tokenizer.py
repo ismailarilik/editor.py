@@ -1,6 +1,6 @@
 import keyword
 import tokenize
-from editor.token import Token
+from .token import Token
 
 class Tokenizer(object):
 	# Initialize keyword token type and name

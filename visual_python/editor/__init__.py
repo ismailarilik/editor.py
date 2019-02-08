@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.font as tk_font
 import io
 import tokenize
-from editor.tokenizer import Tokenizer
+from .tokenizer import Tokenizer
 
 class Editor(tk.Text):
 	def __init__(self, master):

@@ -1,13 +1,13 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-from title import Title
-from explorer.explorer import Explorer
-from search.search_frame import SearchFrame
-from editor.editor import Editor
-from find.find_frame import FindFrame
-from file_component import FileComponent
-from edit_component import EditComponent
-from settings_component import SettingsComponent
+from .title import Title
+from .explorer import Explorer
+from .search.search_frame import SearchFrame
+from .editor import Editor
+from .find.find_frame import FindFrame
+from .file_component import FileComponent
+from .edit_component import EditComponent
+from .settings_component import SettingsComponent
 
 class App(tk.Tk):
 	def __init__(self):
@@ -17,7 +17,7 @@ class App(tk.Tk):
 		self._title = None
 		self.set_title(False, None, self.app_name)
 		# Set icon
-		icon_img = tk.PhotoImage(file='python.png')
+		icon_img = tk.PhotoImage(file='./python.png')
 		self.iconphoto(True, icon_img)
 
 		# Create settings component
@@ -133,6 +133,3 @@ class App(tk.Tk):
 	def quit(self, event=None):
 		if self.file_component.save_unsaved_changes():
 			self.destroy()
-
-app = App()
-app.mainloop()
