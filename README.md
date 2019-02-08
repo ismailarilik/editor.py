@@ -11,17 +11,17 @@ It is being written with Python and Tkinter.
 ### On Windows
 
 ```shell
-py -3 app.py
+py -3 -m visual_python
 ```
 
 ### On GNU/Linux
 
 ```shell
-python3 app.py
+python3 -m visual_python
 ```
 
 ### On Mac OS
 
 ```shell
-python3 app.py
+python3 -m visual_python
 ```
