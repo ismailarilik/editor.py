@@ -28,8 +28,8 @@ class App(tk.Tk):
 		super().__init__()
 		self.app_name = 'Visual Python'
 		# Set title
-		title = Title(False, None, self.app_name)
-		self.set_title(title)
+		self._title = None
+		self.set_title(False, None, self.app_name)
 		# Set icon
 		icon_img = tk.PhotoImage(file='python.png')
 		self.iconphoto(True, icon_img)
@@ -97,17 +97,21 @@ class App(tk.Tk):
 		self.protocol('WM_DELETE_WINDOW', self.quit)
 
 	def _post_init(self):
-		self.file_component.post_init(self.explorer, self.editor, self.get_title, self.set_title)
+		self.file_component.post_init(self.explorer, self.editor, self.set_title)
 		self.edit_component.post_init(self.find_frame)
 		self.explorer.post_init(self.file_component, self.editor.open_file_in_editor, self.editor.close_file_in_editor)
-		self.editor.post_init(self.file_component, self.edit_component, self.get_title, self.set_title, self.find_frame.close)
+		self.editor.post_init(self.file_component, self.edit_component, self.set_title, self.find_frame.close)
 		self.find_frame.post_init(self.editor)
 
-	def get_title(self):
-		return self._title
-
-	def set_title(self, new_title):
-		self._title = new_title
+	def set_title(self, is_there_unsaved_change=None, file_name=None, app_name=None):
+		if not self._title:
+			self._title = Title(is_there_unsaved_change, file_name, app_name)
+		if is_there_unsaved_change is not None:
+			self._title.is_there_unsaved_change = is_there_unsaved_change
+		if file_name:
+			self._title.file_name = file_name
+		elif file_name == '':
+			self._title.file_name = self._title.unsaved_file_name
 		self.title(self._title)
 
 	def _resize_and_center(self):

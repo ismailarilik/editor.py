@@ -22,10 +22,9 @@ class FileComponent(object):
 		self.file = File(None)
 		self.folder = Folder(None)
 
-	def post_init(self, explorer, editor, get_title, set_title):
+	def post_init(self, explorer, editor, set_title):
 		self.explorer = explorer
 		self.editor = editor
-		self.get_title = get_title
 		self.set_title = set_title
 
 	def open_file(self, event=None):
@@ -80,9 +79,7 @@ class FileComponent(object):
 			# File is unmodified now
 			self.file.is_modified = False
 			# Reset title because unsaved changes status has been changed to False
-			title = self.get_title()
-			title.is_there_unsaved_change = self.file.is_modified
-			self.set_title(title)
+			self.set_title(is_there_unsaved_change=self.file.is_modified)
 			# Return that the file was saved
 			return True
 
@@ -101,10 +98,7 @@ class FileComponent(object):
 			self.editor.focus_set()
 			# Reset title because file name has been changed
 			# Also unsaved changes status has been changed to False
-			title = self.get_title()
-			title.file_name = self.file.name
-			title.is_there_unsaved_change = self.file.is_modified
-			self.set_title(title)
+			self.set_title(file_name=self.file.name, is_there_unsaved_change=self.file.is_modified)
 			# Return that the specified file was saved
 			return True
 		else:

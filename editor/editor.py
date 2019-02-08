@@ -67,10 +67,9 @@ class Editor(tk.Text):
 		# Listen for modified event
 		self.bind('<<Modified>>', self.modified)
 
-	def post_init(self, file_component, edit_component, get_title, set_title, close_find_frame):
+	def post_init(self, file_component, edit_component, set_title, close_find_frame):
 		self.file_component = file_component
 		self.edit_component = edit_component
-		self.get_title = get_title
 		self.set_title = set_title
 		self.close_find_frame = close_find_frame
 		self.add_keyboard_bindings()
@@ -122,10 +121,10 @@ class Editor(tk.Text):
 		self.focus_set()
 		# Reset title because file name has been changed
 		# Also unsaved changes status has been changed to False
-		title = self.get_title()
-		title.file_name = self.file_component.file.name
-		title.is_there_unsaved_change = self.file_component.file.is_modified
-		self.set_title(title)
+		self.set_title(
+			file_name=self.file_component.file.name,
+			is_there_unsaved_change=self.file_component.file.is_modified
+		)
 		# Return that a file was opened successfully
 		return True
 
@@ -136,10 +135,7 @@ class Editor(tk.Text):
 		self.clear()
 		# Reset title because file has been closed
 		# Also there is no unsaved change now
-		title = self.get_title()
-		title.file_name = title.unsaved_file_name
-		title.is_there_unsaved_change = self.file_component.file.is_modified
-		self.set_title(title)
+		self.set_title(file_name='', is_there_unsaved_change=self.file_component.file.is_modified)
 		# Return that a file was closed successfully
 		return True
 
@@ -152,9 +148,7 @@ class Editor(tk.Text):
 			file = self.file_component.file
 			if not file.is_modified:
 				file.is_modified = True
-				title = self.get_title()
-				title.is_there_unsaved_change = file.is_modified
-				self.set_title(title)
+				self.set_title(is_there_unsaved_change=file.is_modified)
 			# Call this method to set modified flag to False so following modification may cause modified event occurred
 			self.edit_modified(False)
 		# Switch this flag which is for to ensure modified callback being called only by a change
