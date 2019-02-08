@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+from title import Title
 from explorer.explorer import Explorer
 from search.search_frame import SearchFrame
 from editor.editor import Editor
@@ -7,21 +8,6 @@ from find.find_frame import FindFrame
 from file_component import FileComponent
 from edit_component import EditComponent
 from settings_component import SettingsComponent
-
-class Title(object):
-	def __init__(self, is_there_unsaved_change, file_name, app_name):
-		self.unsaved_changes_specifier = '*'
-		self.is_there_unsaved_change = is_there_unsaved_change
-		self.unsaved_file_name = '<unsaved_file>'
-		self.file_name = file_name if file_name else self.unsaved_file_name
-		self.app_name = app_name
-
-	def __str__(self):
-		title_string = ''
-		if self.is_there_unsaved_change:
-			title_string += f'{self.unsaved_changes_specifier}'
-		title_string += f'{self.file_name} - {self.app_name}'
-		return title_string
 
 class App(tk.Tk):
 	def __init__(self):
