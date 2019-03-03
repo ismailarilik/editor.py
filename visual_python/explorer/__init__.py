@@ -21,7 +21,7 @@ class Explorer(ttk.Treeview):
 		self.bind('<Button-3>', self.open_context_menu)
 		# Create icons of explorer items
 		self.explorer_file_image = tk.PhotoImage(file='file.png')
-		self.explorer_python_file_image = tk.PhotoImage(file='python_file.gif')
+		self.explorer_python_file_image = tk.PhotoImage(file='python.png')
 		self.explorer_folder_image = tk.PhotoImage(file='folder.gif')
 		# Create context menu for explorer
 		self.folder_menu = tk.Menu(self.window)
