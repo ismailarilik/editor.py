@@ -1,2 +1,5 @@
 # Python related ignores
 __pycache__
+
+# Editor related ignores
+.vscode
