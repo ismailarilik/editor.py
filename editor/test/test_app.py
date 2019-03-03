@@ -1,6 +1,7 @@
 import unittest
 import tkinter as tk
 from .. import App
+from ..title import Title
 
 class TestApp(unittest.TestCase):
     def setUp(self):
@@ -17,6 +18,13 @@ class TestApp(unittest.TestCase):
 
     def test_if_it_initializes_unsaved_file_name_as_unsaved_file(self):
         self.assertEqual(self.app.unsaved_file_name, 'unsaved_file')
+
+    def test_if_it_initializes_title_correctly(self):
+        title = self.app._title
+        self.assertIsInstance(title, Title)
+        self.assertEqual(title.unsaved_changes_specifier, self.app.unsaved_changes_specifier)
+        self.assertEqual(title.unsaved_file_name, self.app.unsaved_file_name)
+        self.assertEqual(title.app_name, self.app.app_name)
 
     def tearDown(self):
         self.app.destroy()
