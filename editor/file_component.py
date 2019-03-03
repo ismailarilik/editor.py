@@ -14,8 +14,23 @@ class File(object):
             return os.path.basename(self.path)
 
 class Folder(object):
-    def __init__(self, path):
-        self.path = path
+        self._path = path
+        self._name = None
+        if self.path:
+            self._name = os.path.basename(self.path)
+
+    @property
+    def path(self):
+        return self._path
+
+    @path.setter
+    def path(self, newPath):
+        self._path = newPath
+        self._name = os.path.basename(self.path)
+
+    @property
+    def name(self):
+        return self._name
 
 class FileComponent(object):
     def __init__(self):
