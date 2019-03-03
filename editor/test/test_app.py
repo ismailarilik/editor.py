@@ -12,5 +12,8 @@ class TestApp(unittest.TestCase):
     def test_if_it_initializes_app_name_as_editor(self):
         self.assertEqual(self.app.app_name, 'Editor')
 
+    def test_if_it_initializes_unsaved_changes_specifier_as_asterisk(self):
+        self.assertEqual(self.app.unsaved_changes_specifier, '*')
+
     def tearDown(self):
         self.app.destroy()
