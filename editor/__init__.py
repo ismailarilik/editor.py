@@ -12,7 +12,7 @@ from .settings_component import SettingsComponent
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.app_name = 'Visual Python'
+        self.app_name = 'Editor'
         # Set title
         self._title = None
         self.set_title(False, None, self.app_name)
