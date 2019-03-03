@@ -77,6 +77,8 @@ class FileComponent(object):
                     extension = os.path.splitext(file)[1]
                     image = self.explorer.explorer_python_file_image if extension == '.py' or extension == '.pyw' else self.explorer.explorer_file_image
                     self.explorer.insert(parent, tk.END, os.path.join(path, file), text=file, image=image)
+            # Set title's folder part
+            self.set_title(folder_name=self.folder.name)
 
     def save_file(self, event=None):
         '''
@@ -114,7 +116,8 @@ class FileComponent(object):
             self.editor.focus_set()
             # Reset title because file name has been changed
             # Also unsaved changes status has been changed to False
-            self.set_title(file_name=self.file.name, is_there_unsaved_change=self.file.is_modified)
+            self.set_title(is_there_unsaved_change=self.file.is_modified, is_file_unsaved=False,
+                file_name=self.file.name)
             # Return that the specified file was saved
             return True
         else:

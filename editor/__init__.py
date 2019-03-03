@@ -13,9 +13,11 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.app_name = 'Editor'
+        self.unsaved_changes_specifier = '*'
+        self.unsaved_file_name = 'unsaved_file'
         # Set title
-        self._title = None
-        self.set_title(False, None, self.app_name)
+        self._title = Title(self.unsaved_changes_specifier, self.unsaved_file_name, self.app_name)
+        self.set_title()
         # Set icon
         icon_img = tk.PhotoImage(file='./python.png')
         self.iconphoto(True, icon_img)
@@ -89,16 +91,16 @@ class App(tk.Tk):
         self.editor.post_init(self.file_component, self.edit_component, self.set_title, self.find_frame.close)
         self.find_frame.post_init(self.editor)
 
-    def set_title(self, is_there_unsaved_change=None, file_name=None, app_name=None):
-        if not self._title:
-            self._title = Title(is_there_unsaved_change, file_name, app_name)
+    def set_title(self, is_there_unsaved_change=None, is_file_unsaved=None, file_name=None, folder_name=None):
         if is_there_unsaved_change is not None:
             self._title.is_there_unsaved_change = is_there_unsaved_change
-        if file_name:
+        if is_file_unsaved is not None:
+            self._title.is_file_unsaved = is_file_unsaved
+        if file_name is not None:
             self._title.file_name = file_name
-        elif file_name == '':
-            self._title.file_name = self._title.unsaved_file_name
-        self.title(self._title)
+        if folder_name is not None:
+            self._title.folder_name = folder_name
+        self.title(str(self._title))
 
     def _resize_and_center(self):
         '''
