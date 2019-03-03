@@ -31,6 +31,13 @@ class TestApp(unittest.TestCase):
         app_name = self.app.app_name
         self.assertEqual(self.app.title(), f'{unsaved_file_name} - {app_name}')
 
+    def test_if_it_initializes_icon_file_name_correctly(self):
+        self.assertEqual(self.app.icon_file_name, 'python.png')
+
+    def test_if_it_initializes_icon_correctly(self):
+        self.assertIsInstance(self.app.icon, tk.PhotoImage)
+        self.assertEqual(self.app.icon['file'], self.app.icon_file_name)
+
     def tearDown(self):
         self.app.destroy()
 
