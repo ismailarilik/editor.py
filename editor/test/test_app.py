@@ -26,5 +26,10 @@ class TestApp(unittest.TestCase):
         self.assertEqual(title.unsaved_file_name, self.app.unsaved_file_name)
         self.assertEqual(title.app_name, self.app.app_name)
 
+    def test_if_it_sets_title_correctly(self):
+        unsaved_file_name = self.app.unsaved_file_name
+        app_name = self.app.app_name
+        self.assertEqual(self.app.title(), f'{unsaved_file_name} - {app_name}')
+
     def tearDown(self):
         self.app.destroy()
