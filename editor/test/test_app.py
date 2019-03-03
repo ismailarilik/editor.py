@@ -15,5 +15,8 @@ class TestApp(unittest.TestCase):
     def test_if_it_initializes_unsaved_changes_specifier_as_asterisk(self):
         self.assertEqual(self.app.unsaved_changes_specifier, '*')
 
+    def test_if_it_initializes_unsaved_file_name_as_unsaved_file(self):
+        self.assertEqual(self.app.unsaved_file_name, 'unsaved_file')
+
     def tearDown(self):
         self.app.destroy()
