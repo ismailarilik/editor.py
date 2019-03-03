@@ -14,6 +14,7 @@ class File(object):
             return os.path.basename(self.path)
 
 class Folder(object):
+    def __init__(self, path=None):
         self._path = path
         self._name = None
         if self.path:
@@ -35,7 +36,7 @@ class Folder(object):
 class FileComponent(object):
     def __init__(self):
         self.file = File(None)
-        self.folder = Folder(None)
+        self.folder = Folder()
 
     def post_init(self, explorer, editor, set_title):
         self.explorer = explorer
