@@ -9,11 +9,11 @@ It is under heavy development so use it carefully.
 ### On Windows
 
 ```shell
-py -3 -m visual_python
+py -3 -m editor
 ```
 
 ### On Mac OS, GNU/Linux and UNIX
 
 ```shell
-python3 -m visual_python
+python3 -m editor
 ```
