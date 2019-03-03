@@ -9,5 +9,8 @@ class TestApp(unittest.TestCase):
     def test_if_it_is_a_tk_instance(self):
         self.assertIsInstance(self.app, tk.Tk)
 
+    def test_if_it_initializes_app_name_as_editor(self):
+        self.assertEqual(self.app.app_name, 'Editor')
+
     def tearDown(self):
         self.app.destroy()
