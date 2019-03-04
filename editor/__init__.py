@@ -231,6 +231,9 @@ class App(tk.Tk):
         # Create debug frame and add it to explorer notebook
         debug_frame = tk.Frame(self.explorer_notebook)
         self.explorer_notebook.add(debug_frame, text='Debug')
+        # Create extensions frame and add it to explorer notebook
+        extensions_frame = tk.Frame(self.explorer_notebook)
+        self.explorer_notebook.add(extensions_frame, text='Extensions')
 
         # Create editor frame and add it to paned window
         editor_frame = tk.Frame(paned_window)
