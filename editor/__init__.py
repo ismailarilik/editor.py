@@ -217,7 +217,7 @@ class App(tk.Tk):
         paned_window.add(self.explorer_notebook)
         # Create explorer frame and add it to explorer notebook
         explorer_frame = tk.Frame(self.explorer_notebook)
-        self.explorer_notebook.add(explorer_frame, text='Files')
+        self.explorer_notebook.add(explorer_frame, text='Explorer')
         # Create explorer inside explorer frame
         self.explorer = Explorer(explorer_frame, self)
         self.explorer.pack(fill=tk.BOTH, expand=True)
