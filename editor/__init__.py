@@ -228,6 +228,9 @@ class App(tk.Tk):
         # Create version control frame and add it to explorer notebook
         version_control_frame = tk.Frame(self.explorer_notebook)
         self.explorer_notebook.add(version_control_frame, text='Version Control')
+        # Create debug frame and add it to explorer notebook
+        debug_frame = tk.Frame(self.explorer_notebook)
+        self.explorer_notebook.add(debug_frame, text='Debug')
 
         # Create editor frame and add it to paned window
         editor_frame = tk.Frame(paned_window)
