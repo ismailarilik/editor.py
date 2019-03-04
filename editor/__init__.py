@@ -68,7 +68,7 @@ class App(tk.Tk):
         self.view_menu = tk.Menu(self.menu)
         self.menu.add_cascade(label='View', menu=self.view_menu)
         self.view_menu.add_command(label='Explorer', accelerator='Ctrl+Shift+E', command=self.explorer_command)
-        self.view_menu.add_command(label='Search', accelerator='Ctrl+Shift+F', command=self.search_command)
+        self.view_menu.add_command(label='Search', accelerator='Ctrl+Shift+F', command=self.find_in_files_command)
         self.view_menu.add_command(label='Version Control', accelerator='Ctrl+Shift+V',
             command=self.version_control_command)
         self.view_menu.add_command(label='Debug', accelerator='Ctrl+Shift+D', command=self.debug_command)
@@ -124,6 +124,81 @@ class App(tk.Tk):
         self.help_menu.add_separator()
         self.help_menu.add_command(label='About', command=self.about_command)
 
+        # Create keyboard bindings
+        self.bind('<Control-n>', self.new_file_command)
+        self.bind('<Control-N>', self.new_file_command)
+        self.bind('<Control-Shift-n>', self.new_folder_command)
+        self.bind('<Control-Shift-N>', self.new_folder_command)
+        self.bind('<Control-o>', self.open_file_command)
+        self.bind('<Control-O>', self.open_file_command)
+        self.bind('<Control-Shift-o>', self.open_folder_command)
+        self.bind('<Control-Shift-O>', self.open_folder_command)
+        self.bind('<Control-s>', self.save_file_command)
+        self.bind('<Control-S>', self.save_file_command)
+        self.bind('<Control-Shift-s>', self.save_file_as_command)
+        self.bind('<Control-Shift-S>', self.save_file_as_command)
+        self.bind('<Control-Alt_L><s>', self.save_all_command)
+        self.bind('<Control-,>', self.settings_command)
+        self.bind('<Control-F4>', self.close_editor_command)
+        self.bind('<Control-Shift-F4>', self.close_folder_command)
+        self.bind('<Control-q>', self.quit_command)
+        self.bind('<Control-Q>', self.quit_command)
+        self.bind('<Control-z>', self.undo_command)
+        self.bind('<Control-Z>', self.undo_command)
+        self.bind('<Control-Shift-z>', self.redo_command)
+        self.bind('<Control-Shift-Z>', self.redo_command)
+        self.bind('<Control-a>', self.select_all_command)
+        self.bind('<Control-A>', self.select_all_command)
+        self.bind('<Control-x>', self.cut_command)
+        self.bind('<Control-X>', self.cut_command)
+        self.bind('<Control-c>', self.copy_command)
+        self.bind('<Control-C>', self.copy_command)
+        self.bind('<Control-v>', self.paste_command)
+        self.bind('<Control-V>', self.paste_command)
+        self.bind('<Control-f>', self.find_command)
+        self.bind('<Control-F>', self.find_command)
+        self.bind('<Control-r>', self.replace_command)
+        self.bind('<Control-R>', self.replace_command)
+        self.bind('<Control-Shift-f>', self.find_in_files_command)
+        self.bind('<Control-Shift-F>', self.find_in_files_command)
+        self.bind('<Control-Shift-r>', self.replace_in_files_command)
+        self.bind('<Control-Shift-R>', self.replace_in_files_command)
+        self.bind('<Control-Shift-e>', self.explorer_command)
+        self.bind('<Control-Shift-E>', self.explorer_command)
+        self.bind('<Control-Shift-f>', self.find_in_files_command)
+        self.bind('<Control-Shift-F>', self.find_in_files_command)
+        self.bind('<Control-Shift-v>', self.version_control_command)
+        self.bind('<Control-Shift-V>', self.version_control_command)
+        self.bind('<Control-Shift-d>', self.debug_command)
+        self.bind('<Control-Shift-D>', self.debug_command)
+        self.bind('<Control-Shift-x>', self.extensions_command)
+        self.bind('<Control-Shift-X>', self.extensions_command)
+        self.bind('<Control-Shift-p>', self.problems_command)
+        self.bind('<Control-Shift-P>', self.problems_command)
+        self.bind('<Control-Shift-u>', self.output_command)
+        self.bind('<Control-Shift-U>', self.output_command)
+        self.bind('<Control-Shift-c>', self.debug_console_command)
+        self.bind('<Control-Shift-C>', self.debug_console_command)
+        self.bind('<Control-Shift-t>', self.terminal_command)
+        self.bind('<Control-Shift-T>', self.terminal_command)
+        self.bind('<Control-Next>', self.next_editor_command)
+        self.bind('<Control-Prior>', self.previous_editor_command)
+        self.bind('<Control-p>', self.go_to_file_command)
+        self.bind('<Control-P>', self.go_to_file_command)
+        self.bind('<Control-d>', self.go_to_declaration_command)
+        self.bind('<Control-D>', self.go_to_declaration_command)
+        self.bind('<Control-g>', self.go_to_line_column_command)
+        self.bind('<Control-G>', self.go_to_line_column_command)
+        self.bind('<F5>', self.start_debugging_command)
+        self.bind('<Control-F5>', self.start_without_debugging_command)
+        self.bind('<Shift-F5>', self.stop_debugging_command)
+        self.bind('<Control-Shift-F5>', self.restart_debugging_command)
+        self.bind('<F10>', self.step_over_command)
+        self.bind('<F11>', self.step_into_command)
+        self.bind('<Shift-F11>', self.step_out_command)
+        self.bind('<F5>', self.continue_command)
+        self.bind('<F9>', self.toggle_breakpoint_command)
+
         # Create components
         self.file_component = FileComponent()
         self.edit_component = EditComponent()
@@ -164,8 +239,6 @@ class App(tk.Tk):
         self._post_init()
         # Resize and center the window
         self._resize_and_center()
-        # Add keyboard bindings
-        self._add_keyboard_bindings()
         # Register delete window protocol to save unsaved changes and handle other things properly on quit
         self.protocol('WM_DELETE_WINDOW', self.quit_command)
 
@@ -187,158 +260,155 @@ class App(tk.Tk):
             self._title.folder_name = folder_name
         self.title(str(self._title))
 
-    def new_file_command(self):
+    def new_file_command(self, event=None):
         pass
 
-    def new_folder_command(self):
+    def new_folder_command(self, event=None):
         pass
 
-    def open_file_command(self):
+    def open_file_command(self, event=None):
         self.file_component.open_file()
 
-    def open_folder_command(self):
+    def open_folder_command(self, event=None):
         self.file_component.open_folder()
 
-    def save_file_command(self):
+    def save_file_command(self, event=None):
         self.file_component.save_file()
 
-    def save_file_as_command(self):
+    def save_file_as_command(self, event=None):
         self.file_component.save_file_as()
 
-    def save_all_command(self):
+    def save_all_command(self, event=None):
         pass
 
-    def settings_command(self):
+    def settings_command(self, event=None):
         pass
 
-    def close_editor_command(self):
+    def close_editor_command(self, event=None):
         pass
 
-    def close_folder_command(self):
+    def close_folder_command(self, event=None):
         pass
 
     def quit_command(self, event=None):
         if self.file_component.save_unsaved_changes():
             self.destroy()
 
-    def undo_command(self):
+    def undo_command(self, event=None):
         pass
 
-    def redo_command(self):
+    def redo_command(self, event=None):
         pass
 
-    def select_all_command(self):
+    def select_all_command(self, event=None):
         pass
 
-    def cut_command(self):
+    def cut_command(self, event=None):
         pass
 
-    def copy_command(self):
+    def copy_command(self, event=None):
         pass
 
-    def paste_command(self):
+    def paste_command(self, event=None):
         pass
 
-    def find_command(self):
+    def find_command(self, event=None):
         self.edit_component.find()
 
-    def replace_command(self):
+    def replace_command(self, event=None):
         pass
 
-    def find_in_files_command(self):
+    def find_in_files_command(self, event=None):
         pass
 
-    def replace_in_files_command(self):
+    def replace_in_files_command(self, event=None):
         pass
 
-    def explorer_command(self):
+    def explorer_command(self, event=None):
         pass
 
-    def search_command(self):
+    def version_control_command(self, event=None):
         pass
 
-    def version_control_command(self):
+    def debug_command(self, event=None):
         pass
 
-    def debug_command(self):
+    def extensions_command(self, event=None):
         pass
 
-    def extensions_command(self):
+    def problems_command(self, event=None):
         pass
 
-    def problems_command(self):
+    def output_command(self, event=None):
         pass
 
-    def output_command(self):
+    def debug_console_command(self, event=None):
         pass
 
-    def debug_console_command(self):
+    def terminal_command(self, event=None):
         pass
 
-    def terminal_command(self):
+    def next_editor_command(self, event=None):
         pass
 
-    def next_editor_command(self):
+    def previous_editor_command(self, event=None):
         pass
 
-    def previous_editor_command(self):
+    def go_to_file_command(self, event=None):
         pass
 
-    def go_to_file_command(self):
+    def go_to_declaration_command(self, event=None):
         pass
 
-    def go_to_declaration_command(self):
+    def go_to_line_column_command(self, event=None):
         pass
 
-    def go_to_line_column_command(self):
+    def start_debugging_command(self, event=None):
         pass
 
-    def start_debugging_command(self):
+    def start_without_debugging_command(self, event=None):
         pass
 
-    def start_without_debugging_command(self):
+    def stop_debugging_command(self, event=None):
         pass
 
-    def stop_debugging_command(self):
+    def restart_debugging_command(self, event=None):
         pass
 
-    def restart_debugging_command(self):
+    def step_over_command(self, event=None):
         pass
 
-    def step_over_command(self):
+    def step_into_command(self, event=None):
         pass
 
-    def step_into_command(self):
+    def step_out_command(self, event=None):
         pass
 
-    def step_out_command(self):
+    def continue_command(self, event=None):
         pass
 
-    def continue_command(self):
+    def toggle_breakpoint_command(self, event=None):
         pass
 
-    def toggle_breakpoint_command(self):
+    def enable_all_breakpoints_command(self, event=None):
         pass
 
-    def enable_all_breakpoints_command(self):
+    def disable_all_breakpoints_command(self, event=None):
         pass
 
-    def disable_all_breakpoints_command(self):
+    def remove_all_breakpoints_command(self, event=None):
         pass
 
-    def remove_all_breakpoints_command(self):
+    def report_issue_command(self, event=None):
         pass
 
-    def report_issue_command(self):
+    def view_license_command(self, event=None):
         pass
 
-    def view_license_command(self):
+    def check_for_updates_command(self, event=None):
         pass
 
-    def check_for_updates_command(self):
-        pass
-
-    def about_command(self):
+    def about_command(self, event=None):
         pass
 
     def _resize_and_center(self):
@@ -353,20 +423,3 @@ class App(tk.Tk):
         window_x = (screen_width // 2) - (window_width // 2)
         window_y = (screen_height // 2) - (window_height // 2)
         self.geometry(f'{window_width}x{window_height}+{window_x}+{window_y}')
-
-    def _add_keyboard_bindings(self):
-        # Add keyboard bindings for opening file
-        self.bind('<Control-KeyPress-o>', self.file_component.open_file)
-        self.bind('<Control-KeyPress-O>', self.file_component.open_file)
-        # Add keyboard bindings for opening folder
-        self.bind('<Control-KeyPress-d>', self.file_component.open_folder)
-        self.bind('<Control-KeyPress-D>', self.file_component.open_folder)
-        # Add keyboard bindings for saving file
-        self.bind('<Control-KeyPress-s>', self.file_component.save_file)
-        self.bind('<Control-KeyPress-S>', self.file_component.save_file)
-        # Add keyboard bindings for saving file as...
-        self.bind('<Control-Shift-KeyPress-s>', self.file_component.save_file_as)
-        self.bind('<Control-Shift-KeyPress-S>', self.file_component.save_file_as)
-        # Add keyboard bindings for quitting
-        self.bind('<Control-KeyPress-q>', self.quit_command)
-        self.bind('<Control-KeyPress-Q>', self.quit_command)
