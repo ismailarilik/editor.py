@@ -11,11 +11,11 @@ It is under heavy development so use it carefully.
 ### Running on Windows
 
 ```shell
-py -3 -m editor
+py -3 -m visual_python
 ```
 
 ### Running on Mac OS, GNU/Linux and UNIX
 
 ```shell
-python3 -m editor
+python3 -m visual_python
 ```
