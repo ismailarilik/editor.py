@@ -34,14 +34,13 @@ class Folder(object):
 		return self._name
 
 class FileComponent(object):
-	def __init__(self):
+	def __init__(self, open_file_callback, open_folder_callback, save_file_callback, save_file_as_callback):
+		self.__open_file_callback = open_file_callback
+		self.__open_folder_callback = open_folder_callback
+		self.__save_file_callback = save_file_callback
+		self.__save_file_as_callback = save_file_as_callback
 		self.file = File(None)
 		self.folder = Folder()
-
-	def post_init(self, explorer, editor, set_title):
-		self.explorer = explorer
-		self.editor = editor
-		self.set_title = set_title
 
 	def open_file(self, event=None):
 		'''
@@ -51,7 +50,7 @@ class FileComponent(object):
 		if self.save_unsaved_changes():
 			file_path = tk_filedialog.askopenfilename(filetypes=[('Python Files', '.py')])
 			if file_path:
-				return self.editor.open_file_in_editor(file_path)
+				return self.__open_file_callback(file_path)
 			else:
 				return False
 		else:
@@ -60,25 +59,14 @@ class FileComponent(object):
 	def open_folder(self, event=None):
 		self.folder.path = tk_filedialog.askdirectory()
 		if self.folder.path:
-			self.explorer.delete(*self.explorer.get_children())
 			# Create folder
 			try:
 				os.mkdir(self.folder.path)
 			except FileExistsError as error:
 				print('An error occurred while opening a folder:')
 				print(error)
-			def on_error(error):
-				raise error
-			for path, folders, files in os.walk(self.folder.path, onerror=on_error):
-				parent = '' if path == self.folder.path else path
-				for folder in folders:
-					self.explorer.insert(parent, tk.END, os.path.join(path, folder), text=folder, image=self.explorer.explorer_folder_image)
-				for file in files:
-					extension = os.path.splitext(file)[1]
-					image = self.explorer.explorer_python_file_image if extension == '.py' or extension == '.pyw' else self.explorer.explorer_file_image
-					self.explorer.insert(parent, tk.END, os.path.join(path, file), text=file, image=image)
-			# Set title's folder part
-			self.set_title(folder_name=self.folder.name)
+			# Call callback function
+			self.__open_folder_callback(self.folder)
 
 	def save_file(self, event=None):
 		'''
@@ -90,16 +78,7 @@ class FileComponent(object):
 		if not self.file.path:
 			return self.save_file_as(event)
 		else:
-			with open(self.file.path, 'w', encoding='UTF-8') as file:
-				file.write(self.editor.get_wo_eol())
-			# Focus editor in
-			self.editor.focus_set()
-			# File is unmodified now
-			self.file.is_modified = False
-			# Reset title because unsaved changes status has been changed to False
-			self.set_title(is_there_unsaved_change=self.file.is_modified)
-			# Return that the file was saved
-			return True
+			return self.__save_file_callback(self.file)
 
 	def save_file_as(self, event=None):
 		'''
@@ -110,16 +89,7 @@ class FileComponent(object):
 		if file_path:
 			self.file.path = file_path
 			self.file.is_modified = False
-			with open(self.file.path, 'w', encoding='UTF-8') as file:
-				file.write(self.editor.get_wo_eol())
-			# Focus editor in
-			self.editor.focus_set()
-			# Reset title because file name has been changed
-			# Also unsaved changes status has been changed to False
-			self.set_title(is_there_unsaved_change=self.file.is_modified, is_file_unsaved=False,
-				file_name=self.file.name)
-			# Return that the specified file was saved
-			return True
+			return self.__save_file_as_callback(self.file)
 		else:
 			return False
 
