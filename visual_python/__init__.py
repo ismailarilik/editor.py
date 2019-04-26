@@ -202,7 +202,7 @@ class App(tk.Tk):
 
 		# Create components
 		self.file_component = FileComponent(self.__open_file_callback, self.__open_folder_callback, self.__save_file_callback, self.__save_file_as_callback)
-		self.edit_component = EditComponent()
+		self.edit_component = EditComponent(self.__find_callback)
 		self.settings_component = SettingsComponent()
 
 		# Create main frame
@@ -253,7 +253,6 @@ class App(tk.Tk):
 		self.protocol('WM_DELETE_WINDOW', self.quit_command)
 
 	def _post_init(self):
-		self.edit_component.post_init(self.find_frame)
 		self.explorer.post_init(self.file_component, self.editor.open_file_in_editor, self.editor.close_file_in_editor)
 		self.editor.post_init(self.file_component, self.edit_component, self.set_title, self.find_frame.close)
 		self.find_frame.post_init(self.editor)
@@ -299,6 +298,11 @@ class App(tk.Tk):
 		self.set_title(is_there_unsaved_change=file.is_modified, is_file_unsaved=False, file_name=file.name)
 		# Return that the specified file was saved
 		return True
+
+	def __find_callback(self, event=None):
+		self.find_frame.place(relx=1, anchor=tk.NE)
+		self.find_frame.find_entry.focus_set()
+		self.find_frame.find_entry.select_range(0, tk.END)
 
 	def set_title(self, is_there_unsaved_change=None, is_file_unsaved=None, file_name=None, folder_name=None):
 		if is_there_unsaved_change is not None:
