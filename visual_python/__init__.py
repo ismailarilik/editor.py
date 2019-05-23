@@ -129,16 +129,11 @@ class App(tk.Tk):
         self.editor.pack(fill=tk.BOTH, expand=True)
 
         # Create find frame inside this frame
-        self.find_frame = FindFrame(self)
-        # Post initialization
-        self._post_init()
+        self.find_frame = FindFrame(self, self.editor)
         # Resize and center the window
         self._resize_and_center()
         # Register delete window protocol to save unsaved changes and handle other things properly on quit
         self.protocol('WM_DELETE_WINDOW', self.quit_command)
-
-    def _post_init(self):
-        self.find_frame.post_init(self.editor)
 
     def close_find_frame(self, event=None):
         self.find_frame.close(event)

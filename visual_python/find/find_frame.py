@@ -2,16 +2,13 @@ import tkinter as tk
 from .find_entry import FindEntry
 
 class FindFrame(tk.Frame):
-    def __init__(self, master):
+    def __init__(self, master, editor):
         super().__init__(master)
+        self.editor = editor
         self.create_widgets()
 
-    def post_init(self, editor):
-        self.editor = editor
-        self.find_entry.post_init(self.total_match_variable, self.find, self.see_previous_match, self.see_next_match, self.close)
-
     def create_widgets(self):
-        self.find_entry = FindEntry(self)
+        self.find_entry = FindEntry(self, self.get_total_match_variable_value, self.find, self.see_previous_match, self.see_next_match, self.close)
         self.find_entry.pack(side=tk.LEFT)
         # Create find button
         self.find_button = tk.Button(self, text='Find', command=self.find)
@@ -38,6 +35,9 @@ class FindFrame(tk.Frame):
         # Create close button
         self.close_button = tk.Button(self, text='X', command=self.close)
         self.close_button.pack(side=tk.LEFT)
+
+    def get_total_match_variable_value(self):
+        return self.total_match_variable.get()
 
     def clear_tags(self):
         self.editor.tag_delete('selected')

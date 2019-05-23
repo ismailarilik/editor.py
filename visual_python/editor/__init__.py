@@ -74,12 +74,6 @@ class Editor(tk.Text):
 
         self.add_keyboard_bindings()
 
-    def post_init(self, file_component, edit_component, set_title, close_find_frame):
-        self.file_component = file_component
-        self.edit_component = edit_component
-        self.set_title = set_title
-        self.close_find_frame = close_find_frame
-
     @property
     def tab_size(self):
         return self._tab_size
