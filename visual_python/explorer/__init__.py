@@ -4,9 +4,12 @@ import os
 import shutil
 
 class Explorer(ttk.Treeview):
-    def __init__(self, master, window):
+    def __init__(self, master, window, file_component, open_file_in_editor, close_file_in_editor):
         super().__init__(master, show='tree')
         self.window = window
+        self.file_component = file_component
+        self.open_file_in_editor = open_file_in_editor
+        self.close_file_in_editor = close_file_in_editor
         # Create scrollbars for explorer
         vertical_scrollbar = tk.Scrollbar(self.master)
         vertical_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -36,11 +39,6 @@ class Explorer(ttk.Treeview):
         self.explorer_menu = tk.Menu(self.window)
         self.explorer_menu.add_command(label='New File', command=self.new_root_file)
         self.explorer_menu.add_command(label='New Folder', command=self.new_root_folder)
-
-    def post_init(self, file_component, open_file_in_editor, close_file_in_editor):
-        self.file_component = file_component
-        self.open_file_in_editor = open_file_in_editor
-        self.close_file_in_editor = close_file_in_editor
 
     def open_file_from_explorer(self, event=None):
         selections = self.selection()

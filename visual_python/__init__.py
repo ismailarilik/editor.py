@@ -105,7 +105,7 @@ class App(tk.Tk):
         explorer_frame = tk.Frame(self.explorer_notebook)
         self.explorer_notebook.add(explorer_frame, text='Explorer')
         # Create explorer inside explorer frame
-        self.explorer = Explorer(explorer_frame, self)
+        self.explorer = Explorer(explorer_frame, self, self.file_component, self.open_file_in_editor, self.close_file_in_editor)
         self.explorer.pack(fill=tk.BOTH, expand=True)
         # Create search frame and add it to explorer notebook
         search_settings = self.settings_component.settings['search']
@@ -138,7 +138,6 @@ class App(tk.Tk):
         self.protocol('WM_DELETE_WINDOW', self.quit_command)
 
     def _post_init(self):
-        self.explorer.post_init(self.file_component, self.editor.open_file_in_editor, self.editor.close_file_in_editor)
         self.editor.post_init(self.file_component, self.edit_component, self.set_title, self.find_frame.close)
         self.find_frame.post_init(self.editor)
 
@@ -188,6 +187,12 @@ class App(tk.Tk):
         self.find_frame.place(relx=1, anchor=tk.NE)
         self.find_frame.find_entry.focus_set()
         self.find_frame.find_entry.select_range(0, tk.END)
+
+    def open_file_in_editor(self, file):
+        self.editor.open_file_in_editor(file)
+
+    def close_file_in_editor(self):
+        self.editor.close_file_in_editor()
 
     def set_title(self, is_there_unsaved_change=None, is_file_unsaved=None, file_name=None, folder_name=None):
         if is_there_unsaved_change is not None:
