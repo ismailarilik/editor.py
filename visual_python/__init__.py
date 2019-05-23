@@ -30,46 +30,17 @@ class App(tk.Tk):
         # Add file menu
         self.file_menu = tk.Menu(self.menu)
         self.menu.add_cascade(label='File', menu=self.file_menu)
-        self.file_menu.add_separator()
         self.file_menu.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file_command)
         self.file_menu.add_command(label='Open Folder', accelerator='Ctrl+Shift+O', command=self.open_folder_command)
         self.file_menu.add_separator()
         self.file_menu.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file_command)
         self.file_menu.add_command(label='Save File as', accelerator='Ctrl+Shift+S', command=self.save_file_as_command)
         self.file_menu.add_separator()
-        self.file_menu.add_separator()
-        self.file_menu.add_separator()
         self.file_menu.add_command(label='Quit', accelerator='Ctrl+Q', command=self.quit_command)
         # Add edit menu
         self.edit_menu = tk.Menu(self.menu)
         self.menu.add_cascade(label='Edit', menu=self.edit_menu)
-        self.edit_menu.add_separator()
-        self.edit_menu.add_separator()
-        self.edit_menu.add_separator()
         self.edit_menu.add_command(label='Find', accelerator='Ctrl+F', command=self.find_command)
-        self.edit_menu.add_separator()
-        # Add view menu
-        self.view_menu = tk.Menu(self.menu)
-        self.menu.add_cascade(label='View', menu=self.view_menu)
-        self.view_menu.add_separator()
-        # Add go menu
-        self.go_menu = tk.Menu(self.menu)
-        self.menu.add_cascade(label='Go', menu=self.go_menu)
-        self.go_menu.add_separator()
-        self.go_menu.add_separator()
-        self.go_menu.add_separator()
-        # Add debug menu
-        self.debug_menu = tk.Menu(self.menu)
-        self.menu.add_cascade(label='Debug', menu=self.debug_menu)
-        self.debug_menu.add_separator()
-        self.debug_menu.add_separator()
-        self.debug_menu.add_separator()
-        # Add help menu
-        self.help_menu = tk.Menu(self.menu)
-        self.menu.add_cascade(label='Help', menu=self.help_menu)
-        self.help_menu.add_separator()
-        self.help_menu.add_separator()
-        self.help_menu.add_separator()
 
         # Create keyboard bindings
         self.bind('<Control-o>', self.open_file_command)
