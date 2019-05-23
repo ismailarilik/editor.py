@@ -5,8 +5,13 @@ import tokenize
 from .tokenizer import Tokenizer
 
 class Editor(tk.Text):
-    def __init__(self, master):
+    def __init__(self, master, file_component, edit_component, set_title, close_find_frame):
         super().__init__(master, undo=True, wrap=tk.NONE)
+        self.file_component = file_component
+        self.edit_component = edit_component
+        self.set_title = set_title
+        self.close_find_frame = close_find_frame
+
         self.tab_size = 4
         self.tokenizer = Tokenizer()
         self.token_type_color_map = {
@@ -67,12 +72,13 @@ class Editor(tk.Text):
         # Listen for modified event
         self.bind('<<Modified>>', self.modified)
 
+        self.add_keyboard_bindings()
+
     def post_init(self, file_component, edit_component, set_title, close_find_frame):
         self.file_component = file_component
         self.edit_component = edit_component
         self.set_title = set_title
         self.close_find_frame = close_find_frame
-        self.add_keyboard_bindings()
 
     @property
     def tab_size(self):

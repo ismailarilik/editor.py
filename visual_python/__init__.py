@@ -125,7 +125,7 @@ class App(tk.Tk):
         editor_frame = tk.Frame(paned_window)
         paned_window.add(editor_frame)
         # Create editor inside editor frame
-        self.editor = Editor(editor_frame)
+        self.editor = Editor(editor_frame, self.file_component, self.edit_component, self.set_title, self.close_find_frame)
         self.editor.pack(fill=tk.BOTH, expand=True)
 
         # Create find frame inside this frame
@@ -138,8 +138,10 @@ class App(tk.Tk):
         self.protocol('WM_DELETE_WINDOW', self.quit_command)
 
     def _post_init(self):
-        self.editor.post_init(self.file_component, self.edit_component, self.set_title, self.find_frame.close)
         self.find_frame.post_init(self.editor)
+
+    def close_find_frame(self, event=None):
+        self.find_frame.close(event)
 
     def __open_file_callback(self, file_path):
         return self.editor.open_file_in_editor(file_path)
