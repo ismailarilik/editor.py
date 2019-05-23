@@ -20,7 +20,7 @@ class App(tk.Tk):
         self._title = Title(self.unsaved_changes_specifier, self.unsaved_file_name, self.app_name)
         self.set_title()
         # Set icon
-        self.icon_file_name = 'python.png'
+        self.icon_file_name = 'visual_python/icons/python.png'
         self.icon = tk.PhotoImage(file=self.icon_file_name)
         self.iconphoto(True, self.icon)
 

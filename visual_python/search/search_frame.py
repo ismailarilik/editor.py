@@ -13,7 +13,7 @@ class SearchFrame(tk.Frame):
         self.search_bar.pack(fill=tk.X)
         self.search_entry = tk.Entry(self.search_bar)
         self.search_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
-        self.search_button_image = tk.PhotoImage(file='search.png')
+        self.search_button_image = tk.PhotoImage(file='visual_python/icons/search.png')
         self.search_button = tk.Button(self.search_bar, image=self.search_button_image, command=self.search)
         self.search_button.pack(side=tk.LEFT)
         # Create search treeview
