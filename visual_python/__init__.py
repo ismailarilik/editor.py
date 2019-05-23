@@ -82,15 +82,6 @@ class App(tk.Tk):
         search_settings = self.settings_component.settings['search']
         self.search_frame = SearchFrame(self.explorer_notebook, search_settings, self.file_component.folder)
         self.explorer_notebook.add(self.search_frame, text='Search')
-        # Create version control frame and add it to explorer notebook
-        version_control_frame = tk.Frame(self.explorer_notebook)
-        self.explorer_notebook.add(version_control_frame, text='Version Control')
-        # Create debug frame and add it to explorer notebook
-        debug_frame = tk.Frame(self.explorer_notebook)
-        self.explorer_notebook.add(debug_frame, text='Debug')
-        # Create extensions frame and add it to explorer notebook
-        extensions_frame = tk.Frame(self.explorer_notebook)
-        self.explorer_notebook.add(extensions_frame, text='Extensions')
 
         # Create editor frame and add it to paned window
         editor_frame = tk.Frame(paned_window)
