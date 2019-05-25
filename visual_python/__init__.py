@@ -30,31 +30,31 @@ class App(tk.Tk):
         # Add file menu
         self.file_menu = tk.Menu(self.menu)
         self.menu.add_cascade(label='File', menu=self.file_menu)
-        self.file_menu.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file_command)
-        self.file_menu.add_command(label='Open Folder', accelerator='Ctrl+Shift+O', command=self.open_folder_command)
+        self.file_menu.add_command(label='Open File', accelerator='Ctrl+O', command=self.open_file)
+        self.file_menu.add_command(label='Open Folder', accelerator='Ctrl+Shift+O', command=self.open_folder)
         self.file_menu.add_separator()
-        self.file_menu.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file_command)
-        self.file_menu.add_command(label='Save File as', accelerator='Ctrl+Shift+S', command=self.save_file_as_command)
+        self.file_menu.add_command(label='Save File', accelerator='Ctrl+S', command=self.save_file)
+        self.file_menu.add_command(label='Save File as', accelerator='Ctrl+Shift+S', command=self.save_file_as)
         self.file_menu.add_separator()
-        self.file_menu.add_command(label='Quit', accelerator='Ctrl+Q', command=self.quit_command)
+        self.file_menu.add_command(label='Quit', accelerator='Ctrl+Q', command=self.quit)
         # Add edit menu
         self.edit_menu = tk.Menu(self.menu)
         self.menu.add_cascade(label='Edit', menu=self.edit_menu)
-        self.edit_menu.add_command(label='Find', accelerator='Ctrl+F', command=self.find_command)
+        self.edit_menu.add_command(label='Find', accelerator='Ctrl+F', command=self.find)
 
         # Create keyboard bindings
-        self.bind('<Control-o>', self.open_file_command)
-        self.bind('<Control-O>', self.open_file_command)
-        self.bind('<Control-Shift-o>', self.open_folder_command)
-        self.bind('<Control-Shift-O>', self.open_folder_command)
-        self.bind('<Control-s>', self.save_file_command)
-        self.bind('<Control-S>', self.save_file_command)
-        self.bind('<Control-Shift-s>', self.save_file_as_command)
-        self.bind('<Control-Shift-S>', self.save_file_as_command)
-        self.bind('<Control-q>', self.quit_command)
-        self.bind('<Control-Q>', self.quit_command)
-        self.bind('<Control-f>', self.find_command)
-        self.bind('<Control-F>', self.find_command)
+        self.bind('<Control-o>', self.open_file)
+        self.bind('<Control-O>', self.open_file)
+        self.bind('<Control-Shift-o>', self.open_folder)
+        self.bind('<Control-Shift-O>', self.open_folder)
+        self.bind('<Control-s>', self.save_file)
+        self.bind('<Control-S>', self.save_file)
+        self.bind('<Control-Shift-s>', self.save_file_as)
+        self.bind('<Control-Shift-S>', self.save_file_as)
+        self.bind('<Control-q>', self.quit)
+        self.bind('<Control-Q>', self.quit)
+        self.bind('<Control-f>', self.find)
+        self.bind('<Control-F>', self.find)
 
         # Create components
         self.file_component = FileComponent(self.__open_file_callback, self.__open_folder_callback, self.__save_file_callback, self.__save_file_as_callback)
@@ -95,7 +95,7 @@ class App(tk.Tk):
         # Resize and center the window
         self._resize_and_center()
         # Register delete window protocol to save unsaved changes and handle other things properly on quit
-        self.protocol('WM_DELETE_WINDOW', self.quit_command)
+        self.protocol('WM_DELETE_WINDOW', self.quit)
 
     def close_find_frame(self, event=None):
         self.find_frame.close(event)
@@ -164,23 +164,23 @@ class App(tk.Tk):
             self._title.folder_name = folder_name
         self.title(str(self._title))
 
-    def open_file_command(self, event=None):
+    def open_file(self, event=None):
         self.file_component.open_file()
 
-    def open_folder_command(self, event=None):
+    def open_folder(self, event=None):
         self.file_component.open_folder()
 
-    def save_file_command(self, event=None):
+    def save_file(self, event=None):
         self.file_component.save_file()
 
-    def save_file_as_command(self, event=None):
+    def save_file_as(self, event=None):
         self.file_component.save_file_as()
 
-    def quit_command(self, event=None):
+    def quit(self, event=None):
         if self.file_component.save_unsaved_changes():
             self.destroy()
 
-    def find_command(self, event=None):
+    def find(self, event=None):
         self.edit_component.find()
 
     def _resize_and_center(self):
