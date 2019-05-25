@@ -136,7 +136,7 @@ class Editor(tk.Text):
         self.clear()
         # Reset title because file has been closed
         # Also there is no unsaved change now
-        self.set_title(is_there_unsaved_change=self.file_component.file.is_modified, is_file_unsaved=True)
+        self.set_title(is_there_unsaved_change=self.file_component.file.is_modified, is_file_unsaved=True, file_name='')
         # Return that a file was closed successfully
         return True
 
