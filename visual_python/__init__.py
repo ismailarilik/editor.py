@@ -13,7 +13,7 @@ from .settings_component import SettingsComponent
 class App(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.app_name = 'Editor'
+        self.app_name = 'Visual Python'
         self.unsaved_changes_specifier = '*'
         self.unsaved_file_name = 'unsaved_file'
         # Set title
