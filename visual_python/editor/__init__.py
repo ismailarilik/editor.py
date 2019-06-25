@@ -1,206 +1,176 @@
 import tkinter as tk
-import tkinter.font as tk_font
-import io
-import tokenize
-from .tokenizer import Tokenizer
+import tkinter.filedialog as tkfiledialog
+import tkinter.messagebox as tkmessagebox
+import tkinter.ttk as ttk
+from .editor import Editor
+from .file import File
+from .tab_title import TabTitle
 
-class Editor(tk.Text):
-    def __init__(self, master, file_component, edit_component, set_title, close_find_frame):
-        super().__init__(master, undo=True, wrap=tk.NONE)
-        self.file_component = file_component
-        self.edit_component = edit_component
+class EditorGroup(ttk.Notebook):
+    def __init__(self, master, set_title, open_folder, search):
+        super().__init__(master)
         self.set_title = set_title
-        self.close_find_frame = close_find_frame
+        self.open_folder = open_folder
+        self.search = search
+        self.editors = []
 
-        self.tab_size = 4
-        self.tokenizer = Tokenizer()
-        self.token_type_color_map = {
-            self.tokenizer.KEYWORD: '#FF0000',
-            tokenize.STRING: '#00C000',
-            tokenize.NUMBER: '#0000FF',
-            tokenize.COMMENT: '#808080',
-            tokenize.LPAR: '#FFC000',
-            tokenize.RPAR: '#FFC000',
-            tokenize.LSQB: '#FF00FF',
-            tokenize.RSQB: '#FF00FF',
-            tokenize.LBRACE: '#00C0C0',
-            tokenize.RBRACE: '#00C0C0',
-            tokenize.EQUAL: '#800000',
-            tokenize.PLUSEQUAL: '#800000',
-            tokenize.MINEQUAL: '#800000',
-            tokenize.STAREQUAL: '#800000',
-            tokenize.DOUBLESTAREQUAL: '#800000',
-            tokenize.SLASHEQUAL: '#800000',
-            tokenize.DOUBLESLASHEQUAL: '#800000',
-            tokenize.PERCENTEQUAL: '#800000',
-            tokenize.ATEQUAL: '#800000',
-            tokenize.VBAREQUAL: '#800000',
-            tokenize.AMPEREQUAL: '#800000',
-            tokenize.CIRCUMFLEXEQUAL: '#800000',
-            tokenize.LEFTSHIFTEQUAL: '#800000',
-            tokenize.RIGHTSHIFTEQUAL: '#800000',
-            tokenize.PLUS: '#000080',
-            tokenize.MINUS: '#000080',
-            tokenize.STAR: '#000080',
-            tokenize.DOUBLESTAR: '#000080',
-            tokenize.SLASH: '#000080',
-            tokenize.DOUBLESLASH: '#000080',
-            tokenize.PERCENT: '#000080',
-            tokenize.AT: '#000080',
-            tokenize.VBAR: '#000080',
-            tokenize.AMPER: '#000080',
-            tokenize.TILDE: '#000080',
-            tokenize.CIRCUMFLEX: '#000080',
-            tokenize.LEFTSHIFT: '#000080',
-            tokenize.RIGHTSHIFT: '#000080',
-            tokenize.LESS: '#808000',
-            tokenize.GREATER: '#808000',
-            tokenize.EQEQUAL: '#808000',
-            tokenize.NOTEQUAL: '#808000',
-            tokenize.LESSEQUAL: '#808000',
-            tokenize.GREATEREQUAL: '#808000',
-            tokenize.DOT: '#800080',
-            tokenize.COMMA: '#8000FF',
-            tokenize.COLON: '#8080FF',
-            tokenize.SEMI: '#FF0080',
-            tokenize.RARROW: '#FF8080',
-            tokenize.ELLIPSIS: '#FF80FF'
-        }
-        self.add_scrollbars()
-        # Set a flag to ensure modified callback being called only by a change
-        self.modified_event_occurred_by_change = True
-        # Listen for modified event
-        self.bind('<<Modified>>', self.modified)
+        self.enable_traversal()
 
-        self.add_keyboard_bindings()
+        self.add_key_bindings()
 
-    @property
-    def tab_size(self):
-        return self._tab_size
+        self.bind('<<NotebookTabChanged>>', self.tab_changed)
 
-    @tab_size.setter
-    def tab_size(self, new_tab_size):
-        self._tab_size = new_tab_size
-        # Also configure editor tab stops with specified tab size
-        font = tk_font.Font(font=self['font'])
-        tab_width = font.measure(' ' * self._tab_size)
-        self.config(tabs=(tab_width,))
-
-    def get_wo_eol(self):
-        '''
-        Get without (automatically added) final end-of-line character
-        '''
-        return self.get('1.0', tk.END)[:-1]
-
-    def set(self, text):
-        self.delete('1.0', tk.END)
-        self.insert(tk.END, text)
-
-    def clear(self):
-        self.delete('1.0', tk.END)
-
-    def add_scrollbars(self):
-        '''
-        Add vertical and horizontal scrollbars
-        '''
-        vertical_scrollbar = tk.Scrollbar(self.master)
+    def add_editor(self, file):
+        # Create an editor with wrapping layout and scrollbars
+        editor_layout = ttk.Frame(self)
+        self.add(editor_layout, text=file.name)
+        editor_title = TabTitle(file.name)
+        editor = Editor(editor_layout, file, editor_title, self.open_file, self.open_folder, self.search, self.set_tab_title, self.set_title)
+        vertical_scrollbar = ttk.Scrollbar(editor_layout, command=editor.yview)
         vertical_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        vertical_scrollbar.config(command=self.yview)
-        horizontal_scrollbar = tk.Scrollbar(self.master, orient=tk.HORIZONTAL)
+        horizontal_scrollbar = ttk.Scrollbar(editor_layout, orient=tk.HORIZONTAL, command=editor.xview)
         horizontal_scrollbar.pack(side=tk.BOTTOM, fill=tk.X)
-        horizontal_scrollbar.config(command=self.xview)
-        self.config(yscrollcommand=vertical_scrollbar.set, xscrollcommand=horizontal_scrollbar.set)
+        editor.config(yscrollcommand=vertical_scrollbar.set, xscrollcommand=horizontal_scrollbar.set)
+        editor.pack(fill=tk.BOTH, expand=True)
+        self.editors.append(editor)
+        # Focus added editor on
+        self.select(str(editor_layout))
+        editor.focus_set()
 
-    def open_file_in_editor(self, file_path):
-        self.file_component.file.path = file_path
-        self.file_component.file.is_modified = False
-        # Set editor text with file text
-        with tokenize.open(self.file_component.file.path) as file:
-            self.set(file.read())
-        # Focus editor in
-        self.focus_set()
-        # Reset title because file name has been changed
-        # Also unsaved changes status has been changed to False
-        self.set_title(
-            is_there_unsaved_change=self.file_component.file.is_modified,
-            is_file_unsaved=False,
-            file_name=self.file_component.file.name
-        )
-        # Return that a file was opened successfully
-        return True
+    def add_key_bindings(self):
+        self.bind('<Button-2>', self.close_editor)
 
-    def close_file_in_editor(self):
-        self.file_component.file.path = None
-        self.file_component.file.is_modified = False
-        # Clear editor text
-        self.clear()
-        # Reset title because file has been closed
-        # Also there is no unsaved change now
-        self.set_title(is_there_unsaved_change=self.file_component.file.is_modified, is_file_unsaved=True, file_name='')
-        # Return that a file was closed successfully
-        return True
-
-    def modified(self, event):
-        if self.modified_event_occurred_by_change:
-            self.highlight()
-            # File is modified now, so set related flag
-            # Also reset title because unsaved changes status has been changed to True
-            # Do they only if they were not set before, for a better performance
-            file = self.file_component.file
-            if not file.is_modified:
-                file.is_modified = True
-                self.set_title(is_there_unsaved_change=file.is_modified)
-            # Call this method to set modified flag to False so following modification may cause modified event occurred
-            self.edit_modified(False)
-        # Switch this flag which is for to ensure modified callback being called only by a change
-        # Because changing modified flag above causes modified event occurred
-        self.modified_event_occurred_by_change = not self.modified_event_occurred_by_change
-
-    def highlight(self):
-        tokens = []
-        text = self.get('1.0', tk.END)
-        tokens2 = self.tokenizer.tokenize(io.BytesIO(text.encode('UTF-8')).readline)
+    def close_editor(self, event=None):
+        tab_id = f'@{event.x},{event.y}'
+        editor_index = None
         try:
-            for token in tokens2:
-                tokens.append(token)
-        except Exception as exception:
-            print('An error occurred while tokenizing code for highlighting:')
-            print(exception)
+            editor_index = self.index(tab_id)
+        except tk.TclError as error:
+            # There is no tab on coordinates the event came from; do nothing.
+            pass
+        if editor_index is not None:
+            editor = self.editors[editor_index]
+            if editor.close(event):
+                # Remove related editor from editors list
+                del self.editors[editor_index]
+                # Remove tab from this notebook
+                self.forget(tab_id)
+
+    def close_editor_by_file_path(self, file_path, event=None):
+        opened_editors = filter(lambda editor: editor.file.path == file_path, self.editors)
+        opened_editor_list = list(opened_editors)
+        if opened_editor_list:
+            editor = opened_editor_list[0]
+            editor_index = self.editors.index(editor)
+            # Remove related editor from editors list
+            del self.editors[editor_index]
+            # Remove tab from this notebook
+            tab_id = str(editor.master)
+            self.forget(tab_id)
+
+    def find_in_current_editor(self, event=None):
+        current_editor = self.get_current_editor()
+        if current_editor:
+            current_editor.find(event)
+
+    def get_current_editor(self):
+        '''
+        Return current editor if there is one
+        Return None otherwise
+        '''
+        if self.editors:
+            current_editor_index = self.index('current')
+            current_editor = self.editors[current_editor_index]
+            return current_editor
         else:
-            # Remove previous tags, otherwise they will conflict with new ones
-            self.tag_delete(*self.tag_names())
-            # Configure tag colors
-            for token_type, token_color in self.token_type_color_map.items():
-                self.tag_config(self.tokenizer.get_token_name(token_type), foreground=token_color)
-            for token in tokens:
-                # If there is a configured tag for this token, add it to the token's indices in the editor
-                color = self.token_type_color_map.get(token.exact_type)
-                if color:
-                    start_index = f'{token.start_row}.{token.start_column}'
-                    end_index = f'{token.end_row}.{token.end_column}'
-                    self.tag_add(token.name, start_index, end_index)
+            return None
 
-    def add_keyboard_bindings(self):
-        # Add keyboard bindings for finding
-        self.bind('<Control-KeyPress-f>', self.edit_component.find)
-        self.bind('<Control-KeyPress-F>', self.edit_component.find)
-        # Add Escape keyboard binding for escaping from things in editor
-        self.bind('<Escape>', self.escape)
-        # Handle open file event here, too, for this widget and prevent propagation of event
-        # Because default behavior of this widget is not wanted here
-        self.bind('<Control-KeyPress-o>', self.handle_open_file_event_and_prevent_propagation)
-        # Handle open folder event here, too, for this widget and prevent propagation of event
-        # Because default behavior of this widget for this event is not wanted here
-        self.bind('<Control-KeyPress-d>', self.handle_open_folder_event_and_prevent_propagation)
+    def is_file_open(self, file_path, event=None):
+        opened_editors = filter(lambda editor: editor.file.path == file_path, self.editors)
+        return list(opened_editors)
 
-    def escape(self, event=None):
-        # Close find frame
-        self.close_find_frame(event)
+    def open_file(self, event=None):
+        file_path = tkfiledialog.askopenfilename()
+        if file_path:
+            self.open_file_by_path(file_path, event)
 
-    def handle_open_file_event_and_prevent_propagation(self, event=None):
-        self.file_component.open_file(event)
-        return 'break'
+    def open_file_by_path(self, file_path, event=None):
+        file = File(file_path)
+        # Add editor to this editor group
+        self.add_editor(file)
 
-    def handle_open_folder_event_and_prevent_propagation(self, event=None):
-        self.file_component.open_folder(event)
-        return 'break'
+    def rename_file(self, file_path, new_file_path, event=None):
+        opened_editors = filter(lambda editor: editor.file.path == file_path, self.editors)
+        opened_editor_list = list(opened_editors)
+        if opened_editor_list:
+            editor = opened_editor_list[0]
+            editor.rename_file(new_file_path, event)
+
+    def save_current_editor(self, event=None):
+        # If there is an opened editor, save it
+        current_editor = self.get_current_editor()
+        if current_editor:
+            current_editor.save(event)
+            # Focus saved editor on
+            current_editor.focus_set()
+            # Specify that editor is saved, in title and tab_title
+            self.set_title(is_there_unsaved_change=False)
+            tab_index = str(current_editor.master)
+            self.set_tab_title(tab_index, current_editor.title, is_there_unsaved_change=False)
+
+    def save_current_editor_as(self, event=None):
+        # If there is an opened editor, save it as...
+        current_editor = self.get_current_editor()
+        if current_editor:
+            current_editor.save_as(event)
+            # Focus saved editor on
+            current_editor.focus_set()
+            # Specify that editor's file name was changed and also it was saved, in title
+            self.set_title(is_there_unsaved_change=False, file_name=current_editor.file.name)
+            # Also update tab title
+            tab_index = str(current_editor.master)
+            self.set_tab_title(tab_index, current_editor.title, is_there_unsaved_change=False, file_name=current_editor.file.name)
+
+    def save_unsaved_changes(self, event=None):
+        '''
+        Return True if unsaved changes were saved
+        Return False otherwise
+        '''
+        unsaved_editors = list(filter(lambda editor: editor.is_unsaved, self.editors))
+        if unsaved_editors:
+            message_box_title = _('Unsaved Changes')
+            message_box_description = _('There are unsaved changes, would you like to save them?')
+            user_reply = tkmessagebox.askyesnocancel(message_box_title, message_box_description)
+            if user_reply:
+                # Save unsaved editors
+                for unsaved_editor in unsaved_editors:
+                    unsaved_editor.save(event)
+                return True
+            elif user_reply == False:
+                return True
+            else:
+                return False
+        else:
+            return True
+
+    def set_tab_title(self, tab_index, tab_title, is_there_unsaved_change=None, file_name=None):
+        if is_there_unsaved_change is not None:
+            tab_title.is_there_unsaved_change = is_there_unsaved_change
+        if file_name is not None:
+            tab_title.file_name = file_name
+        self.tab(tab_index, text=str(tab_title))
+
+    def tab_changed(self, event):
+        current_editor = self.get_current_editor()
+        if current_editor:
+            # Update tab_title
+            is_there_unsaved_change = current_editor.is_unsaved
+            file_name = current_editor.file.name
+            tab_index = str(current_editor.master)
+            self.set_tab_title(tab_index, current_editor.title, is_there_unsaved_change=is_there_unsaved_change, file_name=file_name)
+        else:
+            # If there is no opened editor, it means there is no an unsaved change and file name
+            is_there_unsaved_change = False
+            file_name = ''
+        # Update title
+        self.set_title(is_there_unsaved_change=is_there_unsaved_change, file_name=file_name)

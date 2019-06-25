@@ -1,7 +1,7 @@
-class Token(object):
-    def __init__(self, _type, exact_type, name, string, start_row, start_column, end_row, end_column, line):
-        self.type = _type
-        self.exact_type = exact_type
+class Token:
+    def __init__(self, token_type, exact_token_type, name, string, start_row, start_column, end_row, end_column, line):
+        self.type = token_type
+        self.exact_type = exact_token_type
         self.name = name
         self.string = string
         self.start_row = start_row
