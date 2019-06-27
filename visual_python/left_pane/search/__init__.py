@@ -1,6 +1,5 @@
 import tkinter as tk
 import tkinter.ttk as ttk
-import mimetypes
 import os
 
 class SearchView(ttk.Frame):
@@ -29,14 +28,17 @@ class SearchView(ttk.Frame):
             search_text = self.search_entry.get()
             if search_text:
                 for root, folders, files in os.walk(folder_path):
-                    # Search files in the list, which seem like a text file
+                    # Search files in the list
                     for file in files:
                         file_path = os.path.join(root, file)
-                        mime_type = mimetypes.guess_type(file_path)[0]
-                        is_text_file = mime_type is None or mime_type.startswith('text')
-                        if is_text_file:
-                            with open(file_path) as file_object:
-                                file_text = file_object.read()
-                            find_index = file_text.find(search_text)
-                            if find_index != -1:
-                                self.search_explorer.insert('', tk.END, file_path, text=file_path)
+                        try:
+                            with open(file_path, encoding='UTF-8') as file_object:
+                                for line_number, line in enumerate(file_object, 0):
+                                    find_index_in_line = line.find(search_text)
+                                    if find_index_in_line != -1:
+                                        if not self.search_explorer.exists(file_path):
+                                            self.search_explorer.insert('', tk.END, file_path, text=file_path)
+                                        self.search_explorer.insert(file_path, tk.END, file_path + str(line_number), text=line)
+                        except UnicodeDecodeError:
+                            # It seems that this file is not a text file; ignore it
+                            pass
