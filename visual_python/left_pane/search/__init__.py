@@ -32,11 +32,10 @@ class SearchView(ttk.Frame):
         selections = self.search_explorer.selection()
         for selection in selections:
             parent = self.search_explorer.parent(selection)
-            if parent == '':
-                path = selection
-            else:
+            # Open file only if a line view was clicked
+            if parent != '':
                 path = parent
-            self.open_file_by_path(path, event)
+                self.open_file_by_path(path, event)
 
     def search(self, event=None):
         folder = self.get_folder()
