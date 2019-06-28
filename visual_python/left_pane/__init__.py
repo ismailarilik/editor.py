@@ -27,7 +27,7 @@ class LeftPane(ttk.Notebook):
         self.explorer.pack(fill=tk.BOTH, expand=True)
 
     def create_search_view(self):
-        self.search_view = SearchView(self, self.get_folder)
+        self.search_view = SearchView(self, self.get_folder, self.open_file_by_path)
         self.add(self.search_view, text=_('Search'))
 
     def create_widgets(self):

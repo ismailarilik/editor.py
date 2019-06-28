@@ -3,9 +3,10 @@ import tkinter.ttk as ttk
 import os
 
 class SearchView(ttk.Frame):
-    def __init__(self, master, get_folder):
+    def __init__(self, master, get_folder, open_file_by_path):
         super().__init__(master)
         self.get_folder = get_folder
+        self.open_file_by_path = open_file_by_path
 		# Create search bar
         self.search_bar = ttk.Frame(self)
         self.search_bar.pack(fill=tk.X)
@@ -19,6 +20,23 @@ class SearchView(ttk.Frame):
         # Create search explorer
         self.search_explorer = ttk.Treeview(self, show='tree')
         self.search_explorer.pack(fill=tk.BOTH, expand=True)
+
+        self.add_key_bindings()
+
+    def add_key_bindings(self):
+        # Add key bindings for the Search Explorer
+        self.search_explorer.bind('<Double-Button-1>', self.open_file)
+        self.search_explorer.bind('<Return>', self.open_file)
+
+    def open_file(self, event=None):
+        selections = self.search_explorer.selection()
+        for selection in selections:
+            parent = self.search_explorer.parent(selection)
+            if parent == '':
+                path = selection
+            else:
+                path = parent
+            self.open_file_by_path(path, event)
 
     def search(self, event=None):
         folder = self.get_folder()
@@ -38,7 +56,8 @@ class SearchView(ttk.Frame):
                                     if find_index_in_line != -1:
                                         if not self.search_explorer.exists(file_path):
                                             self.search_explorer.insert('', tk.END, file_path, text=file_path)
-                                        self.search_explorer.insert(file_path, tk.END, file_path + str(line_number), text=line)
+                                        line_node_id = file_path + '-' + str(line_number)
+                                        self.search_explorer.insert(file_path, tk.END, line_node_id, text=line)
                         except UnicodeDecodeError:
                             # It seems that this file is not a text file; ignore it
                             pass
