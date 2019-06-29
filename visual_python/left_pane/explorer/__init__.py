@@ -142,7 +142,7 @@ class Explorer(ttk.Treeview):
         selections = self.selection()
         for selection in selections:
             if os.path.isfile(selection):
-                self.open_file_by_path(selection, event)
+                self.open_file_by_path(selection, event=event)
 
     def open_folder(self, event=None):
         folder_path = tkfiledialog.askdirectory(mustexist=True)

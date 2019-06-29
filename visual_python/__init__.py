@@ -94,8 +94,8 @@ class App(tk.Tk):
     def open_file(self, event=None):
         self.editor_group.open_file(event)
 
-    def open_file_by_path(self, file_path, event=None):
-        self.editor_group.open_file_by_path(file_path, event)
+    def open_file_by_path(self, file_path, cursor_index=None, event=None):
+        self.editor_group.open_file_by_path(file_path, cursor_index=cursor_index, event=event)
 
     def open_folder(self, event=None):
         self.left_pane.explorer.open_folder(event)

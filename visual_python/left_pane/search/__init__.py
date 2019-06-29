@@ -35,7 +35,11 @@ class SearchView(ttk.Frame):
             # Open file only if a line view was clicked
             if parent != '':
                 path = parent
-                self.open_file_by_path(path, event)
+                cursor_index_as_array = selection.rsplit('-', 2)[-2:]
+                cursor_row_index = str(int(cursor_index_as_array[0]) + 1)
+                cursor_column_index = cursor_index_as_array[1]
+                cursor_index = f'{cursor_row_index}.{cursor_column_index}'
+                self.open_file_by_path(path, cursor_index=cursor_index, event=event)
 
     def search(self, event=None):
         folder = self.get_folder()
@@ -52,11 +56,12 @@ class SearchView(ttk.Frame):
                             with open(file_path, encoding='UTF-8') as file_object:
                                 for line_number, line in enumerate(file_object, 0):
                                     find_index_in_line = line.find(search_text)
-                                    if find_index_in_line != -1:
+                                    while find_index_in_line != -1:
                                         if not self.search_explorer.exists(file_path):
                                             self.search_explorer.insert('', tk.END, file_path, text=file_path)
-                                        line_node_id = file_path + '-' + str(line_number)
+                                        line_node_id = file_path + '-' + str(line_number) + '-' + str(find_index_in_line)
                                         self.search_explorer.insert(file_path, tk.END, line_node_id, text=line)
+                                        find_index_in_line = line.find(search_text, find_index_in_line+1)
                         except UnicodeDecodeError:
                             # It seems that this file is not a text file; ignore it
                             pass

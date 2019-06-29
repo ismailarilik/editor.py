@@ -20,7 +20,7 @@ class EditorGroup(ttk.Notebook):
 
         self.bind('<<NotebookTabChanged>>', self.tab_changed)
 
-    def add_editor(self, file):
+    def add_editor(self, file, cursor_index=None):
         # Create an editor with wrapping layout and scrollbars
         editor_layout = ttk.Frame(self)
         self.add(editor_layout, text=file.name)
@@ -36,6 +36,9 @@ class EditorGroup(ttk.Notebook):
         # Focus added editor on
         self.select(str(editor_layout))
         editor.focus_set()
+        if cursor_index:
+            editor.mark_set(tk.INSERT, cursor_index)
+            editor.see(cursor_index)
 
     def add_key_bindings(self):
         self.bind('<Button-2>', self.close_editor)
@@ -92,12 +95,12 @@ class EditorGroup(ttk.Notebook):
     def open_file(self, event=None):
         file_path = tkfiledialog.askopenfilename()
         if file_path:
-            self.open_file_by_path(file_path, event)
+            self.open_file_by_path(file_path, event=event)
 
-    def open_file_by_path(self, file_path, event=None):
+    def open_file_by_path(self, file_path, cursor_index=None, event=None):
         file = File(file_path)
         # Add editor to this editor group
-        self.add_editor(file)
+        self.add_editor(file, cursor_index=cursor_index)
 
     def rename_file(self, file_path, new_file_path, event=None):
         opened_editors = filter(lambda editor: editor.file.path == file_path, self.editors)
