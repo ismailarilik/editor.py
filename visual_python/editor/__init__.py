@@ -3,7 +3,7 @@ import tkinter.filedialog as tkfiledialog
 import tkinter.messagebox as tkmessagebox
 import tkinter.ttk as ttk
 from .editor import Editor
-from .file import File
+from ..file import File
 from .tab_title import TabTitle
 
 class EditorGroup(ttk.Notebook):
