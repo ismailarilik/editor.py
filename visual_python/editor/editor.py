@@ -19,26 +19,26 @@ class Editor(tk.Text):
         self.set_tab_title = set_tab_title
         self.set_title = set_title
         self.is_unsaved = is_unsaved
-
+        
         self.tab_size = 4
-
+        
         self.tokenizer = Tokenizer()
         self.token_type_color_map = self.get_token_type_color_map()
-
+        
         self.find_view = None
-
+        
         # Set a flag to ensure that opening file will not be behaved like a modification
         self.modified_event_triggered_by_opening_file = False
         # Set a flag to ensure modified callback being called only by a change
         self.modified_event_triggered_by_change = True
-
+        
         self.add_key_bindings()
         # Listen for modified event
         self.bind('<<Modified>>', self.modified)
-
+        
         # Open given file
         self.open()
-
+    
     def add_key_bindings(self):
         # Prevent newline addition with '<Control-o>' and <Control-Shift-o> keys
         self.bind('<Control-o>', self.open_file_and_stop_propagation)
@@ -50,7 +50,7 @@ class Editor(tk.Text):
         self.bind('<Control-Shift-F>', self.search_and_stop_propagation)
         # Escape from things in editor
         self.bind('<Escape>', self.escape)
-
+    
     def close(self, event=None):
         '''
         Return True if the editor can be closed
@@ -58,12 +58,12 @@ class Editor(tk.Text):
         '''
         # Before close, save unsaved changes
         return self.save_unsaved_changes(event)
-
+    
     def close_find_view(self, event=None):
         self.find_view.close(event)
         self.find_view.place_forget()
         self.focus_set()
-
+    
     def escape(self, event=None):
         '''
         Escape from things in editor
@@ -71,7 +71,7 @@ class Editor(tk.Text):
         # Close find view if it is opened
         if self.find_view and self.find_view.place_info():
             self.close_find_view(event)
-
+    
     def find(self, event=None):
         # Create find view if it is not created yet
         if not self.find_view:
@@ -79,11 +79,11 @@ class Editor(tk.Text):
         self.find_view.place(relx=1, anchor=tk.NE)
         self.find_view.find_entry.focus_set()
         self.find_view.find_entry.select_range(0, tk.END)
-
+    
     def find_and_stop_propagation(self, event):
         self.find(event)
         return 'break'
-
+    
     def find_by_text(self, text, tag_indices=[], event=None):
         if text:
             self.clear_tags()
@@ -103,7 +103,7 @@ class Editor(tk.Text):
                     self.editor_tag_add('match', index, f'{index}+{self.match_size_variable.get()}c')
                 # See the first match
                 self.see_match(self.indices[0], self.match_size_variable.get(), 1)
-
+    
     def get_token_type_color_map(self):
         return {
             Tokenizer.KEYWORD: '#FF0000',
@@ -157,13 +157,13 @@ class Editor(tk.Text):
             tokenize.RARROW: '#FF8080',
             tokenize.ELLIPSIS: '#FF80FF'
         }
-
+    
     def get_wo_eol(self):
         '''
         Get without (automatically added) final end-of-line character
         '''
         return self.get('1.0', tk.END)[:-1]
-
+    
     def highlight(self, event=None):
         if self.file.is_python_file:
             text = self.get('1.0', tk.END)
@@ -189,7 +189,7 @@ class Editor(tk.Text):
                             start_index = f'{token.start_row}.{token.start_column}'
                             end_index = f'{token.end_row}.{token.end_column}'
                             self.tag_add(token.name, start_index, end_index)
-
+    
     def modified(self, event):
         if self.modified_event_triggered_by_change:
             if not self.modified_event_triggered_by_opening_file:
@@ -216,9 +216,9 @@ class Editor(tk.Text):
                 # Clear the undo and redo stacks.
                 # Because, after opening file, these stacks should be empty.
                 self.edit_reset()
-
+            
             self.highlight(event)
-
+            
             # Switch modified_event_triggered_by_change flag off
             # Because changing modified flag below causes modified event occurred again
             self.modified_event_triggered_by_change = False
@@ -228,7 +228,7 @@ class Editor(tk.Text):
             # Switch modified_event_triggered_by_change flag on
             # Because the next time modified event occurred will be caused by a change
             self.modified_event_triggered_by_change = True
-
+    
     def open(self):
         '''
         Open given file
@@ -238,21 +238,21 @@ class Editor(tk.Text):
             if file_text:
                 self.modified_event_triggered_by_opening_file = True
                 self.insert(tk.END, file_text)
-
+    
     def open_file_and_stop_propagation(self, event):
         self.open_file(event)
         return 'break'
-
+    
     def open_folder_and_stop_propagation(self, event):
         self.open_folder(event)
         return 'break'
-
+    
     def rename_file(self, new_file_path, event=None):
         self.file = File(new_file_path)
         self.set_title(file_name=self.file.name)
         tab_index = str(self.master)
         self.set_tab_title(tab_index, self.title, file_name=self.file.name)
-
+    
     def save(self, event=None):
         with open(self.file.path, 'w', encoding='UTF-8') as file:
             file.write(self.get_wo_eol())
@@ -260,7 +260,7 @@ class Editor(tk.Text):
         # Insert a separator (boundary) on the undo stack.
         # This is necessary to separate undoing saved and unsaved changes.
         self.edit_separator()
-
+    
     def save_as(self, event=None):
         # Get new file path
         file_name = self.file.name
@@ -274,11 +274,11 @@ class Editor(tk.Text):
                 file_types.append((file_extension, file_extension))
         file_types.append((_('All Files'), '*'))
         file_path = tkfiledialog.asksaveasfilename(defaultextension=file_extension, filetypes=file_types, initialdir=file_directory_path, initialfile=file_name)
-
+        
         if file_path:
             self.file = File(file_path)
             self.save(event)
-
+    
     def save_unsaved_changes(self, event=None):
         '''
         Return True if unsaved changes were saved
@@ -298,15 +298,15 @@ class Editor(tk.Text):
                 return False
         else:
             return True
-
+    
     def search_and_stop_propagation(self, event):
         self.search_command(event)
         return 'break'
-
+    
     @property
     def tab_size(self):
         return self._tab_size
-
+    
     @tab_size.setter
     def tab_size(self, new_tab_size):
         self._tab_size = new_tab_size

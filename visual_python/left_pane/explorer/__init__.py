@@ -14,21 +14,21 @@ class Explorer(ttk.Treeview):
         self.rename_file_in_editor = rename_file_in_editor
         self.set_title = set_title
         self.folder = None
-
+        
         self.create_context_menu()
-
+        
         self.create_file_icons()
-
+        
         self.add_key_bindings()
-
+    
     def add_key_bindings(self):
         self.bind('<Return>', self.open_file)
         self.bind('<Double-Button-1>', self.open_file)
         self.bind('<Button-3>', self.open_context_menu)
-
+    
     def clear(self):
         self.delete(*self.get_children())
-
+    
     def create_context_menu(self):
         # Create context menu for empty areas
         self.explorer_menu = tk.Menu(self)
@@ -45,7 +45,7 @@ class Explorer(ttk.Treeview):
         self.file_menu = tk.Menu(self)
         self.file_menu.add_command(label='Rename', command=self.rename_file)
         self.file_menu.add_command(label='Delete', command=self.delete_file)
-
+    
     def create_file_icons(self):
         current_directory = os.path.dirname(__file__)
         folder_icon_path = os.path.join(current_directory, '../../icons/file_icons/folder.png')
@@ -54,10 +54,10 @@ class Explorer(ttk.Treeview):
         self.file_icon = tk.PhotoImage(file=file_icon_path)
         python_file_icon_path = os.path.join(current_directory, '../../icons/file_icons/python-file.png')
         self.python_file_icon = tk.PhotoImage(file=python_file_icon_path)
-
+    
     def delete_file(self, event=None):
         self.delete_file_or_folder(True, event)
-
+    
     def delete_file_or_folder(self, is_file, event=None):
         if is_file:
             file_path = self.menu_target
@@ -74,13 +74,13 @@ class Explorer(ttk.Treeview):
             self.see(selection)
             self.selection_set(selection)
             self.item(selection, open=True)
-
+    
     def delete_folder(self, event=None):
         self.delete_file_or_folder(False, event)
-
+    
     def new_file(self, event=None):
         self.new_file_or_folder(True, event)
-
+    
     def new_file_or_folder(self, is_file, event=None):
         if not self.menu_target:
             parent = ''
@@ -92,7 +92,7 @@ class Explorer(ttk.Treeview):
         entry = ttk.Entry(self)
         entry.place(x=bbox[0], y=bbox[1], width=bbox[2], height=bbox[3])
         entry.focus_set()
-
+        
         def create(event):
             entry.place_forget()
             self.delete(temp_item)
@@ -121,10 +121,10 @@ class Explorer(ttk.Treeview):
             self.delete(temp_item)
         entry.bind('<Return>', create)
         entry.bind('<Escape>', cancel)
-
+    
     def new_folder(self, event=None):
         self.new_file_or_folder(False, event)
-
+    
     def open_context_menu(self, event):
         self.focus_set()
         self.menu_target = self.identify_row(event.y)
@@ -137,18 +137,18 @@ class Explorer(ttk.Treeview):
         else:
             if self.folder:
                 self.explorer_menu.tk_popup(event.x_root, event.y_root)
-
+    
     def open_file(self, event=None):
         selections = self.selection()
         for selection in selections:
             if os.path.isfile(selection):
                 self.open_file_by_path(selection, event=event)
-
+    
     def open_folder(self, event=None):
         folder_path = tkfiledialog.askdirectory(mustexist=True)
         if folder_path:
             self.open_folder_by_path(folder_path, event)
-
+    
     def open_folder_by_path(self, folder_path, event=None):
         self.folder = Folder(folder_path)
         # Refill explorer with folders and files in the opened folder path
@@ -168,14 +168,14 @@ class Explorer(ttk.Treeview):
                 self.insert(parent, tk.END, id, text=file, image=file_icon)
         # Specify opened folder in title
         self.set_title(folder_name=self.folder.name)
-
+    
     def refresh(self, event=None):
         if self.folder:
             self.open_folder_by_path(self.folder.path, event)
-
+    
     def rename_file(self, event=None):
         self.rename_file_or_folder(True, event)
-
+    
     def rename_file_or_folder(self, is_file, event=None):
         bbox = self.bbox(self.menu_target)
         entry = ttk.Entry(self)
@@ -204,6 +204,6 @@ class Explorer(ttk.Treeview):
             entry.place_forget()
         entry.bind('<Return>', rename)
         entry.bind('<Escape>', cancel)
-
+    
     def rename_folder(self, event=None):
         self.rename_file_or_folder(False, event)

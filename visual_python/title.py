@@ -5,10 +5,10 @@ class Title:
         self.is_there_unsaved_change = is_there_unsaved_change
         self.file_name = file_name
         self.folder_name = folder_name
-
+    
     def __str__(self):
         title = ''
-
+        
         if self.is_there_unsaved_change:
             title += self.unsaved_changes_specifier
         if self.file_name:
@@ -16,5 +16,5 @@ class Title:
         if self.folder_name:
             title += f'{self.folder_name} - '
         title += self.app_name
-
+        
         return title
