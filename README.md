@@ -6,6 +6,20 @@ It is developed with itself from the beginning.
 It aims to visualize software components as far as possible, which should provide more intuitive development experience.
 It is under heavy development so use it carefully.
 
+## Running tests
+
+### Running on Windows
+
+```sh
+py -3 -m unittest
+```
+
+### Running on Mac OS, GNU/Linux and UNIX
+
+```sh
+python3 -m unittest
+```
+
 ## Running app
 
 ### Running on Windows
