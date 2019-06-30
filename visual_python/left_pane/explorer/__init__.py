@@ -150,10 +150,11 @@ class Explorer(ttk.Treeview):
     def open_folder(self, event=None):
         folder_path = tkfiledialog.askdirectory(mustexist=True)
         if folder_path:
-            self.open_folder_by_path(folder_path, event=event)
+            folder = Folder(folder_path)
+            self.open_folder_by_folder(folder, event=event)
     
-    def open_folder_by_path(self, folder_path, event=None):
-        self.folder = Folder(folder_path)
+    def open_folder_by_folder(self, folder, event=None):
+        self.folder = folder
         # Refill explorer with folders and files in the opened folder path
         self.clear()
         for path, folders, files in os.walk(self.folder.path):
@@ -174,7 +175,7 @@ class Explorer(ttk.Treeview):
     
     def refresh(self, event=None):
         if self.folder:
-            self.open_folder_by_path(self.folder.path, event=event)
+            self.open_folder_by_folder(self.folder, event=event)
     
     def rename_file(self, event=None):
         self.rename_file_or_folder(True, event=event)
