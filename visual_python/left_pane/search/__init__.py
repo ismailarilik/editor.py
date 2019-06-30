@@ -23,7 +23,7 @@ class SearchView(ttk.Frame):
         
         self.add_key_bindings()
     
-    def add_key_bindings(self):
+    def add_key_bindings(self, event=None):
         # Add key bindings for the Search Explorer
         self.search_explorer.bind('<Double-Button-1>', self.open_file)
         self.search_explorer.bind('<Return>', self.open_file)

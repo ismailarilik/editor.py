@@ -39,7 +39,7 @@ class Editor(tk.Text):
         # Open given file
         self.open()
     
-    def add_key_bindings(self):
+    def add_key_bindings(self, event=None):
         # Prevent newline addition with '<Control-o>' and <Control-Shift-o> keys
         self.bind('<Control-o>', self.open_file_and_stop_propagation)
         self.bind('<Control-Shift-o>', self.open_folder_and_stop_propagation)
@@ -57,10 +57,10 @@ class Editor(tk.Text):
         Return False otherwise
         '''
         # Before close, save unsaved changes
-        return self.save_unsaved_changes(event)
+        return self.save_unsaved_changes(event=event)
     
     def close_find_view(self, event=None):
-        self.find_view.close(event)
+        self.find_view.close(event=event)
         self.find_view.place_forget()
         self.focus_set()
     
@@ -70,7 +70,7 @@ class Editor(tk.Text):
         '''
         # Close find view if it is opened
         if self.find_view and self.find_view.place_info():
-            self.close_find_view(event)
+            self.close_find_view(event=event)
     
     def find(self, event=None):
         # Create find view if it is not created yet
@@ -80,8 +80,8 @@ class Editor(tk.Text):
         self.find_view.find_entry.focus_set()
         self.find_view.find_entry.select_range(0, tk.END)
     
-    def find_and_stop_propagation(self, event):
-        self.find(event)
+    def find_and_stop_propagation(self, event=None):
+        self.find(event=event)
         return 'break'
     
     def find_by_text(self, text, tag_indices=[], event=None):
@@ -104,7 +104,7 @@ class Editor(tk.Text):
                 # See the first match
                 self.see_match(self.indices[0], self.match_size_variable.get(), 1)
     
-    def get_token_type_color_map(self):
+    def get_token_type_color_map(self, event=None):
         return {
             Tokenizer.KEYWORD: '#FF0000',
             tokenize.STRING: '#00C000',
@@ -158,7 +158,7 @@ class Editor(tk.Text):
             tokenize.ELLIPSIS: '#FF80FF'
         }
     
-    def get_wo_eol(self):
+    def get_wo_eol(self, event=None):
         '''
         Get without (automatically added) final end-of-line character
         '''
@@ -190,7 +190,7 @@ class Editor(tk.Text):
                             end_index = f'{token.end_row}.{token.end_column}'
                             self.tag_add(token.name, start_index, end_index)
     
-    def modified(self, event):
+    def modified(self, event=None):
         if self.modified_event_triggered_by_change:
             if not self.modified_event_triggered_by_opening_file:
                 # Editor text is unsaved now, so set related flag
@@ -217,7 +217,7 @@ class Editor(tk.Text):
                 # Because, after opening file, these stacks should be empty.
                 self.edit_reset()
             
-            self.highlight(event)
+            self.highlight(event=event)
             
             # Switch modified_event_triggered_by_change flag off
             # Because changing modified flag below causes modified event occurred again
@@ -229,7 +229,7 @@ class Editor(tk.Text):
             # Because the next time modified event occurred will be caused by a change
             self.modified_event_triggered_by_change = True
     
-    def open(self):
+    def open(self, event=None):
         '''
         Open given file
         '''
@@ -239,12 +239,12 @@ class Editor(tk.Text):
                 self.modified_event_triggered_by_opening_file = True
                 self.insert(tk.END, file_text)
     
-    def open_file_and_stop_propagation(self, event):
-        self.open_file(event)
+    def open_file_and_stop_propagation(self, event=None):
+        self.open_file(event=event)
         return 'break'
     
-    def open_folder_and_stop_propagation(self, event):
-        self.open_folder(event)
+    def open_folder_and_stop_propagation(self, event=None):
+        self.open_folder(event=event)
         return 'break'
     
     def rename_file(self, new_file_path, event=None):
@@ -277,7 +277,7 @@ class Editor(tk.Text):
         
         if file_path:
             self.file = File(file_path)
-            self.save(event)
+            self.save(event=event)
     
     def save_unsaved_changes(self, event=None):
         '''
@@ -290,7 +290,7 @@ class Editor(tk.Text):
             user_reply = tkmessagebox.askyesnocancel(message_box_title, message_box_description)
             if user_reply:
                 # Save unsaved changes
-                self.save(event)
+                self.save(event=event)
                 return True
             elif user_reply == False:
                 return True
@@ -299,8 +299,8 @@ class Editor(tk.Text):
         else:
             return True
     
-    def search_and_stop_propagation(self, event):
-        self.search_command(event)
+    def search_and_stop_propagation(self, event=None):
+        self.search_command(event=event)
         return 'break'
     
     @property

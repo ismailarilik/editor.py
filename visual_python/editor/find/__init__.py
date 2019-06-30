@@ -14,16 +14,16 @@ class FindView(ttk.Frame):
         self.create_widgets()
         self.add_key_bindings()
     
-    def add_key_bindings(self):
+    def add_key_bindings(self, event=None):
         # Add key bindings for the find entry
         self.find_entry.bind('<Return>', self.find_or_see_next_match)
         self.find_entry.bind('<Shift-Return>', self.see_previous_match)
         self.find_entry.bind('<Escape>', self.close_find_view)
     
-    def clear_entry(self):
+    def clear_entry(self, event=None):
         self.find_entry.delete(0, tk.END)
     
-    def clear_tags(self):
+    def clear_tags(self, event=None):
         self.editor_tag_delete('match')
         self.editor_tag_delete('current_match')
     
@@ -32,7 +32,7 @@ class FindView(ttk.Frame):
         self.total_match_variable.set(0)
         self.clear_tags()
     
-    def create_widgets(self):
+    def create_widgets(self, event=None):
         current_directory = os.path.dirname(__file__)
         
         self.find_entry = ttk.Entry(self)
@@ -100,11 +100,11 @@ class FindView(ttk.Frame):
     
     def find_or_see_next_match(self, event=None):
         if not self.total_match_variable.get():
-            self.find(event)
+            self.find(event=event)
         else:
-            self.see_next_match(event)
+            self.see_next_match(event=event)
     
-    def see_match(self, index, length, match_index):
+    def see_match(self, index, length, match_index, event=None):
         self.editor_tag_delete('current_match')
         self.editor_tag_configure('current_match', background='gray', foreground='white')
         self.editor_tag_add('current_match', index, f'{index}+{length}c')

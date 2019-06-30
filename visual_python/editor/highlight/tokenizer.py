@@ -10,12 +10,12 @@ class Tokenizer:
     def __init__(self):
         self.keywords = keyword.kwlist
     
-    def get_token_name(self, token_type):
+    def get_token_name(self, token_type, event=None):
         if token_type == self.KEYWORD:
             return self.KEYWORD_NAME
         return tokenize.tok_name[token_type]
     
-    def tokenize(self, readline):
+    def tokenize(self, readline, event=None):
         tokens = tokenize.tokenize(readline)
         for token in tokens:
             token_type = token.type
