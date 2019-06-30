@@ -1,12 +1,13 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 import os
+from ...file import File
 
 class SearchView(ttk.Frame):
-    def __init__(self, master, get_folder, open_file_by_path):
+    def __init__(self, master, get_folder, open_file_by_file):
         super().__init__(master)
         self.get_folder = get_folder
-        self.open_file_by_path = open_file_by_path
+        self.open_file_by_file = open_file_by_file
 		# Create search bar
         self.search_bar = ttk.Frame(self)
         self.search_bar.pack(fill=tk.X)
@@ -34,12 +35,13 @@ class SearchView(ttk.Frame):
             parent = self.search_explorer.parent(selection)
             # Open file only if a line view was clicked
             if parent != '':
-                path = parent
+                file_path = parent
+                file = File(file_path)
                 cursor_index_as_array = selection.rsplit('-', 2)[-2:]
                 cursor_row_index = str(int(cursor_index_as_array[0]) + 1)
                 cursor_column_index = cursor_index_as_array[1]
                 cursor_index = f'{cursor_row_index}.{cursor_column_index}'
-                self.open_file_by_path(path, cursor_index=cursor_index, event=event)
+                self.open_file_by_file(file, cursor_index=cursor_index, event=event)
     
     def search(self, event=None):
         folder = self.get_folder()

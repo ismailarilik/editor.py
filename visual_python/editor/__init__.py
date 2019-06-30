@@ -59,8 +59,8 @@ class EditorGroup(ttk.Notebook):
                 # Remove tab from this notebook
                 self.forget(tab_id)
     
-    def close_editor_by_file_path(self, file_path, event=None):
-        opened_editors = filter(lambda editor: editor.file.path == file_path, self.editors)
+    def close_editor_by_file(self, file, event=None):
+        opened_editors = filter(lambda editor: editor.file.path == file.path, self.editors)
         opened_editor_list = list(opened_editors)
         if opened_editor_list:
             editor = opened_editor_list[0]
@@ -88,26 +88,25 @@ class EditorGroup(ttk.Notebook):
         else:
             return None
     
-    def is_file_open(self, file_path, event=None):
-        opened_editors = filter(lambda editor: editor.file.path == file_path, self.editors)
+    def is_file_open(self, file, event=None):
+        opened_editors = filter(lambda editor: editor.file.path == file.path, self.editors)
         return list(opened_editors)
     
     def open_file(self, event=None):
         file_path = tkfiledialog.askopenfilename()
         if file_path:
-            self.open_file_by_path(file_path, event=event)
+            file = File(file_path)
+            self.open_file_by_file(file, event=event)
     
-    def open_file_by_path(self, file_path, cursor_index=None, event=None):
-        file = File(file_path)
-        # Add editor to this editor group
+    def open_file_by_file(self, file, cursor_index=None, event=None):
         self.add_editor(file, cursor_index=cursor_index)
     
-    def rename_file(self, file_path, new_file_path, event=None):
-        opened_editors = filter(lambda editor: editor.file.path == file_path, self.editors)
+    def rename_file(self, old_file, new_file, event=None):
+        opened_editors = filter(lambda editor: editor.file.path == old_file.path, self.editors)
         opened_editor_list = list(opened_editors)
         if opened_editor_list:
             editor = opened_editor_list[0]
-            editor.rename_file(new_file_path, event=event)
+            editor.rename_file(new_file.path, event=event)
     
     def save_current_editor(self, event=None):
         # If there is an opened editor, save it

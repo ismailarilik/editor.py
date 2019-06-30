@@ -247,8 +247,8 @@ class Editor(tk.Text):
         self.open_folder(event=event)
         return 'break'
     
-    def rename_file(self, new_file_path, event=None):
-        self.file = File(new_file_path)
+    def rename_file(self, new_file, event=None):
+        self.file = new_file
         self.set_title(file_name=self.file.name)
         tab_index = str(self.master)
         self.set_tab_title(tab_index, self.title, file_name=self.file.name)

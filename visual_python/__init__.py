@@ -69,8 +69,8 @@ class App(tk.Tk):
         self.edit_menu.add_command(label=_('Find in File'), accelerator='Ctrl+F', command=self.find)
         self.edit_menu.add_command(label=_('Search'), accelerator='Ctrl+Shift+F', command=self.search)
     
-    def close_file_in_editor(self, file_path, event=None):
-        self.editor_group.close_editor_by_file_path(file_path, event=event)
+    def close_file_in_editor(self, file, event=None):
+        self.editor_group.close_editor_by_file(file, event=event)
     
     def create_widgets(self, event=None):
         # Create paned window
@@ -78,7 +78,7 @@ class App(tk.Tk):
         self.paned_window.pack(fill=tk.BOTH, expand=True)
         
         # Create left pane and add it to the paned window
-        self.left_pane = LeftPane(self.paned_window, self.close_file_in_editor, self.is_file_open_in_editor, self.open_file_by_path, self.rename_file_in_editor, self.set_title)
+        self.left_pane = LeftPane(self.paned_window, self.close_file_in_editor, self.is_file_open_in_editor, self.open_file_by_file, self.rename_file_in_editor, self.set_title)
         self.paned_window.add(self.left_pane)
         
         # Create editor group and add it to the paned window
@@ -88,14 +88,14 @@ class App(tk.Tk):
     def find(self, event=None):
         self.editor_group.find_in_current_editor(event=event)
     
-    def is_file_open_in_editor(self, file_path, event=None):
-        return self.editor_group.is_file_open(file_path, event=event)
+    def is_file_open_in_editor(self, file, event=None):
+        return self.editor_group.is_file_open(file, event=event)
     
     def open_file(self, event=None):
         self.editor_group.open_file(event=event)
     
-    def open_file_by_path(self, file_path, cursor_index=None, event=None):
-        self.editor_group.open_file_by_path(file_path, cursor_index=cursor_index, event=event)
+    def open_file_by_file(self, file, cursor_index=None, event=None):
+        self.editor_group.open_file_by_file(file, cursor_index=cursor_index, event=event)
     
     def open_folder(self, event=None):
         self.left_pane.explorer.open_folder(event=event)
@@ -104,8 +104,8 @@ class App(tk.Tk):
         if self.editor_group.save_unsaved_changes(event=event):
             self.destroy()
     
-    def rename_file_in_editor(self, file_path, new_file_path, event=None):
-        self.editor_group.rename_file(file_path, new_file_path, event=event)
+    def rename_file_in_editor(self, old_file, new_file, event=None):
+        self.editor_group.rename_file(old_file, new_file, event=event)
     
     def resize_and_center(self, event=None):
         '''

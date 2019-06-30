@@ -3,14 +3,15 @@ import tkinter.filedialog as tkfiledialog
 import tkinter.ttk as ttk
 import os
 import shutil
+from ...file import File
 from .folder import Folder
 
 class Explorer(ttk.Treeview):
-    def __init__(self, master, close_file_in_editor, is_file_open_in_editor, open_file_by_path, rename_file_in_editor, set_title):
+    def __init__(self, master, close_file_in_editor, is_file_open_in_editor, open_file_by_file, rename_file_in_editor, set_title):
         super().__init__(master, show='tree')
         self.close_file_in_editor = close_file_in_editor
         self.is_file_open_in_editor = is_file_open_in_editor
-        self.open_file_by_path = open_file_by_path
+        self.open_file_by_file = open_file_by_file
         self.rename_file_in_editor = rename_file_in_editor
         self.set_title = set_title
         self.folder = None
@@ -61,11 +62,11 @@ class Explorer(ttk.Treeview):
     def delete_file_or_folder(self, is_file, event=None):
         if is_file:
             file_path = self.menu_target
-            file_name = os.path.basename(file_path)
-            os.remove(file_path)
-            is_file_open = self.is_file_open_in_editor(file_path, event=event)
+            file = File(file_path)
+            os.remove(file.path)
+            is_file_open = self.is_file_open_in_editor(file, event=event)
             if is_file_open:
-                self.close_file_in_editor(file_path, event=event)
+                self.close_file_in_editor(file, event=event)
         else:
             shutil.rmtree(self.menu_target)
         selection = self.parent(self.menu_target)
@@ -142,7 +143,9 @@ class Explorer(ttk.Treeview):
         selections = self.selection()
         for selection in selections:
             if os.path.isfile(selection):
-                self.open_file_by_path(selection, event=event)
+                file_path = selection
+                file = File(file_path)
+                self.open_file_by_file(file, event=event)
     
     def open_folder(self, event=None):
         folder_path = tkfiledialog.askdirectory(mustexist=True)
@@ -182,22 +185,23 @@ class Explorer(ttk.Treeview):
         entry.place(x=bbox[0], y=bbox[1], width=bbox[2], height=bbox[3])
         entry.focus_set()
         old_file_path = self.menu_target
-        old_file_name = os.path.basename(old_file_path)
-        entry.insert(0, old_file_name)
+        old_file = File(old_file_path)
+        entry.insert(0, old_file.name)
         entry.select_range(0, tk.END)
         def rename(event=None):
             entry.place_forget()
-            file_name = entry.get()
-            if file_name:
-                file_path = os.path.join(os.path.dirname(self.menu_target), file_name)
+            new_file_name = entry.get()
+            if new_file_name:
+                new_file_path = os.path.join(old_file.directory_path, new_file_name)
+                new_file = File(new_file_path)
                 if is_file:
-                    is_file_open = self.is_file_open_in_editor(old_file_path, event=event)
+                    is_file_open = self.is_file_open_in_editor(old_file, event=event)
                     if is_file_open:
-                        self.rename_file_in_editor(old_file_path, file_path, event=event)
-                os.replace(self.menu_target, file_path)
+                        self.rename_file_in_editor(old_file, new_file, event=event)
+                os.replace(old_file.path, new_file.path)
                 self.refresh(event=event)
                 self.focus_set()
-                selection = file_path
+                selection = new_file.path
                 self.see(selection)
                 self.selection_set(selection)
         def cancel(event=None):
