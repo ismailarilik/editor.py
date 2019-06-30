@@ -106,7 +106,7 @@ class EditorGroup(ttk.Notebook):
         opened_editor_list = list(opened_editors)
         if opened_editor_list:
             editor = opened_editor_list[0]
-            editor.rename_file(new_file.path, event=event)
+            editor.rename_file(new_file, event=event)
     
     def save_current_editor(self, event=None):
         # If there is an opened editor, save it
