@@ -84,26 +84,6 @@ class Editor(tk.Text):
         self.find(event=event)
         return 'break'
     
-    def find_by_text(self, text, tag_indices=[], event=None):
-        if text:
-            self.clear_tags()
-            self.editor_tag_configure('match', background='black', foreground='white')
-            index = '1.0'
-            self.match_size_variable = tk.IntVar()
-            self.total_match_variable.set(0)
-            self.indices = []
-            while index:
-                index = self.editor_search(entry_text, index, count=self.match_size_variable, nocase=True, stopindex=tk.END)
-                if index:
-                    self.total_match_variable.set(self.total_match_variable.get() + 1)
-                    self.indices.append(index)
-                    index = f'{index}+{self.match_size_variable.get()}c'
-            if self.indices:
-                for index in self.indices:
-                    self.editor_tag_add('match', index, f'{index}+{self.match_size_variable.get()}c')
-                # See the first match
-                self.see_match(self.indices[0], self.match_size_variable.get(), 1)
-    
     def get_token_type_color_map(self, event=None):
         return {
             Tokenizer.KEYWORD: '#FF0000',
