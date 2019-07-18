@@ -16,6 +16,9 @@ class TestTitle(unittest.TestCase):
     def test_if_default_is_there_unsaved_change_is_false(self):
         self.assertFalse(self.title.is_there_unsaved_change)
 
+    def test_if_default_separator_is_dash(self):
+        self.assertEqual(self.title.separator, ' - ')
+
     def test_title_string(self):
         self.assertEqual(str(self.title), self.application_name)
 
