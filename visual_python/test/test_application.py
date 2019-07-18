@@ -13,5 +13,4 @@ class TestApplication(unittest.TestCase):
         self.assertEqual(self.application.application_name, 'Visual Python')
 
     def test_if_application_initializes_title_properly(self):
-        title = self.application.get_title()
-        self.assertEqual(str(title), self.application_name)
+        self.assertEqual(self.application.title(), self.application_name)

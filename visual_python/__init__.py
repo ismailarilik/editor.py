@@ -134,9 +134,6 @@ class Application(tk.Tk):
         # View search view in the left pane
         self.left_pane.select_search_view()
 
-    def get_title(self):
-        return self.__title
-
     def set_title(self, is_there_unsaved_change=None, file_name=None, folder_name=None, event=None):
         if is_there_unsaved_change is not None:
             self.__title.is_there_unsaved_change = is_there_unsaved_change
