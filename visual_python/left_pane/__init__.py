@@ -12,7 +12,7 @@ class LeftPane(ttk.Notebook):
         self.rename_file_in_editor = rename_file_in_editor
         self.set_title = set_title
         self.create_widgets()
-    
+
     def create_explorer(self, event=None):
         # Create explorer layout and add it to this notebook
         explorer_layout = ttk.Frame(self)
@@ -25,17 +25,17 @@ class LeftPane(ttk.Notebook):
         self.explorer.config(yscrollcommand=explorer_vertical_scrollbar.set)
         # Pack explorer
         self.explorer.pack(fill=tk.BOTH, expand=True)
-    
+
     def create_search_view(self, event=None):
         self.search_view = SearchView(self, self.get_folder, self.open_file_by_file)
         self.add(self.search_view, text=_('Search'))
-    
+
     def create_widgets(self, event=None):
         self.create_explorer()
         self.create_search_view()
-    
+
     def get_folder(self, event=None):
         return self.explorer.folder
-    
+
     def select_search_view(self, event=None):
         self.select(1)

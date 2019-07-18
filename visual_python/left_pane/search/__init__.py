@@ -21,14 +21,14 @@ class SearchView(ttk.Frame):
         # Create search explorer
         self.search_explorer = ttk.Treeview(self, show='tree')
         self.search_explorer.pack(fill=tk.BOTH, expand=True)
-        
+
         self.add_key_bindings()
-    
+
     def add_key_bindings(self, event=None):
         # Add key bindings for the Search Explorer
         self.search_explorer.bind('<Double-Button-1>', self.open_file)
         self.search_explorer.bind('<Return>', self.open_file)
-    
+
     def open_file(self, event=None):
         selections = self.search_explorer.selection()
         for selection in selections:
@@ -42,7 +42,7 @@ class SearchView(ttk.Frame):
                 cursor_column_index = cursor_index_as_array[1]
                 cursor_index = f'{cursor_row_index}.{cursor_column_index}'
                 self.open_file_by_file(file, cursor_index=cursor_index, event=event)
-    
+
     def search(self, event=None):
         folder = self.get_folder()
         if folder:
