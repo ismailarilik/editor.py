@@ -13,7 +13,7 @@ class Application(tk.Tk):
         gettext.install('visual_python')
 
         # Set title
-        self._title = Title(self.__application_name)
+        self.__title = Title(self.__application_name)
         self.set_title()
 
         # Set icon
@@ -134,11 +134,14 @@ class Application(tk.Tk):
         # View search view in the left pane
         self.left_pane.select_search_view()
 
+    def get_title(self):
+        return self.__title
+
     def set_title(self, is_there_unsaved_change=None, file_name=None, folder_name=None, event=None):
         if is_there_unsaved_change is not None:
-            self._title.is_there_unsaved_change = is_there_unsaved_change
+            self.__title.is_there_unsaved_change = is_there_unsaved_change
         if file_name is not None:
-            self._title.file_name = file_name
+            self.__title.file_name = file_name
         if folder_name is not None:
-            self._title.folder_name = folder_name
-        self.title(str(self._title))
+            self.__title.folder_name = folder_name
+        self.title(str(self.__title))
