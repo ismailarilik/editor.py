@@ -6,7 +6,7 @@ from .editor import EditorGroup
 from .left_pane import LeftPane
 from .title import Title
 
-class App(tk.Tk):
+class Application(tk.Tk):
     def __init__(self):
         super().__init__()
         self.app_name = 'Visual Python'

@@ -1,4 +1,4 @@
-from . import App
+from . import Application
 
-app = App()
-app.mainloop()
+application = Application()
+application.mainloop()
