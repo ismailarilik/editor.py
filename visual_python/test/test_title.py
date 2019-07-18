@@ -8,11 +8,10 @@ class TestTitle(unittest.TestCase):
         self.folder_name = 'folder'
         self.separator = ' - '
         self.application_name = 'Visual Python'
-        self.title = Title(self.application_name, unsaved_changes_specifier=self.unsaved_changes_specifier)
+        self.title = Title(self.application_name)
 
     def test_if_default_unsaved_changes_specifier_is_asterisk(self):
-        title = Title(self.application_name)
-        self.assertEqual(title.unsaved_changes_specifier, '*')
+        self.assertEqual(self.title.unsaved_changes_specifier, '*')
 
     def test_title_string(self):
         self.assertEqual(str(self.title), self.application_name)
