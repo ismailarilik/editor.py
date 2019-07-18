@@ -9,11 +9,11 @@ from .title import Title
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.app_name = 'Visual Python'
+        self.__application_name = 'Visual Python'
         gettext.install('visual_python')
 
         # Set title
-        self._title = Title(self.app_name)
+        self._title = Title(self.__application_name)
         self.set_title()
 
         # Set icon
@@ -68,6 +68,10 @@ class Application(tk.Tk):
         self.menu.add_cascade(label=_('Edit'), menu=self.edit_menu)
         self.edit_menu.add_command(label=_('Find in File'), accelerator='Ctrl+F', command=self.find)
         self.edit_menu.add_command(label=_('Search'), accelerator='Ctrl+Shift+F', command=self.search)
+
+    @property
+    def application_name(self):
+        return self.__application_name
 
     def close_file_in_editor(self, file, event=None):
         self.editor_group.close_editor_by_file(file, event=event)
