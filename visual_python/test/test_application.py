@@ -21,3 +21,7 @@ class TestApplication(unittest.TestCase):
     def test_if_first_menu_is_file_menu(self):
         first_menu_label = self.application.menu.entrycget(1, 'label')
         self.assertEqual(first_menu_label, 'File')
+
+    def test_if_second_menu_is_edit_menu(self):
+        second_menu_label = self.application.menu.entrycget(2, 'label')
+        self.assertEqual(second_menu_label, 'Edit')
