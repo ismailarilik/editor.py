@@ -17,3 +17,7 @@ class TestApplication(unittest.TestCase):
 
     def test_if_icon_is_right(self):
         self.assertIn('icons/python.png', self.application.icon['file'])
+
+    def test_if_first_menu_is_file_menu(self):
+        first_menu_label = self.application.menu.entrycget(1, 'label')
+        self.assertEqual(first_menu_label, 'File')
