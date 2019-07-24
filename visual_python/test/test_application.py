@@ -37,3 +37,15 @@ class TestApplication(unittest.TestCase):
     def test_if_open_file_command_is_right(self):
         open_file_command = self.application.file_menu.entrycget('Open File', 'command')
         self.assertIn('open_file', open_file_command)
+
+    def test_if_second_file_menu_command_is_open_folder(self):
+        second_file_menu_command_label = self.application.file_menu.entrycget(2, 'label')
+        self.assertEqual(second_file_menu_command_label, 'Open Folder')
+
+    def test_if_open_folder_accelerator_is_ctrl_shift_o(self):
+        open_folder_accelerator = self.application.file_menu.entrycget('Open Folder', 'accelerator')
+        self.assertEqual(open_folder_accelerator, 'Ctrl+Shift+O')
+
+    def test_if_open_folder_command_is_right(self):
+        open_folder_command = self.application.file_menu.entrycget('Open Folder', 'command')
+        self.assertIn('open_folder', open_folder_command)
