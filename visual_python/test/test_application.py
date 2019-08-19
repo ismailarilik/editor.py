@@ -27,6 +27,10 @@ class TestApplication(unittest.TestCase):
         self.assertEqual(second_menu_label, 'Edit')
 
     def test_if_first_file_menu_command_is_open_file(self):
+    def test_if_first_file_menu_entry_is_a_command(self):
+        first_file_menu_entry_type = self.application.file_menu.type(1)
+        self.assertEqual(first_file_menu_entry_type, 'command')
+
         first_file_menu_command_label = self.application.file_menu.entrycget(1, 'label')
         self.assertEqual(first_file_menu_command_label, 'Open File')
 
