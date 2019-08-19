@@ -93,3 +93,7 @@ class TestApplication(unittest.TestCase):
     def test_if_save_file_as_command_command_is_correct(self):
         save_file_as_command_command = self.application.file_menu.entrycget('Save File as', 'command')
         self.assertIn('save_file_as', save_file_as_command_command)
+
+    def test_if_sixth_file_menu_entry_is_a_separator(self):
+        sixth_file_menu_entry_type = self.application.file_menu.type(6)
+        self.assertEqual(sixth_file_menu_entry_type, 'separator')
