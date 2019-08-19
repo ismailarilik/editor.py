@@ -129,3 +129,19 @@ class TestApplication(unittest.TestCase):
     def test_if_find_in_file_command_command_is_correct(self):
         find_in_file_command_command = self.application.edit_menu.entrycget('Find in File', 'command')
         self.assertIn('find', find_in_file_command_command)
+
+    def test_if_second_edit_menu_entry_is_a_command(self):
+        second_edit_menu_entry_type = self.application.edit_menu.type(2)
+        self.assertEqual(second_edit_menu_entry_type, 'command')
+
+    def test_if_second_edit_menu_entry_label_is_search(self):
+        second_edit_menu_entry_label = self.application.edit_menu.entrycget(2, 'label')
+        self.assertEqual(second_edit_menu_entry_label, 'Search')
+
+    def test_if_search_command_accelerator_is_ctrl_shift_f(self):
+        search_command_accelerator = self.application.edit_menu.entrycget('Search', 'accelerator')
+        self.assertEqual(search_command_accelerator, 'Ctrl+Shift+F')
+
+    def test_if_search_command_command_is_correct(self):
+        search_command_command = self.application.edit_menu.entrycget('Search', 'command')
+        self.assertIn('search', search_command_command)
