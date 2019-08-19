@@ -30,9 +30,9 @@ class TestApplication(unittest.TestCase):
         first_file_menu_entry_type = self.application.file_menu.type(1)
         self.assertEqual(first_file_menu_entry_type, 'command')
 
-    def test_if_open_file_command_label_is_correct(self):
-        first_file_menu_command_label = self.application.file_menu.entrycget(1, 'label')
-        self.assertEqual(first_file_menu_command_label, 'Open File')
+    def test_if_first_file_menu_entry_label_is_open_file(self):
+        first_file_menu_entry_label = self.application.file_menu.entrycget(1, 'label')
+        self.assertEqual(first_file_menu_entry_label, 'Open File')
 
     def test_if_open_file_command_accelerator_is_ctrl_o(self):
         open_file_command_accelerator = self.application.file_menu.entrycget('Open File', 'accelerator')
@@ -46,9 +46,9 @@ class TestApplication(unittest.TestCase):
         second_file_menu_entry_type = self.application.file_menu.type(2)
         self.assertEqual(second_file_menu_entry_type, 'command')
 
-    def test_if_open_folder_command_label_is_correct(self):
-        open_folder_command_label = self.application.file_menu.entrycget(2, 'label')
-        self.assertEqual(open_folder_command_label, 'Open Folder')
+    def test_if_second_file_menu_entry_label_is_open_folder(self):
+        second_file_menu_entry_label = self.application.file_menu.entrycget(2, 'label')
+        self.assertEqual(second_file_menu_entry_label, 'Open Folder')
 
     def test_if_open_folder_command_accelerator_is_ctrl_shift_o(self):
         open_folder_command_accelerator = self.application.file_menu.entrycget('Open Folder', 'accelerator')
