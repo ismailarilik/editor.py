@@ -1,0 +1,2 @@
+class VisualTkinter:
+    pass
