@@ -61,3 +61,19 @@ class TestApplication(unittest.TestCase):
     def test_if_third_file_menu_entry_is_a_separator(self):
         third_file_menu_entry_type = self.application.file_menu.type(3)
         self.assertEqual(third_file_menu_entry_type, 'separator')
+
+    def test_if_fourth_file_menu_entry_is_a_command(self):
+        fourth_file_menu_entry_type = self.application.file_menu.type(4)
+        self.assertEqual(fourth_file_menu_entry_type, 'command')
+
+    def test_if_fourth_file_menu_entry_label_is_save_file(self):
+        fourth_file_menu_entry_label = self.application.file_menu.entrycget(4, 'label')
+        self.assertEqual(fourth_file_menu_entry_label, 'Save File')
+
+    def test_if_save_file_command_accelerator_is_ctrl_s(self):
+        save_file_command_accelerator = self.application.file_menu.entrycget('Save File', 'accelerator')
+        self.assertEqual(save_file_command_accelerator, 'Ctrl+S')
+
+    def test_if_save_file_command_command_is_correct(self):
+        save_file_command_command = self.application.file_menu.entrycget('Save File', 'command')
+        self.assertIn('save_file', save_file_command_command)
