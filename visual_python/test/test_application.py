@@ -49,3 +49,6 @@ class TestApplication(unittest.TestCase):
     def test_if_open_folder_command_is_right(self):
         open_folder_command = self.application.file_menu.entrycget('Open Folder', 'command')
         self.assertIn('open_folder', open_folder_command)
+    def test_if_third_file_menu_entry_is_a_separator(self):
+        third_file_menu_entry_type = self.application.file_menu.type(3)
+        self.assertEqual(third_file_menu_entry_type, 'separator')
