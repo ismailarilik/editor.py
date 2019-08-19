@@ -77,3 +77,19 @@ class TestApplication(unittest.TestCase):
     def test_if_save_file_command_command_is_correct(self):
         save_file_command_command = self.application.file_menu.entrycget('Save File', 'command')
         self.assertIn('save_file', save_file_command_command)
+
+    def test_if_fifth_file_menu_entry_is_a_command(self):
+        fifth_file_menu_entry_type = self.application.file_menu.type(5)
+        self.assertEqual(fifth_file_menu_entry_type, 'command')
+
+    def test_if_fifth_file_menu_entry_label_is_save_file_as(self):
+        fifth_file_menu_entry_label = self.application.file_menu.entrycget(5, 'label')
+        self.assertEqual(fifth_file_menu_entry_label, 'Save File as')
+
+    def test_if_save_file_as_command_accelerator_is_ctrl_shift_s(self):
+        save_file_as_command_accelerator = self.application.file_menu.entrycget('Save File as', 'accelerator')
+        self.assertEqual(save_file_as_command_accelerator, 'Ctrl+Shift+S')
+
+    def test_if_save_file_as_command_command_is_correct(self):
+        save_file_as_command_command = self.application.file_menu.entrycget('Save File as', 'command')
+        self.assertIn('save_file_as', save_file_as_command_command)
