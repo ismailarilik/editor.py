@@ -15,7 +15,7 @@ class TestApplication(unittest.TestCase):
     def test_if_application_initializes_title_properly(self):
         self.assertEqual(self.application.title(), self.application_name)
 
-    def test_if_icon_is_right(self):
+    def test_if_icon_is_correct(self):
         self.assertIn('icons/python.png', self.application.icon['file'])
 
     def test_if_first_menu_is_file_menu(self):
