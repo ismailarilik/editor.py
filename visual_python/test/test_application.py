@@ -97,3 +97,19 @@ class TestApplication(unittest.TestCase):
     def test_if_sixth_file_menu_entry_is_a_separator(self):
         sixth_file_menu_entry_type = self.application.file_menu.type(6)
         self.assertEqual(sixth_file_menu_entry_type, 'separator')
+
+    def test_if_seventh_file_menu_entry_is_a_command(self):
+        seventh_file_menu_entry_type = self.application.file_menu.type(7)
+        self.assertEqual(seventh_file_menu_entry_type, 'command')
+
+    def test_if_seventh_file_menu_entry_label_is_quit(self):
+        seventh_file_menu_entry_label = self.application.file_menu.entrycget(7, 'label')
+        self.assertEqual(seventh_file_menu_entry_label, 'Quit')
+
+    def test_if_quit_command_accelerator_is_ctrl_q(self):
+        quit_command_accelerator = self.application.file_menu.entrycget('Quit', 'accelerator')
+        self.assertEqual(quit_command_accelerator, 'Ctrl+Q')
+
+    def test_if_quit_command_command_is_correct(self):
+        quit_command_command = self.application.file_menu.entrycget('Quit', 'command')
+        self.assertIn('quit', quit_command_command)
