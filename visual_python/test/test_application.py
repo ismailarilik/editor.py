@@ -113,3 +113,19 @@ class TestApplication(unittest.TestCase):
     def test_if_quit_command_command_is_correct(self):
         quit_command_command = self.application.file_menu.entrycget('Quit', 'command')
         self.assertIn('quit', quit_command_command)
+
+    def test_if_first_edit_menu_entry_is_a_command(self):
+        first_edit_menu_entry_type = self.application.edit_menu.type(1)
+        self.assertEqual(first_edit_menu_entry_type, 'command')
+
+    def test_if_first_edit_menu_entry_label_is_find_in_file(self):
+        first_edit_menu_entry_label = self.application.edit_menu.entrycget(1, 'label')
+        self.assertEqual(first_edit_menu_entry_label, 'Find in File')
+
+    def test_if_find_in_file_command_accelerator_is_ctrl_f(self):
+        find_in_file_command_accelerator = self.application.edit_menu.entrycget('Find in File', 'accelerator')
+        self.assertEqual(find_in_file_command_accelerator, 'Ctrl+F')
+
+    def test_if_find_in_file_command_command_is_correct(self):
+        find_in_file_command_command = self.application.edit_menu.entrycget('Find in File', 'command')
+        self.assertIn('find', find_in_file_command_command)
