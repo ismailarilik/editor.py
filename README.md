@@ -16,17 +16,11 @@ It is under heavy development so use it carefully.
 ### Running on Windows
 
 ```sh
-# Running tests
-py -3 -m unittest
-# Running application
 py -3 -m visual_python
 ```
 
 ### Running on Mac OS, GNU/Linux and UNIX
 
 ```sh
-# Running tests
-python3 -m unittest
-# Running application
 python3 -m visual_python
 ```
