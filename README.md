@@ -6,7 +6,7 @@ It aims to visualize software components as far as possible, which should provid
 
 ## Requirements
 
-- Python 3.7 or higher
+- Python 3.8 or higher
 - Tk 8.6 or higher
 
 ## Running
