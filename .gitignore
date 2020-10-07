@@ -1,2 +1,5 @@
 # Library files
 __pycache__
+
+# Editor files
+.vscode
