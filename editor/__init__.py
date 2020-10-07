@@ -16,12 +16,6 @@ class Application(tk.Tk):
         self.__title = Title(self.__application_name)
         self.set_title()
 
-        # Set icon
-        current_directory = os.path.dirname(__file__)
-        icon_path = os.path.join(current_directory, 'icons/python.png')
-        self.icon = tk.PhotoImage(file=icon_path)
-        self.iconphoto(True, self.icon)
-
         self.add_menu()
 
         self.create_widgets()
