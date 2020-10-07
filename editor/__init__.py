@@ -9,8 +9,8 @@ from .title import Title
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.__application_name = 'Visual Python'
-        gettext.install('visual_python')
+        self.__application_name = 'Editor'
+        gettext.install('editor')
 
         # Set title
         self.__title = Title(self.__application_name)

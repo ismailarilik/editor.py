@@ -1,12 +1,10 @@
-# Visual Python
+# Editor
 
-This is a visual Python editor.
-It is being written with Python and Tkinter.
-It aims to visualize software components as far as possible, which should provide more intuitive development experience.
+An editor, written with Python/Tkinter
 
 ## Requirements
 
-- Python 3.8 or higher
+- Python 3.9 or higher
 - Tk 8.6 or higher
 
 ## Running
@@ -14,11 +12,11 @@ It aims to visualize software components as far as possible, which should provid
 ### Running on Windows
 
 ```sh
-py -3 -m visual_python
+py -3 -m editor
 ```
 
 ### Running on Mac OS, GNU/Linux and UNIX
 
 ```sh
-python3 -m visual_python
+python3 -m editor
 ```
