@@ -1,11 +1,4 @@
-'''
-class TabTitle
-'''
-
 class TabTitle:
-    '''
-    class TabTitle
-    '''
     def __init__(self, file_name, unsaved_changes_specifier='*', is_there_unsaved_change=False):
         self.file_name = file_name
         self.unsaved_changes_specifier = unsaved_changes_specifier

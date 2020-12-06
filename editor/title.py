@@ -1,11 +1,4 @@
-'''
-class Title
-'''
-
 class Title:
-    '''
-    class Title
-    '''
     def __init__(self,
         application_name,
         unsaved_changes_specifier='*',
@@ -23,30 +16,18 @@ class Title:
 
     @property
     def unsaved_changes_specifier(self):
-        '''
-        unsaved_changes_specifier
-        '''
         return self.__unsaved_changes_specifier
 
     @property
     def is_there_unsaved_change(self):
-        '''
-        is_there_unsaved_change
-        '''
         return self.__is_there_unsaved_change
 
     @is_there_unsaved_change.setter
     def is_there_unsaved_change(self, is_there_unsaved_change):
-        '''
-        is_there_unsaved_change
-        '''
         self.__is_there_unsaved_change = is_there_unsaved_change
 
     @property
     def file_name(self):
-        '''
-        file_name
-        '''
         return self.__file_name
 
     @file_name.setter
@@ -55,9 +36,6 @@ class Title:
 
     @property
     def folder_name(self):
-        '''
-        folder_name
-        '''
         return self.__folder_name
 
     @folder_name.setter
@@ -66,9 +44,6 @@ class Title:
 
     @property
     def separator(self):
-        '''
-        separator
-        '''
         return self.__separator
 
     def __str__(self):

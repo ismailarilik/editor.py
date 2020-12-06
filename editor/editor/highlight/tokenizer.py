@@ -1,15 +1,8 @@
-'''
-class Tokenizer
-'''
-
 import keyword
 import tokenize
 from .token import Token
 
 class Tokenizer:
-    '''
-    class Tokenizer
-    '''
     # Initialize keyword token type and name
     KEYWORD = 1000
     KEYWORD_NAME = 'KEYWORD'
@@ -18,17 +11,11 @@ class Tokenizer:
         self.keywords = keyword.kwlist
 
     def get_token_name(self, token_type):
-        '''
-        get_token_name
-        '''
         if token_type == self.KEYWORD:
             return self.KEYWORD_NAME
         return tokenize.tok_name[token_type]
 
     def tokenize(self, readline):
-        '''
-        tokenize
-        '''
         tokens = tokenize.tokenize(readline)
         for token in tokens:
             token_type = token.type

@@ -1,11 +1,4 @@
-'''
-class Token
-'''
-
 class Token:
-    '''
-    class Token
-    '''
     def __init__(self, token_type, exact_token_type, name, string, start_row, start_column, end_row, end_column, line):
         self.type = token_type
         self.exact_type = exact_token_type

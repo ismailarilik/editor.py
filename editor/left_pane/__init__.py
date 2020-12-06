@@ -1,16 +1,9 @@
-'''
-class LeftPane(ttk.Notebook)
-'''
-
 import tkinter as tk
 import tkinter.ttk as ttk
 from .explorer import Explorer
 from .search import SearchView
 
 class LeftPane(ttk.Notebook):
-    '''
-    class LeftPane(ttk.Notebook)
-    '''
     def __init__(self,
         master,
         close_file_in_editor,
@@ -32,9 +25,6 @@ class LeftPane(ttk.Notebook):
         self.create_widgets()
 
     def create_explorer(self):
-        '''
-        create_explorer
-        '''
         # Create explorer layout and add it to this notebook
         explorer_layout = ttk.Frame(self)
         self.add(explorer_layout, text=_('Explorer'))
@@ -55,27 +45,15 @@ class LeftPane(ttk.Notebook):
         self.explorer.pack(fill=tk.BOTH, expand=True)
 
     def create_search_view(self):
-        '''
-        create_search_view
-        '''
         self.search_view = SearchView(self, self.get_folder, self.open_file_by_file)
         self.add(self.search_view, text=_('Search'))
 
     def create_widgets(self):
-        '''
-        create_widgets
-        '''
         self.create_explorer()
         self.create_search_view()
 
     def get_folder(self):
-        '''
-        get_folder
-        '''
         return self.explorer.folder
 
     def select_search_view(self):
-        '''
-        select_search_view
-        '''
         self.select(1)

@@ -1,16 +1,9 @@
-'''
-class SearchView(ttk.Frame)
-'''
-
 import tkinter as tk
 import tkinter.ttk as ttk
 import os
 from ...file import File
 
 class SearchView(ttk.Frame):
-    '''
-    class SearchView(ttk.Frame)
-    '''
     def __init__(self, master, get_folder, open_file_by_file):
         super().__init__(master)
         self.get_folder = get_folder
@@ -32,17 +25,11 @@ class SearchView(ttk.Frame):
         self.add_key_bindings()
 
     def add_key_bindings(self):
-        '''
-        add_key_bindings
-        '''
         # Add key bindings for the Search Explorer
         self.search_explorer.bind('<Double-Button-1>', self.open_file)
         self.search_explorer.bind('<Return>', self.open_file)
 
     def open_file(self, __):
-        '''
-        open_file
-        '''
         selections = self.search_explorer.selection()
         for selection in selections:
             parent = self.search_explorer.parent(selection)
@@ -57,9 +44,6 @@ class SearchView(ttk.Frame):
                 self.open_file_by_file(file, cursor_index=cursor_index)
 
     def search(self):
-        '''
-        search
-        '''
         folder = self.get_folder()
         if folder:
             folder_path = folder.path

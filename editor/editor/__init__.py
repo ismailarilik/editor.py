@@ -1,7 +1,3 @@
-'''
-class EditorGroup(ttk.Notebook)
-'''
-
 import tkinter as tk
 import tkinter.filedialog as tkfiledialog
 import tkinter.messagebox as tkmessagebox
@@ -11,9 +7,6 @@ from ..file import File
 from .tab_title import TabTitle
 
 class EditorGroup(ttk.Notebook):
-    '''
-    class EditorGroup(ttk.Notebook)
-    '''
     def __init__(self, master, set_title, open_folder, search):
         super().__init__(master)
         self.set_title = set_title
@@ -28,9 +21,6 @@ class EditorGroup(ttk.Notebook):
         self.bind('<<NotebookTabChanged>>', self.tab_changed)
 
     def add_editor(self, file, cursor_index=None):
-        '''
-        add_editor
-        '''
         # Create an editor with wrapping layout and scrollbars
         editor_layout = ttk.Frame(self)
         self.add(editor_layout, text=file.name)
@@ -60,15 +50,9 @@ class EditorGroup(ttk.Notebook):
             editor.see(cursor_index)
 
     def add_key_bindings(self):
-        '''
-        add_key_bindings
-        '''
         self.bind('<Button-2>', self.close_editor)
 
     def close_editor(self, event):
-        '''
-        close_editor
-        '''
         tab_id = f'@{event.x},{event.y}'
         editor_index = None
         try:
@@ -85,9 +69,6 @@ class EditorGroup(ttk.Notebook):
                 self.forget(tab_id)
 
     def close_editor_by_file(self, file):
-        '''
-        close_editor_by_file
-        '''
         opened_editors = filter(lambda editor: editor.file.path == file.path, self.editors)
         opened_editor_list = list(opened_editors)
         if opened_editor_list:
@@ -100,9 +81,6 @@ class EditorGroup(ttk.Notebook):
             self.forget(tab_id)
 
     def find_in_current_editor(self):
-        '''
-        find_in_current_editor
-        '''
         current_editor = self.get_current_editor()
         if current_editor:
             current_editor.find()
@@ -120,31 +98,19 @@ class EditorGroup(ttk.Notebook):
             return None
 
     def is_file_open(self, file):
-        '''
-        is_file_open
-        '''
         opened_editors = filter(lambda editor: editor.file.path == file.path, self.editors)
         return list(opened_editors)
 
     def open_file(self):
-        '''
-        open_file
-        '''
         file_path = tkfiledialog.askopenfilename()
         if file_path:
             file = File(file_path)
             self.open_file_by_file(file)
 
     def open_file_by_file(self, file, cursor_index=None):
-        '''
-        open_file_by_file
-        '''
         self.add_editor(file, cursor_index=cursor_index)
 
     def rename_file(self, old_file, new_file):
-        '''
-        rename_file
-        '''
         opened_editors = filter(lambda editor: editor.file.path == old_file.path, self.editors)
         opened_editor_list = list(opened_editors)
         if opened_editor_list:
@@ -152,9 +118,6 @@ class EditorGroup(ttk.Notebook):
             editor.rename_file(new_file)
 
     def save_current_editor(self):
-        '''
-        save_current_editor
-        '''
         # If there is an opened editor, save it
         current_editor = self.get_current_editor()
         if current_editor:
@@ -167,9 +130,6 @@ class EditorGroup(ttk.Notebook):
             self.set_tab_title(tab_index, current_editor.title, is_there_unsaved_change=False)
 
     def save_current_editor_as(self):
-        '''
-        save_current_editor_as
-        '''
         # If there is an opened editor, save it as...
         current_editor = self.get_current_editor()
         if current_editor:
@@ -188,10 +148,6 @@ class EditorGroup(ttk.Notebook):
             )
 
     def save_unsaved_changes(self):
-        '''
-        Return True if unsaved changes were saved
-        Return False otherwise
-        '''
         unsaved_editors = list(filter(lambda editor: editor.is_unsaved, self.editors))
         if unsaved_editors:
             message_box_title = _('Unsaved Changes')
@@ -210,9 +166,6 @@ class EditorGroup(ttk.Notebook):
             return True
 
     def set_tab_title(self, tab_index, tab_title, is_there_unsaved_change=None, file_name=None):
-        '''
-        set_tab_title
-        '''
         if is_there_unsaved_change is not None:
             tab_title.is_there_unsaved_change = is_there_unsaved_change
         if file_name is not None:
@@ -220,9 +173,6 @@ class EditorGroup(ttk.Notebook):
         self.tab(tab_index, text=str(tab_title))
 
     def tab_changed(self, __):
-        '''
-        tab_changed
-        '''
         current_editor = self.get_current_editor()
         if current_editor:
             # Update tab_title
