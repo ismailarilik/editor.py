@@ -15,7 +15,7 @@ An editor, written with Python/Tkinter
 py -3 -m editor
 ```
 
-### Running on Mac OS, GNU/Linux and UNIX
+### Running on Mac OS, GNU/Linux or UNIX
 
 ```sh
 python3 -m editor
