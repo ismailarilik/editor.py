@@ -20,3 +20,17 @@ py -3 -m editor
 ```sh
 python3 -m editor
 ```
+
+## Testing
+
+### Testing on Windows
+
+```sh
+py -3 -m unittest
+```
+
+### Testing on Mac OS, GNU/Linux or UNIX
+
+```sh
+python3 -m unittest
+```
