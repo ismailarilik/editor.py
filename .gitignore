@@ -1,7 +1,7 @@
 # Environment files
 .env
 
-# Library files
+# Python files
 __pycache__
 
 # Editor files
