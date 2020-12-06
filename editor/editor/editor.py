@@ -1,3 +1,7 @@
+'''
+class Editor(tk.Text)
+'''
+
 import tkinter as tk
 import tkinter.filedialog as tkfiledialog
 import tkinter.font as tkfont
@@ -9,6 +13,9 @@ from .find import FindView
 from .highlight.tokenizer import Tokenizer
 
 class Editor(tk.Text):
+    '''
+    class Editor(tk.Text)
+    '''
     def __init__(self, master, file, title, open_file, open_folder, search, set_tab_title, set_title, is_unsaved=False):
         super().__init__(master, undo=True, wrap=tk.NONE)
         self.file = file
@@ -39,7 +46,10 @@ class Editor(tk.Text):
         # Open given file
         self.open()
 
-    def add_key_bindings(self, event=None):
+    def add_key_bindings(self):
+        '''
+        add_key_bindings
+        '''
         # Prevent newline addition with '<Control-o>' and <Control-Shift-o> keys
         self.bind('<Control-o>', self.open_file_and_stop_propagation)
         self.bind('<Control-Shift-o>', self.open_folder_and_stop_propagation)
@@ -51,40 +61,60 @@ class Editor(tk.Text):
         # Escape from things in editor
         self.bind('<Escape>', self.escape)
 
-    def close(self, event=None):
+    def close(self):
         '''
         Return True if the editor can be closed
         Return False otherwise
         '''
         # Before close, save unsaved changes
-        return self.save_unsaved_changes(event=event)
+        return self.save_unsaved_changes()
 
-    def close_find_view(self, event=None):
-        self.find_view.close(event=event)
+    def close_find_view(self, __=None):
+        '''
+        close_find_view
+        '''
+        self.find_view.close()
         self.find_view.place_forget()
         self.focus_set()
 
-    def escape(self, event=None):
+    def escape(self, __):
         '''
         Escape from things in editor
         '''
         # Close find view if it is opened
         if self.find_view and self.find_view.place_info():
-            self.close_find_view(event=event)
+            self.close_find_view()
 
-    def find(self, event=None):
+    def find(self):
+        '''
+        find
+        '''
         # Create find view if it is not created yet
         if not self.find_view:
-            self.find_view = FindView(self.master, self.close_find_view, self.search, self.see, self.tag_add, self.tag_configure, self.tag_delete)
+            self.find_view = FindView(
+                self.master,
+                self.close_find_view,
+                self.search,
+                self.see,
+                self.tag_add,
+                self.tag_configure,
+                self.tag_delete
+            )
         self.find_view.place(relx=1, anchor=tk.NE)
         self.find_view.find_entry.focus_set()
         self.find_view.find_entry.select_range(0, tk.END)
 
-    def find_and_stop_propagation(self, event=None):
-        self.find(event=event)
+    def find_and_stop_propagation(self, __):
+        '''
+        find_and_stop_propagation
+        '''
+        self.find()
         return 'break'
 
-    def get_token_type_color_map(self, event=None):
+    def get_token_type_color_map(self):
+        '''
+        get_token_type_color_map
+        '''
         return {
             Tokenizer.KEYWORD: '#FF0000',
             tokenize.STRING: '#00C000',
@@ -138,13 +168,16 @@ class Editor(tk.Text):
             tokenize.ELLIPSIS: '#FF80FF'
         }
 
-    def get_wo_eol(self, event=None):
+    def get_wo_eol(self):
         '''
         Get without (automatically added) final end-of-line character
         '''
         return self.get('1.0', tk.END)[:-1]
 
-    def highlight(self, event=None):
+    def highlight(self):
+        '''
+        highlight
+        '''
         if self.file.is_python_file:
             text = self.get('1.0', tk.END)
             if text:
@@ -160,8 +193,6 @@ class Editor(tk.Text):
                         token = next(tokens)
                     except StopIteration:
                         break
-                    except Exception as e:
-                        pass
                     else:
                         # If there is a configured tag for this token, add it to the token's indices in the editor
                         color = self.token_type_color_map.get(token.exact_type)
@@ -170,7 +201,10 @@ class Editor(tk.Text):
                             end_index = f'{token.end_row}.{token.end_column}'
                             self.tag_add(token.name, start_index, end_index)
 
-    def modified(self, event=None):
+    def modified(self, __):
+        '''
+        modified
+        '''
         if self.modified_event_triggered_by_change:
             if not self.modified_event_triggered_by_opening_file:
                 # Editor text is unsaved now, so set related flag
@@ -197,7 +231,7 @@ class Editor(tk.Text):
                 # Because, after opening file, these stacks should be empty.
                 self.edit_reset()
 
-            self.highlight(event=event)
+            self.highlight()
 
             # Switch modified_event_triggered_by_change flag off
             # Because changing modified flag below causes modified event occurred again
@@ -209,7 +243,7 @@ class Editor(tk.Text):
             # Because the next time modified event occurred will be caused by a change
             self.modified_event_triggered_by_change = True
 
-    def open(self, event=None):
+    def open(self):
         '''
         Open given file
         '''
@@ -219,21 +253,33 @@ class Editor(tk.Text):
                 self.modified_event_triggered_by_opening_file = True
                 self.insert(tk.END, file_text)
 
-    def open_file_and_stop_propagation(self, event=None):
-        self.open_file(event=event)
+    def open_file_and_stop_propagation(self, __):
+        '''
+        open_file_and_stop_propagation
+        '''
+        self.open_file()
         return 'break'
 
-    def open_folder_and_stop_propagation(self, event=None):
-        self.open_folder(event=event)
+    def open_folder_and_stop_propagation(self, __):
+        '''
+        open_folder_and_stop_propagation
+        '''
+        self.open_folder()
         return 'break'
 
-    def rename_file(self, new_file, event=None):
+    def rename_file(self, new_file):
+        '''
+        rename_file
+        '''
         self.file = new_file
         self.set_title(file_name=self.file.name)
         tab_index = str(self.master)
         self.set_tab_title(tab_index, self.title, file_name=self.file.name)
 
-    def save(self, event=None):
+    def save(self):
+        '''
+        save
+        '''
         with open(self.file.path, 'w', encoding='UTF-8') as file:
             file.write(self.get_wo_eol())
         self.is_unsaved = False
@@ -241,7 +287,10 @@ class Editor(tk.Text):
         # This is necessary to separate undoing saved and unsaved changes.
         self.edit_separator()
 
-    def save_as(self, event=None):
+    def save_as(self):
+        '''
+        save_as
+        '''
         # Get new file path
         file_name = self.file.name
         file_directory_path = self.file.directory_path
@@ -253,13 +302,18 @@ class Editor(tk.Text):
             else:
                 file_types.append((file_extension, file_extension))
         file_types.append((_('All Files'), '*'))
-        file_path = tkfiledialog.asksaveasfilename(defaultextension=file_extension, filetypes=file_types, initialdir=file_directory_path, initialfile=file_name)
+        file_path = tkfiledialog.asksaveasfilename(
+            defaultextension=file_extension,
+            filetypes=file_types,
+            initialdir=file_directory_path,
+            initialfile=file_name
+        )
 
         if file_path:
             self.file = File(file_path)
-            self.save(event=event)
+            self.save()
 
-    def save_unsaved_changes(self, event=None):
+    def save_unsaved_changes(self):
         '''
         Return True if unsaved changes were saved
         Return False otherwise
@@ -270,25 +324,34 @@ class Editor(tk.Text):
             user_reply = tkmessagebox.askyesnocancel(message_box_title, message_box_description)
             if user_reply:
                 # Save unsaved changes
-                self.save(event=event)
+                self.save()
                 return True
-            elif user_reply == False:
+            elif not user_reply:
                 return True
             else:
                 return False
         else:
             return True
 
-    def search_and_stop_propagation(self, event=None):
-        self.search_command(event=event)
+    def search_and_stop_propagation(self, __):
+        '''
+        search_and_stop_propagation
+        '''
+        self.search_command()
         return 'break'
 
     @property
     def tab_size(self):
+        '''
+        tab_size
+        '''
         return self._tab_size
 
     @tab_size.setter
     def tab_size(self, new_tab_size):
+        '''
+        tab_size
+        '''
         self._tab_size = new_tab_size
         # Configure editor tab stops with specified tab size
         font = tkfont.Font(font=self['font'])

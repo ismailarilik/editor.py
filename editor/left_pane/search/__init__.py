@@ -1,9 +1,16 @@
+'''
+class SearchView(ttk.Frame)
+'''
+
 import tkinter as tk
 import tkinter.ttk as ttk
 import os
 from ...file import File
 
 class SearchView(ttk.Frame):
+    '''
+    class SearchView(ttk.Frame)
+    '''
     def __init__(self, master, get_folder, open_file_by_file):
         super().__init__(master)
         self.get_folder = get_folder
@@ -24,12 +31,18 @@ class SearchView(ttk.Frame):
 
         self.add_key_bindings()
 
-    def add_key_bindings(self, event=None):
+    def add_key_bindings(self):
+        '''
+        add_key_bindings
+        '''
         # Add key bindings for the Search Explorer
         self.search_explorer.bind('<Double-Button-1>', self.open_file)
         self.search_explorer.bind('<Return>', self.open_file)
 
-    def open_file(self, event=None):
+    def open_file(self, __):
+        '''
+        open_file
+        '''
         selections = self.search_explorer.selection()
         for selection in selections:
             parent = self.search_explorer.parent(selection)
@@ -41,16 +54,19 @@ class SearchView(ttk.Frame):
                 cursor_row_index = str(int(cursor_index_as_array[0]) + 1)
                 cursor_column_index = cursor_index_as_array[1]
                 cursor_index = f'{cursor_row_index}.{cursor_column_index}'
-                self.open_file_by_file(file, cursor_index=cursor_index, event=event)
+                self.open_file_by_file(file, cursor_index=cursor_index)
 
-    def search(self, event=None):
+    def search(self):
+        '''
+        search
+        '''
         folder = self.get_folder()
         if folder:
             folder_path = folder.path
             self.search_explorer.delete(*self.search_explorer.get_children())
             search_text = self.search_entry.get()
             if search_text:
-                for root, folders, files in os.walk(folder_path):
+                for root, __, files in os.walk(folder_path):
                     # Search files in the list
                     for file in files:
                         file_path = os.path.join(root, file)
@@ -61,7 +77,7 @@ class SearchView(ttk.Frame):
                                     while find_index_in_line != -1:
                                         if not self.search_explorer.exists(file_path):
                                             self.search_explorer.insert('', tk.END, file_path, text=file_path)
-                                        line_node_id = file_path + '-' + str(line_number) + '-' + str(find_index_in_line)
+                                        line_node_id = f'{file_path}-{line_number}-{find_index_in_line}'
                                         self.search_explorer.insert(file_path, tk.END, line_node_id, text=line)
                                         find_index_in_line = line.find(search_text, find_index_in_line+1)
                         except UnicodeDecodeError:

@@ -1,3 +1,7 @@
+'''
+class Application(tk.Tk)
+'''
+
 import tkinter as tk
 import tkinter.ttk as ttk
 import gettext
@@ -7,6 +11,9 @@ from .left_pane import LeftPane
 from .title import Title
 
 class Application(tk.Tk):
+    '''
+    class Application(tk.Tk)
+    '''
     def __init__(self):
         super().__init__()
         self.__application_name = 'Editor'
@@ -22,11 +29,14 @@ class Application(tk.Tk):
 
         self.add_key_bindings()
         # Register delete window protocol to save unsaved changes and handle other things properly on quit
-        self.protocol('WM_DELETE_WINDOW', self.quit)
+        self.protocol('WM_DELETE_WINDOW', self.on_quit)
 
         self.resize_and_center()
 
-    def add_key_bindings(self, event=None):
+    def add_key_bindings(self):
+        '''
+        add_key_bindings
+        '''
         # Add key bindings for file menu
         self.bind('<Control-o>', self.open_file)
         self.bind('<Control-O>', self.open_file)
@@ -36,15 +46,18 @@ class Application(tk.Tk):
         self.bind('<Control-S>', self.save_file)
         self.bind('<Control-Shift-s>', self.save_file_as)
         self.bind('<Control-Shift-S>', self.save_file_as)
-        self.bind('<Control-q>', self.quit)
-        self.bind('<Control-Q>', self.quit)
+        self.bind('<Control-q>', self.on_quit)
+        self.bind('<Control-Q>', self.on_quit)
         # Add key bindings for edit menu
         self.bind('<Control-f>', self.find)
         self.bind('<Control-F>', self.find)
         self.bind('<Control-Shift-f>', self.search)
         self.bind('<Control-Shift-F>', self.search)
 
-    def add_menu(self, event=None):
+    def add_menu(self):
+        '''
+        add_menu
+        '''
         self.menu = tk.Menu()
         self.config(menu=self.menu)
         # Add file menu
@@ -56,7 +69,7 @@ class Application(tk.Tk):
         self.file_menu.add_command(label=_('Save File'), accelerator='Ctrl+S', command=self.save_file)
         self.file_menu.add_command(label=_('Save File as'), accelerator='Ctrl+Shift+S', command=self.save_file_as)
         self.file_menu.add_separator()
-        self.file_menu.add_command(label=_('Quit'), accelerator='Ctrl+Q', command=self.quit)
+        self.file_menu.add_command(label=_('Quit'), accelerator='Ctrl+Q', command=self.on_quit)
         # Add edit menu
         self.edit_menu = tk.Menu(self.menu)
         self.menu.add_cascade(label=_('Edit'), menu=self.edit_menu)
@@ -65,47 +78,84 @@ class Application(tk.Tk):
 
     @property
     def application_name(self):
+        '''
+        application_name
+        '''
         return self.__application_name
 
-    def close_file_in_editor(self, file, event=None):
-        self.editor_group.close_editor_by_file(file, event=event)
+    def close_file_in_editor(self, file):
+        '''
+        close_file_in_editor
+        '''
+        self.editor_group.close_editor_by_file(file)
 
-    def create_widgets(self, event=None):
+    def create_widgets(self):
+        '''
+        create_widgets
+        '''
         # Create paned window
         self.paned_window = ttk.PanedWindow(orient=tk.HORIZONTAL)
         self.paned_window.pack(fill=tk.BOTH, expand=True)
 
         # Create left pane and add it to the paned window
-        self.left_pane = LeftPane(self.paned_window, self.close_file_in_editor, self.is_file_open_in_editor, self.open_file_by_file, self.rename_file_in_editor, self.set_title)
+        self.left_pane = LeftPane(
+            self.paned_window,
+            self.close_file_in_editor,
+            self.is_file_open_in_editor,
+            self.open_file_by_file,
+            self.rename_file_in_editor,
+            self.set_title
+        )
         self.paned_window.add(self.left_pane)
 
         # Create editor group and add it to the paned window
         self.editor_group = EditorGroup(self.paned_window, self.set_title, self.open_folder, self.search)
         self.paned_window.add(self.editor_group)
 
-    def find(self, event=None):
-        self.editor_group.find_in_current_editor(event=event)
+    def find(self, __=None):
+        '''
+        find
+        '''
+        self.editor_group.find_in_current_editor()
 
-    def is_file_open_in_editor(self, file, event=None):
-        return self.editor_group.is_file_open(file, event=event)
+    def is_file_open_in_editor(self, file):
+        '''
+        is_file_open_in_editor
+        '''
+        return self.editor_group.is_file_open(file)
 
-    def open_file(self, event=None):
-        self.editor_group.open_file(event=event)
+    def open_file(self, __=None):
+        '''
+        open_file
+        '''
+        self.editor_group.open_file()
 
-    def open_file_by_file(self, file, cursor_index=None, event=None):
-        self.editor_group.open_file_by_file(file, cursor_index=cursor_index, event=event)
+    def open_file_by_file(self, file, cursor_index=None):
+        '''
+        open_file_by_file
+        '''
+        self.editor_group.open_file_by_file(file, cursor_index=cursor_index)
 
-    def open_folder(self, event=None):
-        self.left_pane.explorer.open_folder(event=event)
+    def open_folder(self, __=None):
+        '''
+        open_folder
+        '''
+        self.left_pane.explorer.open_folder()
 
-    def quit(self, event=None):
-        if self.editor_group.save_unsaved_changes(event=event):
+    def on_quit(self, __=None):
+        '''
+        on_quit
+        '''
+        if self.editor_group.save_unsaved_changes():
             self.destroy()
 
-    def rename_file_in_editor(self, old_file, new_file, event=None):
-        self.editor_group.rename_file(old_file, new_file, event=event)
+    def rename_file_in_editor(self, old_file, new_file):
+        '''
+        rename_file_in_editor
+        '''
+        self.editor_group.rename_file(old_file, new_file)
 
-    def resize_and_center(self, event=None):
+    def resize_and_center(self):
         '''
         Set window size as half of the screen size
         Also center window
@@ -118,17 +168,29 @@ class Application(tk.Tk):
         window_y = (screen_height // 2) - (window_height // 2)
         self.geometry(f'{window_width}x{window_height}+{window_x}+{window_y}')
 
-    def save_file(self, event=None):
-        self.editor_group.save_current_editor(event=event)
+    def save_file(self, __=None):
+        '''
+        save_file
+        '''
+        self.editor_group.save_current_editor()
 
-    def save_file_as(self, event=None):
-        self.editor_group.save_current_editor_as(event=event)
+    def save_file_as(self, __=None):
+        '''
+        save_file_as
+        '''
+        self.editor_group.save_current_editor_as()
 
-    def search(self, event=None):
+    def search(self, __=None):
+        '''
+        search
+        '''
         # View search view in the left pane
         self.left_pane.select_search_view()
 
-    def set_title(self, is_there_unsaved_change=None, file_name=None, folder_name=None, event=None):
+    def set_title(self, is_there_unsaved_change=None, file_name=None, folder_name=None):
+        '''
+        set_title
+        '''
         if is_there_unsaved_change is not None:
             self.__title.is_there_unsaved_change = is_there_unsaved_change
         if file_name is not None:

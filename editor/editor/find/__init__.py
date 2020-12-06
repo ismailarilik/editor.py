@@ -1,9 +1,24 @@
+'''
+class FindView(ttk.Frame)
+'''
+
 import tkinter as tk
 import tkinter.ttk as ttk
 import os.path
 
 class FindView(ttk.Frame):
-    def __init__(self, master, close_find_view, editor_search, editor_see, editor_tag_add, editor_tag_configure, editor_tag_delete):
+    '''
+    class FindView(ttk.Frame)
+    '''
+    def __init__(self,
+        master,
+        close_find_view,
+        editor_search,
+        editor_see,
+        editor_tag_add,
+        editor_tag_configure,
+        editor_tag_delete
+    ):
         super().__init__(master)
         self.close_find_view = close_find_view
         self.editor_search = editor_search
@@ -11,28 +26,47 @@ class FindView(ttk.Frame):
         self.editor_tag_add = editor_tag_add
         self.editor_tag_configure = editor_tag_configure
         self.editor_tag_delete = editor_tag_delete
+
+        self.indices = None
+        self.match_size_variable = None
+
         self.create_widgets()
         self.add_key_bindings()
 
-    def add_key_bindings(self, event=None):
+    def add_key_bindings(self):
+        '''
+        add_key_bindings
+        '''
         # Add key bindings for the find entry
         self.find_entry.bind('<Return>', self.find_or_see_next_match)
         self.find_entry.bind('<Shift-Return>', self.see_previous_match)
         self.find_entry.bind('<Escape>', self.close_find_view)
 
-    def clear_entry(self, event=None):
+    def clear_entry(self):
+        '''
+        clear_entry
+        '''
         self.find_entry.delete(0, tk.END)
 
-    def clear_tags(self, event=None):
+    def clear_tags(self):
+        '''
+        clear_tags
+        '''
         self.editor_tag_delete('match')
         self.editor_tag_delete('current_match')
 
-    def close(self, event=None):
+    def close(self):
+        '''
+        close
+        '''
         self.current_match_variable.set(0)
         self.total_match_variable.set(0)
         self.clear_tags()
 
-    def create_widgets(self, event=None):
+    def create_widgets(self):
+        '''
+        create_widgets
+        '''
         current_directory = os.path.dirname(__file__)
 
         self.find_entry = ttk.Entry(self)
@@ -62,7 +96,10 @@ class FindView(ttk.Frame):
         # Create previous match button
         previous_match_button_image_path = os.path.join(current_directory, '../../icons/find_icons/previous.png')
         self.previous_match_button_image = tk.PhotoImage(file=previous_match_button_image_path)
-        self.previous_match_button = ttk.Button(self, image=self.previous_match_button_image, command=self.see_previous_match)
+        self.previous_match_button = ttk.Button(self,
+            image=self.previous_match_button_image,
+            command=self.see_previous_match
+        )
         self.previous_match_button.pack(side=tk.LEFT)
 
         # Create next match button
@@ -77,7 +114,10 @@ class FindView(ttk.Frame):
         self.close_button = ttk.Button(self, image=self.close_button_image, command=self.close_find_view)
         self.close_button.pack(side=tk.LEFT)
 
-    def find(self, event=None):
+    def find(self):
+        '''
+        find
+        '''
         entry_text = self.find_entry.get()
         if entry_text:
             self.clear_tags()
@@ -87,7 +127,13 @@ class FindView(ttk.Frame):
             self.total_match_variable.set(0)
             self.indices = []
             while index:
-                index = self.editor_search(entry_text, index, count=self.match_size_variable, nocase=True, stopindex=tk.END)
+                index = self.editor_search(
+                    entry_text,
+                    index,
+                    count=self.match_size_variable,
+                    nocase=True,
+                    stopindex=tk.END
+                )
                 if index:
                     self.total_match_variable.set(self.total_match_variable.get() + 1)
                     self.indices.append(index)
@@ -98,20 +144,29 @@ class FindView(ttk.Frame):
                 # See the first match
                 self.see_match(self.indices[0], self.match_size_variable.get(), 1)
 
-    def find_or_see_next_match(self, event=None):
+    def find_or_see_next_match(self, __):
+        '''
+        find_or_see_next_match
+        '''
         if not self.total_match_variable.get():
-            self.find(event=event)
+            self.find()
         else:
-            self.see_next_match(event=event)
+            self.see_next_match()
 
-    def see_match(self, index, length, match_index, event=None):
+    def see_match(self, index, length, match_index):
+        '''
+        see_match
+        '''
         self.editor_tag_delete('current_match')
         self.editor_tag_configure('current_match', background='gray', foreground='white')
         self.editor_tag_add('current_match', index, f'{index}+{length}c')
         self.editor_see(index)
         self.current_match_variable.set(match_index)
 
-    def see_next_match(self, event=None):
+    def see_next_match(self):
+        '''
+        see_next_match
+        '''
         current_match_index = self.current_match_variable.get()
         if current_match_index:
             if current_match_index == len(self.indices):
@@ -120,7 +175,10 @@ class FindView(ttk.Frame):
                 next_match_index = current_match_index + 1
             self.see_match(self.indices[next_match_index-1], self.match_size_variable.get(), next_match_index)
 
-    def see_previous_match(self, event=None):
+    def see_previous_match(self, __):
+        '''
+        see_previous_match
+        '''
         current_match_index = self.current_match_variable.get()
         if current_match_index:
             if current_match_index == 1:

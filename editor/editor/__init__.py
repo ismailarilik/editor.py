@@ -1,3 +1,7 @@
+'''
+class EditorGroup(ttk.Notebook)
+'''
+
 import tkinter as tk
 import tkinter.filedialog as tkfiledialog
 import tkinter.messagebox as tkmessagebox
@@ -7,6 +11,9 @@ from ..file import File
 from .tab_title import TabTitle
 
 class EditorGroup(ttk.Notebook):
+    '''
+    class EditorGroup(ttk.Notebook)
+    '''
     def __init__(self, master, set_title, open_folder, search):
         super().__init__(master)
         self.set_title = set_title
@@ -20,12 +27,24 @@ class EditorGroup(ttk.Notebook):
 
         self.bind('<<NotebookTabChanged>>', self.tab_changed)
 
-    def add_editor(self, file, cursor_index=None, event=None):
+    def add_editor(self, file, cursor_index=None):
+        '''
+        add_editor
+        '''
         # Create an editor with wrapping layout and scrollbars
         editor_layout = ttk.Frame(self)
         self.add(editor_layout, text=file.name)
         editor_title = TabTitle(file.name)
-        editor = Editor(editor_layout, file, editor_title, self.open_file, self.open_folder, self.search, self.set_tab_title, self.set_title)
+        editor = Editor(
+            editor_layout,
+            file,
+            editor_title,
+            self.open_file,
+            self.open_folder,
+            self.search,
+            self.set_tab_title,
+            self.set_title
+        )
         vertical_scrollbar = ttk.Scrollbar(editor_layout, command=editor.yview)
         vertical_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         horizontal_scrollbar = ttk.Scrollbar(editor_layout, orient=tk.HORIZONTAL, command=editor.xview)
@@ -40,26 +59,35 @@ class EditorGroup(ttk.Notebook):
             editor.mark_set(tk.INSERT, cursor_index)
             editor.see(cursor_index)
 
-    def add_key_bindings(self, event=None):
+    def add_key_bindings(self):
+        '''
+        add_key_bindings
+        '''
         self.bind('<Button-2>', self.close_editor)
 
-    def close_editor(self, event=None):
+    def close_editor(self, event):
+        '''
+        close_editor
+        '''
         tab_id = f'@{event.x},{event.y}'
         editor_index = None
         try:
             editor_index = self.index(tab_id)
-        except tk.TclError as error:
+        except tk.TclError:
             # There is no tab on coordinates the event came from; do nothing.
             pass
         if editor_index is not None:
             editor = self.editors[editor_index]
-            if editor.close(event=event):
+            if editor.close():
                 # Remove related editor from editors list
                 del self.editors[editor_index]
                 # Remove tab from this notebook
                 self.forget(tab_id)
 
-    def close_editor_by_file(self, file, event=None):
+    def close_editor_by_file(self, file):
+        '''
+        close_editor_by_file
+        '''
         opened_editors = filter(lambda editor: editor.file.path == file.path, self.editors)
         opened_editor_list = list(opened_editors)
         if opened_editor_list:
@@ -71,12 +99,15 @@ class EditorGroup(ttk.Notebook):
             tab_id = str(editor.master)
             self.forget(tab_id)
 
-    def find_in_current_editor(self, event=None):
+    def find_in_current_editor(self):
+        '''
+        find_in_current_editor
+        '''
         current_editor = self.get_current_editor()
         if current_editor:
-            current_editor.find(event=event)
+            current_editor.find()
 
-    def get_current_editor(self, event=None):
+    def get_current_editor(self):
         '''
         Return current editor if there is one
         Return None otherwise
@@ -88,31 +119,46 @@ class EditorGroup(ttk.Notebook):
         else:
             return None
 
-    def is_file_open(self, file, event=None):
+    def is_file_open(self, file):
+        '''
+        is_file_open
+        '''
         opened_editors = filter(lambda editor: editor.file.path == file.path, self.editors)
         return list(opened_editors)
 
-    def open_file(self, event=None):
+    def open_file(self):
+        '''
+        open_file
+        '''
         file_path = tkfiledialog.askopenfilename()
         if file_path:
             file = File(file_path)
-            self.open_file_by_file(file, event=event)
+            self.open_file_by_file(file)
 
-    def open_file_by_file(self, file, cursor_index=None, event=None):
+    def open_file_by_file(self, file, cursor_index=None):
+        '''
+        open_file_by_file
+        '''
         self.add_editor(file, cursor_index=cursor_index)
 
-    def rename_file(self, old_file, new_file, event=None):
+    def rename_file(self, old_file, new_file):
+        '''
+        rename_file
+        '''
         opened_editors = filter(lambda editor: editor.file.path == old_file.path, self.editors)
         opened_editor_list = list(opened_editors)
         if opened_editor_list:
             editor = opened_editor_list[0]
-            editor.rename_file(new_file, event=event)
+            editor.rename_file(new_file)
 
-    def save_current_editor(self, event=None):
+    def save_current_editor(self):
+        '''
+        save_current_editor
+        '''
         # If there is an opened editor, save it
         current_editor = self.get_current_editor()
         if current_editor:
-            current_editor.save(event=event)
+            current_editor.save()
             # Focus saved editor on
             current_editor.focus_set()
             # Specify that editor is saved, in title and tab_title
@@ -120,20 +166,28 @@ class EditorGroup(ttk.Notebook):
             tab_index = str(current_editor.master)
             self.set_tab_title(tab_index, current_editor.title, is_there_unsaved_change=False)
 
-    def save_current_editor_as(self, event=None):
+    def save_current_editor_as(self):
+        '''
+        save_current_editor_as
+        '''
         # If there is an opened editor, save it as...
         current_editor = self.get_current_editor()
         if current_editor:
-            current_editor.save_as(event=event)
+            current_editor.save_as()
             # Focus saved editor on
             current_editor.focus_set()
             # Specify that editor's file name was changed and also it was saved, in title
             self.set_title(is_there_unsaved_change=False, file_name=current_editor.file.name)
             # Also update tab title
             tab_index = str(current_editor.master)
-            self.set_tab_title(tab_index, current_editor.title, is_there_unsaved_change=False, file_name=current_editor.file.name)
+            self.set_tab_title(
+                tab_index,
+                current_editor.title,
+                is_there_unsaved_change=False,
+                file_name=current_editor.file.name
+            )
 
-    def save_unsaved_changes(self, event=None):
+    def save_unsaved_changes(self):
         '''
         Return True if unsaved changes were saved
         Return False otherwise
@@ -146,30 +200,41 @@ class EditorGroup(ttk.Notebook):
             if user_reply:
                 # Save unsaved editors
                 for unsaved_editor in unsaved_editors:
-                    unsaved_editor.save(event=event)
+                    unsaved_editor.save()
                 return True
-            elif user_reply == False:
+            elif not user_reply:
                 return True
             else:
                 return False
         else:
             return True
 
-    def set_tab_title(self, tab_index, tab_title, is_there_unsaved_change=None, file_name=None, event=None):
+    def set_tab_title(self, tab_index, tab_title, is_there_unsaved_change=None, file_name=None):
+        '''
+        set_tab_title
+        '''
         if is_there_unsaved_change is not None:
             tab_title.is_there_unsaved_change = is_there_unsaved_change
         if file_name is not None:
             tab_title.file_name = file_name
         self.tab(tab_index, text=str(tab_title))
 
-    def tab_changed(self, event=None):
+    def tab_changed(self, __):
+        '''
+        tab_changed
+        '''
         current_editor = self.get_current_editor()
         if current_editor:
             # Update tab_title
             is_there_unsaved_change = current_editor.is_unsaved
             file_name = current_editor.file.name
             tab_index = str(current_editor.master)
-            self.set_tab_title(tab_index, current_editor.title, is_there_unsaved_change=is_there_unsaved_change, file_name=file_name)
+            self.set_tab_title(
+                tab_index,
+                current_editor.title,
+                is_there_unsaved_change=is_there_unsaved_change,
+                file_name=file_name
+            )
         else:
             # If there is no opened editor, it means there is no an unsaved change and file name
             is_there_unsaved_change = False
