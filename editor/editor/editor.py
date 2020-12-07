@@ -9,15 +9,15 @@ from .find import FindView
 from .highlight.tokenizer import Tokenizer
 
 class Editor(tk.Text):
-    def __init__(self, master, file, title, open_file, open_folder, search, set_tab_title, set_title, is_unsaved=False):
+    def __init__(self, master, store, file, title, open_file, open_folder, search, set_tab_title, is_unsaved=False):
         super().__init__(master, undo=True, wrap=tk.NONE)
+        self.store = store
         self.file = file
         self.title = title
         self.open_file = open_file
         self.open_folder = open_folder
         self.search_command = search
         self.set_tab_title = set_tab_title
-        self.set_title = set_title
         self.is_unsaved = is_unsaved
 
         self.tab_size = 4
@@ -184,7 +184,7 @@ class Editor(tk.Text):
                 # Do them only if they were not set before, for a better performance
                 if not self.is_unsaved:
                     self.is_unsaved = True
-                    self.set_title(is_there_unsaved_change=True)
+                    self.store.has_unsaved_changes = True
                     tab_index = str(self.master)
                     self.set_tab_title(tab_index, self.title, is_there_unsaved_change=True)
                 else:
@@ -192,7 +192,7 @@ class Editor(tk.Text):
                     if not self.edit('canundo'):
                         # Update related flags, title and tab title
                         self.is_unsaved = False
-                        self.set_title(is_there_unsaved_change=False)
+                        self.store.has_unsaved_changes = False
                         tab_index = str(self.master)
                         self.set_tab_title(tab_index, self.title, is_there_unsaved_change=False)
             else:
@@ -235,7 +235,7 @@ class Editor(tk.Text):
 
     def rename_file(self, new_file):
         self.file = new_file
-        self.set_title(file_name=self.file.name)
+        self.store.opened_file_name = self.file.name
         tab_index = str(self.master)
         self.set_tab_title(tab_index, self.title, file_name=self.file.name)
 

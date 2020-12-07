@@ -6,18 +6,18 @@ from .search import SearchView
 class LeftPane(ttk.Notebook):
     def __init__(self,
         master,
+        store,
         close_file_in_editor,
         is_file_open_in_editor,
         open_file_by_file,
-        rename_file_in_editor,
-        set_title
+        rename_file_in_editor
     ):
         super().__init__(master)
+        self.store = store
         self.close_file_in_editor = close_file_in_editor
         self.is_file_open_in_editor = is_file_open_in_editor
         self.open_file_by_file = open_file_by_file
         self.rename_file_in_editor = rename_file_in_editor
-        self.set_title = set_title
 
         self.explorer = None
         self.search_view = None
@@ -31,11 +31,11 @@ class LeftPane(ttk.Notebook):
         # Create explorer inside the explorer layout
         self.explorer = Explorer(
             explorer_layout,
+            self.store,
             self.close_file_in_editor,
             self.is_file_open_in_editor,
             self.open_file_by_file,
-            self.rename_file_in_editor,
-            self.set_title
+            self.rename_file_in_editor
         )
         # Create vertical scrollbar for explorer
         explorer_vertical_scrollbar = ttk.Scrollbar(explorer_layout, command=self.explorer.yview)

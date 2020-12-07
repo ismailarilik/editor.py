@@ -7,9 +7,9 @@ from ..file import File
 from .tab_title import TabTitle
 
 class EditorGroup(ttk.Notebook):
-    def __init__(self, master, set_title, open_folder, search):
+    def __init__(self, master, store, open_folder, search):
         super().__init__(master)
-        self.set_title = set_title
+        self.store = store
         self.open_folder = open_folder
         self.search = search
         self.editors = []
@@ -27,13 +27,13 @@ class EditorGroup(ttk.Notebook):
         editor_title = TabTitle(file.name)
         editor = Editor(
             editor_layout,
+            self.store,
             file,
             editor_title,
             self.open_file,
             self.open_folder,
             self.search,
-            self.set_tab_title,
-            self.set_title
+            self.set_tab_title
         )
         vertical_scrollbar = ttk.Scrollbar(editor_layout, command=editor.yview)
         vertical_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
@@ -125,7 +125,7 @@ class EditorGroup(ttk.Notebook):
             # Focus saved editor on
             current_editor.focus_set()
             # Specify that editor is saved, in title and tab_title
-            self.set_title(is_there_unsaved_change=False)
+            self.store.has_unsaved_changes = False
             tab_index = str(current_editor.master)
             self.set_tab_title(tab_index, current_editor.title, is_there_unsaved_change=False)
 
@@ -137,7 +137,8 @@ class EditorGroup(ttk.Notebook):
             # Focus saved editor on
             current_editor.focus_set()
             # Specify that editor's file name was changed and also it was saved, in title
-            self.set_title(is_there_unsaved_change=False, file_name=current_editor.file.name)
+            self.store.has_unsaved_changes = False
+            self.store.opened_file_name = current_editor.file.name
             # Also update tab title
             tab_index = str(current_editor.master)
             self.set_tab_title(
@@ -190,4 +191,5 @@ class EditorGroup(ttk.Notebook):
             is_there_unsaved_change = False
             file_name = ''
         # Update title
-        self.set_title(is_there_unsaved_change=is_there_unsaved_change, file_name=file_name)
+        self.store.has_unsaved_changes = is_there_unsaved_change
+        self.store.opened_file_name = file_name

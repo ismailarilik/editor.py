@@ -6,7 +6,6 @@ import tkinter.ttk as ttk
 from .editor import EditorGroup
 from .left_pane import LeftPane
 from .store import Store
-from .title import Title
 
 class Application(tk.Tk):
     def __init__(self):
@@ -14,11 +13,9 @@ class Application(tk.Tk):
 
         gettext.install('editor')
 
-        self.store = Store()
+        self.store = Store(self)
 
-        # Set title
-        self.__title = Title(self.store.application_name)
-        self.set_title()
+        self.store.application_name = 'Editor'
 
         self.add_menu()
 
@@ -78,16 +75,16 @@ class Application(tk.Tk):
         # Create left pane and add it to the paned window
         self.left_pane = LeftPane(
             self.paned_window,
+            self.store,
             self.close_file_in_editor,
             self.is_file_open_in_editor,
             self.open_file_by_file,
-            self.rename_file_in_editor,
-            self.set_title
+            self.rename_file_in_editor
         )
         self.paned_window.add(self.left_pane)
 
         # Create editor group and add it to the paned window
-        self.editor_group = EditorGroup(self.paned_window, self.set_title, self.open_folder, self.search)
+        self.editor_group = EditorGroup(self.paned_window, self.store, self.open_folder, self.search)
         self.paned_window.add(self.editor_group)
 
     def find(self, __=None):
@@ -134,12 +131,3 @@ class Application(tk.Tk):
     def search(self, __=None):
         # View search view in the left pane
         self.left_pane.select_search_view()
-
-    def set_title(self, is_there_unsaved_change=None, file_name=None, folder_name=None):
-        if is_there_unsaved_change is not None:
-            self.__title.is_there_unsaved_change = is_there_unsaved_change
-        if file_name is not None:
-            self.__title.file_name = file_name
-        if folder_name is not None:
-            self.__title.folder_name = folder_name
-        self.title(str(self.__title))

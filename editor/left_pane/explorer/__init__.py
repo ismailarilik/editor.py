@@ -9,18 +9,18 @@ from .folder import Folder
 class Explorer(ttk.Treeview):
     def __init__(self,
         master,
+        store,
         close_file_in_editor,
         is_file_open_in_editor,
         open_file_by_file,
-        rename_file_in_editor,
-        set_title
+        rename_file_in_editor
     ):
         super().__init__(master, show='tree')
+        self.store = store
         self.close_file_in_editor = close_file_in_editor
         self.is_file_open_in_editor = is_file_open_in_editor
         self.open_file_by_file = open_file_by_file
         self.rename_file_in_editor = rename_file_in_editor
-        self.set_title = set_title
         self.folder = None
 
         self.menu_target = None
@@ -180,7 +180,7 @@ class Explorer(ttk.Treeview):
                 # Insert file into this treeview
                 self.insert(parent, tk.END, identifier, text=file, image=file_icon)
         # Specify opened folder in title
-        self.set_title(folder_name=self.folder.name)
+        self.store.opened_folder_name = self.folder.name
 
     def refresh(self):
         if self.folder:
