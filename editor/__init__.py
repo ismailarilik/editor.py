@@ -5,16 +5,19 @@ import tkinter.ttk as ttk
 
 from .editor import EditorGroup
 from .left_pane import LeftPane
+from .store import Store
 from .title import Title
 
 class Application(tk.Tk):
     def __init__(self):
         super().__init__()
-        self.__application_name = 'Editor'
+
         gettext.install('editor')
 
+        self.store = Store()
+
         # Set title
-        self.__title = Title(self.__application_name)
+        self.__title = Title(self.store.application_name)
         self.set_title()
 
         self.add_menu()
