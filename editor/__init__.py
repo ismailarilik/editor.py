@@ -1,7 +1,8 @@
-import tkinter as tk
-import tkinter.ttk as ttk
 import gettext
 import os.path
+import tkinter as tk
+import tkinter.ttk as ttk
+
 from .editor import EditorGroup
 from .left_pane import LeftPane
 from .title import Title
