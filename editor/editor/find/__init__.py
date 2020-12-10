@@ -1,6 +1,6 @@
+import os.path
 import tkinter as tk
 import tkinter.ttk as ttk
-import os.path
 
 class FindView(ttk.Frame):
     def __init__(self,

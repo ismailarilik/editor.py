@@ -1,5 +1,6 @@
 import tkinter as tk
 import tkinter.ttk as ttk
+
 from .explorer import Explorer
 from .search import SearchView
 

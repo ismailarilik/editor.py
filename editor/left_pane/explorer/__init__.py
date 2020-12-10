@@ -1,8 +1,9 @@
+import os
+import shutil
 import tkinter as tk
 import tkinter.filedialog as tkfiledialog
 import tkinter.ttk as ttk
-import os
-import shutil
+
 from ...file import File
 from .folder import Folder
 

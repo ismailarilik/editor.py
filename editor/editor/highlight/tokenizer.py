@@ -1,5 +1,6 @@
 import keyword
 import tokenize
+
 from .token import Token
 
 class Tokenizer:

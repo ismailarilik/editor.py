@@ -2,6 +2,7 @@ import tkinter as tk
 import tkinter.filedialog as tkfiledialog
 import tkinter.messagebox as tkmessagebox
 import tkinter.ttk as ttk
+
 from .editor import Editor
 from ..file import File
 from .tab_title import TabTitle

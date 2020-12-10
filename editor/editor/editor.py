@@ -1,9 +1,10 @@
+import io
 import tkinter as tk
 import tkinter.filedialog as tkfiledialog
 import tkinter.font as tkfont
 import tkinter.messagebox as tkmessagebox
-import io
 import tokenize
+
 from ..file import File
 from .find import FindView
 from .highlight.tokenizer import Tokenizer
