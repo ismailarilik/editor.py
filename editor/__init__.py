@@ -17,52 +17,52 @@ class Application(tk.Tk):
 
         self.store.application_name = 'Editor'
 
-        self.add_menu()
+        self.create_menu()
 
         self.create_widgets()
+
+        self.resize_and_center()
 
         self.add_key_bindings()
         # Register delete window protocol to save unsaved changes and handle other things properly on quit
         self.protocol('WM_DELETE_WINDOW', self.on_quit)
 
-        self.resize_and_center()
+    def create_menu(self):
+        self.menu = tk.Menu()
+        self.config(menu=self.menu)
+        # Create file menu
+        self.file_menu = tk.Menu(self.menu)
+        self.menu.add_cascade(label=_('File'), menu=self.file_menu)
+        self.file_menu.add_command(label=_('Open File'), accelerator='Ctrl+O', command=self.on_open_file)
+        self.file_menu.add_command(label=_('Open Folder'), accelerator='Ctrl+Shift+O', command=self.on_open_folder)
+        self.file_menu.add_separator()
+        self.file_menu.add_command(label=_('Save File'), accelerator='Ctrl+S', command=self.on_save_file)
+        self.file_menu.add_command(label=_('Save File as'), accelerator='Ctrl+Shift+S', command=self.on_save_file_as)
+        self.file_menu.add_separator()
+        self.file_menu.add_command(label=_('Quit'), accelerator='Ctrl+Q', command=self.on_quit)
+        # Create edit menu
+        self.edit_menu = tk.Menu(self.menu)
+        self.menu.add_cascade(label=_('Edit'), menu=self.edit_menu)
+        self.edit_menu.add_command(label=_('Find in File'), accelerator='Ctrl+F', command=self.on_find)
+        self.edit_menu.add_command(label=_('Search'), accelerator='Ctrl+Shift+F', command=self.on_search)
 
     def add_key_bindings(self):
         # Add key bindings for file menu
-        self.bind('<Control-o>', self.open_file)
-        self.bind('<Control-O>', self.open_file)
-        self.bind('<Control-Shift-o>', self.open_folder)
-        self.bind('<Control-Shift-O>', self.open_folder)
-        self.bind('<Control-s>', self.save_file)
-        self.bind('<Control-S>', self.save_file)
-        self.bind('<Control-Shift-s>', self.save_file_as)
-        self.bind('<Control-Shift-S>', self.save_file_as)
+        self.bind('<Control-o>', self.on_open_file)
+        self.bind('<Control-O>', self.on_open_file)
+        self.bind('<Control-Shift-o>', self.on_open_folder)
+        self.bind('<Control-Shift-O>', self.on_open_folder)
+        self.bind('<Control-s>', self.on_save_file)
+        self.bind('<Control-S>', self.on_save_file)
+        self.bind('<Control-Shift-s>', self.on_save_file_as)
+        self.bind('<Control-Shift-S>', self.on_save_file_as)
         self.bind('<Control-q>', self.on_quit)
         self.bind('<Control-Q>', self.on_quit)
         # Add key bindings for edit menu
-        self.bind('<Control-f>', self.find)
-        self.bind('<Control-F>', self.find)
-        self.bind('<Control-Shift-f>', self.search)
-        self.bind('<Control-Shift-F>', self.search)
-
-    def add_menu(self):
-        self.menu = tk.Menu()
-        self.config(menu=self.menu)
-        # Add file menu
-        self.file_menu = tk.Menu(self.menu)
-        self.menu.add_cascade(label=_('File'), menu=self.file_menu)
-        self.file_menu.add_command(label=_('Open File'), accelerator='Ctrl+O', command=self.open_file)
-        self.file_menu.add_command(label=_('Open Folder'), accelerator='Ctrl+Shift+O', command=self.open_folder)
-        self.file_menu.add_separator()
-        self.file_menu.add_command(label=_('Save File'), accelerator='Ctrl+S', command=self.save_file)
-        self.file_menu.add_command(label=_('Save File as'), accelerator='Ctrl+Shift+S', command=self.save_file_as)
-        self.file_menu.add_separator()
-        self.file_menu.add_command(label=_('Quit'), accelerator='Ctrl+Q', command=self.on_quit)
-        # Add edit menu
-        self.edit_menu = tk.Menu(self.menu)
-        self.menu.add_cascade(label=_('Edit'), menu=self.edit_menu)
-        self.edit_menu.add_command(label=_('Find in File'), accelerator='Ctrl+F', command=self.find)
-        self.edit_menu.add_command(label=_('Search'), accelerator='Ctrl+Shift+F', command=self.search)
+        self.bind('<Control-f>', self.on_find)
+        self.bind('<Control-F>', self.on_find)
+        self.bind('<Control-Shift-f>', self.on_search)
+        self.bind('<Control-Shift-F>', self.on_search)
 
     def close_file_in_editor(self, file):
         self.editor_group.close_editor_by_file(file)
@@ -84,22 +84,22 @@ class Application(tk.Tk):
         self.paned_window.add(self.left_pane)
 
         # Create editor group and add it to the paned window
-        self.editor_group = EditorGroup(self.paned_window, self.store, self.open_folder, self.search)
+        self.editor_group = EditorGroup(self.paned_window, self.store, self.on_open_folder, self.on_search)
         self.paned_window.add(self.editor_group)
 
-    def find(self, __=None):
+    def on_find(self, __=None):
         self.editor_group.find_in_current_editor()
 
     def is_file_open_in_editor(self, file):
         return self.editor_group.is_file_open(file)
 
-    def open_file(self, __=None):
+    def on_open_file(self, __=None):
         self.editor_group.open_file()
 
     def open_file_by_file(self, file, cursor_index=None):
         self.editor_group.open_file_by_file(file, cursor_index=cursor_index)
 
-    def open_folder(self, __=None):
+    def on_open_folder(self, __=None):
         self.left_pane.explorer.open_folder()
 
     def on_quit(self, __=None):
@@ -122,12 +122,12 @@ class Application(tk.Tk):
         window_y = (screen_height // 2) - (window_height // 2)
         self.geometry(f'{window_width}x{window_height}+{window_x}+{window_y}')
 
-    def save_file(self, __=None):
+    def on_save_file(self, __=None):
         self.editor_group.save_current_editor()
 
-    def save_file_as(self, __=None):
+    def on_save_file_as(self, __=None):
         self.editor_group.save_current_editor_as()
 
-    def search(self, __=None):
+    def on_search(self, __=None):
         # View search view in the left pane
         self.left_pane.select_search_view()
