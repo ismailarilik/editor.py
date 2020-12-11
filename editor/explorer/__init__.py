@@ -4,7 +4,7 @@ import tkinter as tk
 import tkinter.filedialog as tkfiledialog
 import tkinter.ttk as ttk
 
-from ...file import File
+from ..file import File
 from .folder import Folder
 
 class Explorer(ttk.Treeview):
@@ -59,11 +59,11 @@ class Explorer(ttk.Treeview):
 
     def create_file_icons(self):
         current_directory = os.path.dirname(__file__)
-        folder_icon_path = os.path.join(current_directory, '../../icons/file_icons/folder.png')
+        folder_icon_path = os.path.join(current_directory, '../icons/file_icons/folder.png')
         self.folder_icon = tk.PhotoImage(file=folder_icon_path)
-        file_icon_path = os.path.join(current_directory, '../../icons/file_icons/file.png')
+        file_icon_path = os.path.join(current_directory, '../icons/file_icons/file.png')
         self.file_icon = tk.PhotoImage(file=file_icon_path)
-        python_file_icon_path = os.path.join(current_directory, '../../icons/file_icons/python-file.png')
+        python_file_icon_path = os.path.join(current_directory, '../icons/file_icons/python-file.png')
         self.python_file_icon = tk.PhotoImage(file=python_file_icon_path)
 
     def delete_file(self):

@@ -7,7 +7,7 @@ from .editor import Editor
 from ..file import File
 from .tab_title import TabTitle
 
-class EditorGroup(ttk.Notebook):
+class EditorNotebook(ttk.Notebook):
     def __init__(self, master, store, open_folder, search):
         super().__init__(master)
         self.store = store

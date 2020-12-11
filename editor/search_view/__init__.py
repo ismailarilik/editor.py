@@ -2,11 +2,12 @@ import os
 import tkinter as tk
 import tkinter.ttk as ttk
 
-from ...file import File
+from ..file import File
 
 class SearchView(ttk.Frame):
-    def __init__(self, master, get_folder, open_file_by_file):
+    def __init__(self, master, store, get_folder, open_file_by_file):
         super().__init__(master)
+        self.store = store
         self.get_folder = get_folder
         self.open_file_by_file = open_file_by_file
 		# Create search bar
@@ -15,7 +16,7 @@ class SearchView(ttk.Frame):
         self.search_entry = ttk.Entry(self.search_bar)
         self.search_entry.pack(side=tk.LEFT, fill=tk.X, expand=True)
         current_directory = os.path.dirname(__file__)
-        search_button_image_path = os.path.join(current_directory, '../../icons/find_icons/find.png')
+        search_button_image_path = os.path.join(current_directory, '../icons/find_icons/find.png')
         self.search_button_image = tk.PhotoImage(file=search_button_image_path)
         self.search_button = ttk.Button(self.search_bar, image=self.search_button_image, command=self.search)
         self.search_button.pack(side=tk.LEFT)

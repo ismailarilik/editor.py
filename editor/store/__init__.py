@@ -56,3 +56,23 @@ class Store:
             title += self.application_name
 
         self.application.title(title)
+
+
+
+    def close_file_in_editor(self, file):
+        self.application.editor_notebook.close_editor_by_file(file)
+
+    def is_file_open_in_editor(self, file):
+        return self.application.editor_notebook.is_file_open(file)
+
+    def rename_file_in_editor(self, old_file, new_file):
+        self.application.editor_notebook.rename_file(old_file, new_file)
+
+    def open_file_by_file(self, file, cursor_index=None):
+        self.application.editor_notebook.open_file_by_file(file, cursor_index=cursor_index)
+
+    def get_folder(self):
+        return self.application.explorer.folder
+
+    def select_search_view(self):
+        self.application.left_notebook.select(1)
